@@ -405,12 +405,12 @@ export class GameGateway implements OnModuleInit {
     for (const [userID, { state, validActions }] of playerViews) {
       const data: Record<string, unknown> = { sessionId, state, validActions };
       if (colorMap) {
-        data.colorMap = colorMap;
+        data['colorMap'] = colorMap;
       }
       if (turnTiming) {
-        data.turnStartTimestamp = turnTiming.turnStartTimestamp;
-        data.activePlayerUserId = turnTiming.activePlayerUserId;
-        data.turnTimeLimit = turnTiming.turnTimeLimit;
+        data['turnStartTimestamp'] = turnTiming.turnStartTimestamp;
+        data['activePlayerUserId'] = turnTiming.activePlayerUserId;
+        data['turnTimeLimit'] = turnTiming.turnTimeLimit;
       }
       const message = JSON.stringify({ event, data });
       for (const client of this.connectionService.getClientsByUserId(userID)) {

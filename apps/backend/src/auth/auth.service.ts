@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import type { createRemoteJWKSet, jwtVerify } from 'jose' with { 'resolution-mode': 'import' };
+import type { createRemoteJWKSet } from 'jose';
 import { CredentialRepository, UserRepository } from '@cardquorum/db';
 import {
   isValidUsername,
@@ -16,6 +16,8 @@ import {
   type RegisterRequest,
   type SessionIdentity,
 } from '@cardquorum/shared';
+import { loadJose, type JoseModule } from './jose-loader';
+import { OidcDiscoverySchema, OidcTokenResponseSchema } from './oidc-schemas';
 import { SessionService } from './session.service';
 
 export interface AuthResult {
@@ -54,10 +56,7 @@ export class AuthService {
   private tokenEndpoint?: string;
   private endSessionEndpoint?: string;
   private jwks?: ReturnType<typeof createRemoteJWKSet>;
-  private joseModule?: {
-    createRemoteJWKSet: typeof createRemoteJWKSet;
-    jwtVerify: typeof jwtVerify;
-  };
+  private joseModule?: JoseModule;
   private oidcIssuerFromDiscovery?: string;
 
   constructor(
@@ -100,12 +99,12 @@ export class AuthService {
       );
     }
 
-    const discovery = await response.json();
+    const discovery = OidcDiscoverySchema.parse(await response.json());
     this.oidcIssuerFromDiscovery = discovery.issuer;
     this.authorizationEndpoint = discovery.authorization_endpoint;
     this.tokenEndpoint = discovery.token_endpoint;
     this.endSessionEndpoint = discovery.end_session_endpoint;
-    this.joseModule = await import('jose');
+    this.joseModule = await loadJose();
     this.jwks = this.joseModule.createRemoteJWKSet(new URL(discovery.jwks_uri));
     this.logger.log(`OIDC discovery complete: authorize=${this.authorizationEndpoint}`);
   }
@@ -409,7 +408,7 @@ export class AuthService {
       throw new UnauthorizedException('OIDC authentication failed');
     }
 
-    return response.json();
+    return OidcTokenResponseSchema.parse(await response.json());
   }
 
   private async verifyIdToken(idToken: string, nonce: string): Promise<OidcIdentity> {

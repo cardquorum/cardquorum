@@ -90,7 +90,7 @@ describe('Description round-trip persistence', () => {
   it('should preserve description unchanged through create', async () => {
     await fc.assert(
       fc.asyncProperty(descriptionArb, async (description) => {
-        mockRepo.create.mockResolvedValue(makeRoom({ description }));
+        mockRepo['create'].mockResolvedValue(makeRoom({ description }));
 
         const result = await service.create('Test Room', 1, 'public', undefined, description);
 
@@ -103,7 +103,7 @@ describe('Description round-trip persistence', () => {
   it('should preserve description unchanged through update', async () => {
     await fc.assert(
       fc.asyncProperty(descriptionArb, async (description) => {
-        mockRepo.update.mockResolvedValue(makeRoom({ description }));
+        mockRepo['update'].mockResolvedValue(makeRoom({ description }));
 
         const result = await service.update(1, { description });
 
@@ -116,7 +116,7 @@ describe('Description round-trip persistence', () => {
   it('should preserve description unchanged through findById', async () => {
     await fc.assert(
       fc.asyncProperty(descriptionArb, async (description) => {
-        mockRepo.findById.mockResolvedValue(makeRoom({ description }));
+        mockRepo['findById'].mockResolvedValue(makeRoom({ description }));
 
         const result = await service.findById(1);
 

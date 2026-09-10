@@ -107,7 +107,7 @@ export class UserController {
   ): Promise<void> {
     const user = request[REQUEST_USER_KEY] as SessionIdentity;
     const sessionMeta = request[REQUEST_SESSION_KEY] as { createdAt: Date };
-    const nodeEnv = process.env.NODE_ENV ?? 'development';
+    const nodeEnv = process.env['NODE_ENV'] ?? 'development';
     const { ownedRoomIds } = await this.userService.deleteAccount(
       user.userId,
       user.authMethod,

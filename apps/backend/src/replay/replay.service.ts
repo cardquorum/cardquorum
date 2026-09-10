@@ -68,8 +68,8 @@ export class ReplayService {
     const gameStartedEvent = events.find((e) => e.eventType === 'game_started');
     if (gameStartedEvent?.payload && typeof gameStartedEvent.payload === 'object') {
       const payload = gameStartedEvent.payload as Record<string, unknown>;
-      if (payload.colorMap && typeof payload.colorMap === 'object') {
-        colorMap = payload.colorMap as Record<number, number>;
+      if (payload['colorMap'] && typeof payload['colorMap'] === 'object') {
+        colorMap = payload['colorMap'] as Record<number, number>;
       }
     }
 

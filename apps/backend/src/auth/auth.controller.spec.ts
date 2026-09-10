@@ -6,9 +6,12 @@ import { type AuthService } from './auth.service';
 import { REQUEST_USER_KEY } from './http-auth.guard';
 import { type SessionService } from './session.service';
 
-jest.mock('jose', () => ({
-  createRemoteJWKSet: jest.fn().mockReturnValue(jest.fn()),
-  jwtVerify: jest.fn(),
+// `jose` is ESM-only and loaded through the jose-loader seam; mock the seam.
+jest.mock('./jose-loader', () => ({
+  loadJose: jest.fn(async () => ({
+    createRemoteJWKSet: jest.fn().mockReturnValue(jest.fn()),
+    jwtVerify: jest.fn(),
+  })),
 }));
 
 describe('AuthController', () => {

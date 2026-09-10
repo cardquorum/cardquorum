@@ -4,9 +4,18 @@ import { type CredentialRepository, type UserRepository } from '@cardquorum/db';
 import { AuthService } from './auth.service';
 import { type SessionService } from './session.service';
 
-jest.mock('jose', () => ({
+/**
+ * `jose` is loaded through the jose-loader seam (it is ESM-only). Mocking the
+ * seam rather than the package keeps the production code on a plain dynamic
+ * import. The `mock` name prefix is required for jest.mock factory hoisting.
+ */
+const mockJose = {
   createRemoteJWKSet: jest.fn().mockReturnValue(jest.fn()),
   jwtVerify: jest.fn(),
+};
+
+jest.mock('./jose-loader', () => ({
+  loadJose: jest.fn(async () => mockJose),
 }));
 
 describe('AuthService', () => {
@@ -351,6 +360,7 @@ describe('AuthService', () => {
           ok: true,
           json: () =>
             Promise.resolve({
+              issuer: 'https://example.com',
               authorization_endpoint: 'https://example.com/authorize',
               token_endpoint: 'https://example.com/token',
               jwks_uri: 'https://example.com/jwks',
@@ -361,7 +371,7 @@ describe('AuthService', () => {
       });
 
       it('should upsert OIDC credential when sub is not linked to another user', async () => {
-        const jose = require('jose');
+        const jose = mockJose;
         const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -378,7 +388,7 @@ describe('AuthService', () => {
       });
 
       it('should throw ConflictException if sub is linked to a different user', async () => {
-        const jose = require('jose');
+        const jose = mockJose;
         const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -402,7 +412,7 @@ describe('AuthService', () => {
       });
 
       it('should throw UnauthorizedException when nonce does not match', async () => {
-        const jose = require('jose');
+        const jose = mockJose;
         const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -423,6 +433,7 @@ describe('AuthService', () => {
           ok: true,
           json: () =>
             Promise.resolve({
+              issuer: 'https://example.com',
               authorization_endpoint: 'https://example.com/authorize',
               token_endpoint: 'https://example.com/token',
               jwks_uri: 'https://example.com/jwks',
@@ -433,7 +444,7 @@ describe('AuthService', () => {
       });
 
       it('should delete OIDC credential when sub matches', async () => {
-        const jose = require('jose');
+        const jose = mockJose;
         const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -450,7 +461,7 @@ describe('AuthService', () => {
       });
 
       it('should throw UnauthorizedException when sub does not match', async () => {
-        const jose = require('jose');
+        const jose = mockJose;
         const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -466,7 +477,7 @@ describe('AuthService', () => {
       });
 
       it('should throw ConflictException when OIDC is the last enabled credential', async () => {
-        const jose = require('jose');
+        const jose = mockJose;
         const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -531,6 +542,7 @@ describe('AuthService', () => {
   describe('initOidc', () => {
     it('should fetch discovery document and set endpoints', async () => {
       const discovery = {
+        issuer: 'https://example.com',
         authorization_endpoint: 'https://example.com/authorize',
         token_endpoint: 'https://example.com/token',
         jwks_uri: 'https://example.com/jwks',
@@ -624,6 +636,7 @@ describe('AuthService', () => {
         ok: true,
         json: () =>
           Promise.resolve({
+            issuer: 'https://example.com',
             authorization_endpoint: 'https://example.com/authorize',
             token_endpoint: 'https://example.com/token',
             jwks_uri: 'https://example.com/jwks',
@@ -634,7 +647,7 @@ describe('AuthService', () => {
     });
 
     it('should create a session with sid when the id token contains a sid claim', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -658,7 +671,7 @@ describe('AuthService', () => {
     });
 
     it('should create a session without sid when the id token has no sid claim', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ id_token: 'mock-token' }),
@@ -702,6 +715,7 @@ describe('AuthService', () => {
         ok: true,
         json: () =>
           Promise.resolve({
+            issuer: 'https://example.com',
             authorization_endpoint: 'https://example.com/authorize',
             token_endpoint: 'https://example.com/token',
             jwks_uri: 'https://example.com/jwks',
@@ -742,6 +756,7 @@ describe('AuthService', () => {
         ok: true,
         json: () =>
           Promise.resolve({
+            issuer: 'https://example.com',
             authorization_endpoint: 'https://example.com/authorize',
             token_endpoint: 'https://example.com/token',
             jwks_uri: 'https://example.com/jwks',
@@ -774,6 +789,7 @@ describe('AuthService', () => {
         ok: true,
         json: () =>
           Promise.resolve({
+            issuer: 'https://example.com',
             authorization_endpoint: 'https://example.com/authorize',
             token_endpoint: 'https://example.com/token',
             jwks_uri: 'https://example.com/jwks',
@@ -819,7 +835,7 @@ describe('AuthService', () => {
     });
 
     it('should delete only the matching session when sid is present in the logout token', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: {
           sub: 'oidc-sub-123',
@@ -835,7 +851,7 @@ describe('AuthService', () => {
     });
 
     it('should delete all user sessions when only sub is present (no sid)', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: {
           sub: 'oidc-sub-123',
@@ -858,7 +874,7 @@ describe('AuthService', () => {
     });
 
     it('should not throw when sub-only logout token has no matching local user', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: {
           sub: 'unknown-sub',
@@ -872,7 +888,7 @@ describe('AuthService', () => {
     });
 
     it('should throw when the logout token contains a nonce claim', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: {
           sub: 'oidc-sub-123',
@@ -887,7 +903,7 @@ describe('AuthService', () => {
     });
 
     it('should throw when the events claim is missing', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: { sub: 'oidc-sub-123' },
       });
@@ -898,7 +914,7 @@ describe('AuthService', () => {
     });
 
     it('should throw when the events claim does not contain the backchannel-logout event', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: {
           sub: 'oidc-sub-123',
@@ -912,7 +928,7 @@ describe('AuthService', () => {
     });
 
     it('should throw when neither sub nor sid is present', async () => {
-      const jose = require('jose');
+      const jose = mockJose;
       jose.jwtVerify.mockResolvedValue({
         payload: { events: { [BACKCHANNEL_EVENT]: {} } },
       });
