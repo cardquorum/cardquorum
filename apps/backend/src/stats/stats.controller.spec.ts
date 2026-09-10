@@ -1,4 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { type Mocked } from 'vitest';
 import { type UserIdentity } from '@cardquorum/shared';
 import { REQUEST_USER_KEY } from '../auth/http-auth.guard';
 import { StatsController } from './stats.controller';
@@ -6,7 +7,7 @@ import { type StatsService } from './stats.service';
 
 describe('StatsController', () => {
   let controller: StatsController;
-  let statsService: jest.Mocked<Pick<StatsService, 'getRoomStats' | 'getPlayerStats'>>;
+  let statsService: Mocked<Pick<StatsService, 'getRoomStats' | 'getPlayerStats'>>;
 
   const alice: UserIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
 
@@ -14,8 +15,8 @@ describe('StatsController', () => {
 
   beforeEach(() => {
     statsService = {
-      getRoomStats: jest.fn().mockResolvedValue({ players: [] }),
-      getPlayerStats: jest.fn().mockResolvedValue({
+      getRoomStats: vi.fn().mockResolvedValue({ players: [] }),
+      getPlayerStats: vi.fn().mockResolvedValue({
         wins: 0,
         losses: 0,
         score: 0,

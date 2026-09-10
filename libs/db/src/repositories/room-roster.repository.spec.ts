@@ -49,12 +49,12 @@ function createInMemoryDb() {
     _rows: () => rows,
     _registerUsers: registerUsers,
 
-    transaction: jest.fn(async (fn: (tx: any) => Promise<void>) => {
+    transaction: vi.fn(async (fn: (tx: any) => Promise<void>) => {
       const tx = {
         // tx.select({ userId }).from(roomRosters).where(pred) — returns existing userIds
-        select: jest.fn(() => ({
-          from: jest.fn(() => ({
-            where: jest.fn(() => {
+        select: vi.fn(() => ({
+          from: vi.fn(() => ({
+            where: vi.fn(() => {
               const roomId = db._txRoomId;
               return Promise.resolve(
                 rows.filter((r) => r.roomId === roomId).map((r) => ({ userId: r.userId })),
@@ -64,8 +64,8 @@ function createInMemoryDb() {
         })),
 
         // tx.delete(roomRosters).where(pred) — deletes a single (roomId, userId) row
-        delete: jest.fn(() => ({
-          where: jest.fn(() => {
+        delete: vi.fn(() => ({
+          where: vi.fn(() => {
             const roomId = db._txRoomId;
             const userId = db._txDeleteUserId;
             if (roomId != null && userId != null) {
@@ -75,9 +75,9 @@ function createInMemoryDb() {
         })),
 
         // tx.insert(roomRosters).values(val).onConflictDoUpdate({ target, set })
-        insert: jest.fn(() => ({
-          values: jest.fn((val: any) => ({
-            onConflictDoUpdate: jest.fn((opts: { target: any; set: any }) => {
+        insert: vi.fn(() => ({
+          values: vi.fn((val: any) => ({
+            onConflictDoUpdate: vi.fn((opts: { target: any; set: any }) => {
               const existing = rows.find((r) => r.roomId === val.roomId && r.userId === val.userId);
               if (existing) {
                 // Upsert: update section and position, preserve assignedHue
@@ -102,11 +102,11 @@ function createInMemoryDb() {
     }),
 
     // --- select().from().innerJoin().where().orderBy() for findByRoom ---
-    select: jest.fn(() => ({
-      from: jest.fn(() => ({
-        innerJoin: jest.fn(() => ({
-          where: jest.fn((_pred: any) => ({
-            orderBy: jest.fn((..._args: any[]) => {
+    select: vi.fn(() => ({
+      from: vi.fn(() => ({
+        innerJoin: vi.fn(() => ({
+          where: vi.fn((_pred: any) => ({
+            orderBy: vi.fn((..._args: any[]) => {
               const roomId = db._lastQueryRoomId;
               const matching = rows
                 .filter((r) => r.roomId === roomId)
@@ -137,9 +137,9 @@ function createInMemoryDb() {
     })),
 
     // --- update().set().where() for setAssignedHue ---
-    update: jest.fn(() => ({
-      set: jest.fn((values: any) => ({
-        where: jest.fn(() => {
+    update: vi.fn(() => ({
+      set: vi.fn((values: any) => ({
+        where: vi.fn(() => {
           const roomId = db._txRoomId;
           const userId = db._txSetHueUserId;
           if (roomId != null && userId != null && values.assignedHue !== undefined) {
@@ -472,15 +472,15 @@ describe('Roster persistence round-trip', () => {
 
 describe('updateLastVisitedAt', () => {
   it('should call update with lastVisitedAt = sql`now()` for the given room and user', async () => {
-    const setCalled = jest.fn();
-    const whereCalled = jest.fn();
+    const setCalled = vi.fn();
+    const whereCalled = vi.fn();
 
     const db = {
-      update: jest.fn(() => ({
-        set: jest.fn((values: any) => {
+      update: vi.fn(() => ({
+        set: vi.fn((values: any) => {
           setCalled(values);
           return {
-            where: jest.fn((predicate: any) => {
+            where: vi.fn((predicate: any) => {
               whereCalled(predicate);
               return Promise.resolve();
             }),
@@ -507,9 +507,9 @@ describe('findRosteredRoomIds', () => {
     const fakeRows = [{ roomId: 1 }, { roomId: 5 }, { roomId: 12 }];
 
     const db = {
-      select: jest.fn(() => ({
-        from: jest.fn(() => ({
-          where: jest.fn(() => Promise.resolve(fakeRows)),
+      select: vi.fn(() => ({
+        from: vi.fn(() => ({
+          where: vi.fn(() => Promise.resolve(fakeRows)),
         })),
       })),
     } as any;
@@ -523,9 +523,9 @@ describe('findRosteredRoomIds', () => {
 
   it('should return an empty array when user has no roster entries', async () => {
     const db = {
-      select: jest.fn(() => ({
-        from: jest.fn(() => ({
-          where: jest.fn(() => Promise.resolve([])),
+      select: vi.fn(() => ({
+        from: vi.fn(() => ({
+          where: vi.fn(() => Promise.resolve([])),
         })),
       })),
     } as any;
@@ -544,9 +544,9 @@ describe('findRosteredRoomIds', () => {
           const fakeRows = roomIds.map((roomId) => ({ roomId }));
 
           const db = {
-            select: jest.fn(() => ({
-              from: jest.fn(() => ({
-                where: jest.fn(() => Promise.resolve(fakeRows)),
+            select: vi.fn(() => ({
+              from: vi.fn(() => ({
+                where: vi.fn(() => Promise.resolve(fakeRows)),
               })),
             })),
           } as any;

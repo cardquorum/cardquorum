@@ -2,8 +2,7 @@
   "extends": ["../../tsconfig.base.json", "../../tsconfig.browser.json"],
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jest", "node"],
-    "esModuleInterop": true
+    "types": ["vitest/globals"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,5 +1,6 @@
 import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { type Mocked } from 'vitest';
 import { type CredentialRepository, type UserRepository } from '@cardquorum/db';
 import { AuthService } from './auth.service';
 import { type SessionService } from './session.service';
@@ -7,21 +8,28 @@ import { type SessionService } from './session.service';
 /**
  * `jose` is loaded through the jose-loader seam (it is ESM-only). Mocking the
  * seam rather than the package keeps the production code on a plain dynamic
- * import. The `mock` name prefix is required for jest.mock factory hoisting.
+ * import — mocking 'jose' directly does not work, because TypeScript preserves
+ * `import()` under nodenext and a real dynamic import bypasses the module
+ * registry. See docs/design/typescript-config.md.
+ *
+ * `vi.hoisted` is what replaces Jest's `mock`-name-prefix convention: it runs
+ * before the hoisted `vi.mock` call, so the factory can close over the result.
  */
-const mockJose = {
-  createRemoteJWKSet: jest.fn().mockReturnValue(jest.fn()),
-  jwtVerify: jest.fn(),
-};
+const { mockJose } = vi.hoisted(() => ({
+  mockJose: {
+    createRemoteJWKSet: vi.fn(() => vi.fn()),
+    jwtVerify: vi.fn(),
+  },
+}));
 
-jest.mock('./jose-loader', () => ({
-  loadJose: jest.fn(async () => mockJose),
+vi.mock('./jose-loader', () => ({
+  loadJose: vi.fn(async () => mockJose),
 }));
 
 describe('AuthService', () => {
   let service: AuthService;
-  let userRepo: jest.Mocked<Pick<UserRepository, 'findByUsername' | 'create' | 'updateUsername'>>;
-  let credentialRepo: jest.Mocked<
+  let userRepo: Mocked<Pick<UserRepository, 'findByUsername' | 'create' | 'updateUsername'>>;
+  let credentialRepo: Mocked<
     Pick<
       CredentialRepository,
       | 'findCredentialByUserId'
@@ -33,7 +41,7 @@ describe('AuthService', () => {
       | 'findUserByCredential'
     >
   >;
-  let sessionService: jest.Mocked<
+  let sessionService: Mocked<
     Pick<SessionService, 'createSession' | 'deleteAllUserSessions' | 'deleteSessionByOidcSid'>
   >;
   let passwordHash: string;
@@ -44,23 +52,23 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     userRepo = {
-      findByUsername: jest.fn(),
-      create: jest.fn(),
-      updateUsername: jest.fn(),
+      findByUsername: vi.fn(),
+      create: vi.fn(),
+      updateUsername: vi.fn(),
     };
     credentialRepo = {
-      findCredentialByUserId: jest.fn(),
-      upsertCredential: jest.fn(),
-      findOrCreateUserByOidc: jest.fn(),
-      insertCredential: jest.fn(),
-      findMethodsByUserId: jest.fn(),
-      deleteByUserIdAndMethod: jest.fn(),
-      findUserByCredential: jest.fn(),
+      findCredentialByUserId: vi.fn(),
+      upsertCredential: vi.fn(),
+      findOrCreateUserByOidc: vi.fn(),
+      insertCredential: vi.fn(),
+      findMethodsByUserId: vi.fn(),
+      deleteByUserIdAndMethod: vi.fn(),
+      findUserByCredential: vi.fn(),
     };
     sessionService = {
-      createSession: jest.fn().mockResolvedValue('session-id'),
-      deleteAllUserSessions: jest.fn().mockResolvedValue(undefined),
-      deleteSessionByOidcSid: jest.fn().mockResolvedValue(undefined),
+      createSession: vi.fn().mockResolvedValue('session-id'),
+      deleteAllUserSessions: vi.fn().mockResolvedValue(undefined),
+      deleteSessionByOidcSid: vi.fn().mockResolvedValue(undefined),
     };
   });
 
@@ -356,7 +364,7 @@ describe('AuthService', () => {
 
     describe('linkOidcCredential', () => {
       beforeEach(async () => {
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () =>
             Promise.resolve({
@@ -372,7 +380,7 @@ describe('AuthService', () => {
 
       it('should upsert OIDC credential when sub is not linked to another user', async () => {
         const jose = mockJose;
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
         } as Response);
@@ -389,7 +397,7 @@ describe('AuthService', () => {
 
       it('should throw ConflictException if sub is linked to a different user', async () => {
         const jose = mockJose;
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
         } as Response);
@@ -413,7 +421,7 @@ describe('AuthService', () => {
 
       it('should throw UnauthorizedException when nonce does not match', async () => {
         const jose = mockJose;
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
         } as Response);
@@ -429,7 +437,7 @@ describe('AuthService', () => {
 
     describe('unlinkOidcCredential', () => {
       beforeEach(async () => {
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () =>
             Promise.resolve({
@@ -445,7 +453,7 @@ describe('AuthService', () => {
 
       it('should delete OIDC credential when sub matches', async () => {
         const jose = mockJose;
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
         } as Response);
@@ -462,7 +470,7 @@ describe('AuthService', () => {
 
       it('should throw UnauthorizedException when sub does not match', async () => {
         const jose = mockJose;
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
         } as Response);
@@ -478,7 +486,7 @@ describe('AuthService', () => {
 
       it('should throw ConflictException when OIDC is the last enabled credential', async () => {
         const jose = mockJose;
-        const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ id_token: 'mock-token' }),
         } as Response);
@@ -547,7 +555,7 @@ describe('AuthService', () => {
         token_endpoint: 'https://example.com/token',
         jwks_uri: 'https://example.com/jwks',
       };
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(discovery),
       } as Response);
@@ -576,7 +584,7 @@ describe('AuthService', () => {
     });
 
     it('should throw if discovery fetch fails', async () => {
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: false,
         status: 404,
       } as Response);
@@ -600,7 +608,7 @@ describe('AuthService', () => {
     });
 
     it('should be a no-op when oidc is not enabled', async () => {
-      const fetchSpy = jest.spyOn(globalThis, 'fetch');
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
       const svc = new AuthService(
         userRepo as unknown as UserRepository,
@@ -632,7 +640,7 @@ describe('AuthService', () => {
           oidcRedirectUri: 'http://localhost/callback',
         },
       );
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () =>
           Promise.resolve({
@@ -648,7 +656,7 @@ describe('AuthService', () => {
 
     it('should create a session with sid when the id token contains a sid claim', async () => {
       const jose = mockJose;
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ id_token: 'mock-token' }),
       } as Response);
@@ -672,7 +680,7 @@ describe('AuthService', () => {
 
     it('should create a session without sid when the id token has no sid claim', async () => {
       const jose = mockJose;
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ id_token: 'mock-token' }),
       } as Response);
@@ -711,7 +719,7 @@ describe('AuthService', () => {
           oidcRedirectUri: 'http://localhost/callback',
         },
       );
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () =>
           Promise.resolve({
@@ -752,7 +760,7 @@ describe('AuthService', () => {
           oidcRedirectUri: 'http://localhost/callback',
         },
       );
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () =>
           Promise.resolve({
@@ -785,7 +793,7 @@ describe('AuthService', () => {
           oidcRedirectUri: 'http://localhost/callback',
         },
       );
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () =>
           Promise.resolve({
@@ -820,7 +828,7 @@ describe('AuthService', () => {
           oidcRedirectUri: 'http://localhost/callback',
         },
       );
-      const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
         ok: true,
         json: () =>
           Promise.resolve({

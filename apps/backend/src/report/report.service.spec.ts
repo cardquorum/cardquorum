@@ -1,17 +1,18 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { type Mocked } from 'vitest';
 import { type SheepsheadReportRepository } from '@cardquorum/sheepshead/reporting';
 import { ReportService } from './report.service';
 
 describe('ReportService', () => {
   let service: ReportService;
-  let mockSheepsheadRepo: jest.Mocked<
+  let mockSheepsheadRepo: Mocked<
     Pick<SheepsheadReportRepository, 'computeReport' | 'getAvailableReports'>
   >;
 
   beforeEach(() => {
     mockSheepsheadRepo = {
-      computeReport: jest.fn().mockResolvedValue({ totalSessions: 5 }),
-      getAvailableReports: jest
+      computeReport: vi.fn().mockResolvedValue({ totalSessions: 5 }),
+      getAvailableReports: vi
         .fn()
         .mockReturnValue([{ key: 'default', label: 'Sheepshead Report', description: 'desc' }]),
     };

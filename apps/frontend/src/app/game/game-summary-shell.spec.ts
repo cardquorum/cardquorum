@@ -130,7 +130,7 @@ describe('GameSummaryShell', () => {
     it('emits dismissed when Escape key is pressed', () => {
       setRequiredInputs();
 
-      const dismissedSpy = jest.fn();
+      const dismissedSpy = vi.fn();
       fixture.componentInstance.dismissed.subscribe(dismissedSpy);
 
       const event = new KeyboardEvent('keydown', { key: 'Escape' });

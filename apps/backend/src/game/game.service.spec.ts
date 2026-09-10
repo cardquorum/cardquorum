@@ -1,6 +1,7 @@
 import * as fc from 'fast-check';
+import { type Mock, type Mocked } from 'vitest';
 import { type GameSessionRepository } from '@cardquorum/db';
-import { type RoomManager } from '@cardquorum/engine';
+import { RoomManager } from '@cardquorum/engine';
 import { type RosterState } from '@cardquorum/shared';
 import { type RoomService } from '../room/room.service';
 import { type StatsService } from '../stats/stats.service';
@@ -9,16 +10,16 @@ import { GameService } from './game.service';
 
 describe('GameService', () => {
   let service: GameService;
-  let mockSessionRepo: jest.Mocked<
+  let mockSessionRepo: Mocked<
     Pick<GameSessionRepository, 'create' | 'updateStatusAndTimestamp' | 'updateStore'>
   >;
   let roomService: {
     manager: RoomManager;
-    getRoster: jest.Mock;
-    handlePostGame: jest.Mock;
-    toggleReady: jest.Mock;
-    broadcastToRoom: jest.Mock;
-    demoteToSpectator: jest.Mock;
+    getRoster: Mock;
+    handlePostGame: Mock;
+    toggleReady: Mock;
+    broadcastToRoom: Mock;
+    demoteToSpectator: Mock;
   };
 
   const aliceIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
@@ -73,23 +74,22 @@ describe('GameService', () => {
 
   beforeEach(() => {
     mockSessionRepo = {
-      create: jest.fn().mockResolvedValue({ id: 1 }),
-      updateStatusAndTimestamp: jest.fn().mockResolvedValue({}),
-      updateStore: jest.fn().mockResolvedValue({}),
+      create: vi.fn().mockResolvedValue({ id: 1 }),
+      updateStatusAndTimestamp: vi.fn().mockResolvedValue({}),
+      updateStore: vi.fn().mockResolvedValue({}),
     };
 
-    const { RoomManager: RM } = jest.requireActual('@cardquorum/engine');
     roomService = {
-      manager: new RM(),
-      getRoster: jest.fn().mockResolvedValue(buildRoster([])),
-      handlePostGame: jest.fn().mockResolvedValue(buildRoster([])),
-      toggleReady: jest.fn().mockResolvedValue(buildRoster([])),
-      broadcastToRoom: jest.fn(),
-      demoteToSpectator: jest.fn().mockResolvedValue(undefined),
+      manager: new RoomManager(),
+      getRoster: vi.fn().mockResolvedValue(buildRoster([])),
+      handlePostGame: vi.fn().mockResolvedValue(buildRoster([])),
+      toggleReady: vi.fn().mockResolvedValue(buildRoster([])),
+      broadcastToRoom: vi.fn(),
+      demoteToSpectator: vi.fn().mockResolvedValue(undefined),
     };
 
     const mockEventLogService = {
-      bufferEvent: jest.fn().mockImplementation((buffer, event, message, roomId, sessionId) => {
+      bufferEvent: vi.fn().mockImplementation((buffer, event, message, roomId, sessionId) => {
         buffer.push({
           roomId,
           sessionId,
@@ -101,14 +101,14 @@ describe('GameService', () => {
           createdAt: new Date(),
         });
       }),
-      flushBuffer: jest.fn().mockResolvedValue(undefined),
-      recordParticipants: jest.fn().mockResolvedValue(undefined),
-      getRoomLog: jest.fn().mockResolvedValue([]),
-      getCatchUpEntries: jest.fn().mockReturnValue([]),
+      flushBuffer: vi.fn().mockResolvedValue(undefined),
+      recordParticipants: vi.fn().mockResolvedValue(undefined),
+      getRoomLog: vi.fn().mockResolvedValue([]),
+      getCatchUpEntries: vi.fn().mockReturnValue([]),
     } as unknown as EventLogService;
 
     const mockStatsService = {
-      writeStats: jest.fn().mockResolvedValue(undefined),
+      writeStats: vi.fn().mockResolvedValue(undefined),
     } as unknown as StatsService;
 
     service = new GameService(
@@ -116,7 +116,7 @@ describe('GameService', () => {
       roomService as unknown as RoomService,
       mockEventLogService,
       mockStatsService,
-      { findByRoomId: jest.fn().mockResolvedValue(null) } as any,
+      { findByRoomId: vi.fn().mockResolvedValue(null) } as any,
     );
   });
 
@@ -658,11 +658,11 @@ describe('GameService', () => {
     }
 
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     /**
@@ -675,9 +675,9 @@ describe('GameService', () => {
         gameOver: boolean;
         playerViews: Array<[number, { state: unknown; validActions: string[] }]>;
       };
-      broadcastFn: jest.Mock;
+      broadcastFn: Mock;
     }> {
-      const broadcastFn = jest.fn();
+      const broadcastFn = vi.fn();
 
       // Deal — with left-of-dealer, auto-picks and goes to bury
       let result = await service.applyAction(sessionId, 1, { type: 'deal' }, broadcastFn);
@@ -744,7 +744,7 @@ describe('GameService', () => {
       ).rejects.toThrow('A transition is in progress');
 
       // Advance timers to fire the trick_advance event
-      jest.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(2000);
 
       // broadcastFn should have been called by processScheduledEvent
       expect(broadcastFn).toHaveBeenCalled();
@@ -821,11 +821,11 @@ describe('GameService', () => {
     }
 
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     async function driveToCompletedTrick(sessionId: number): Promise<{
@@ -833,9 +833,9 @@ describe('GameService', () => {
         gameOver: boolean;
         playerViews: Array<[number, { state: unknown; validActions: string[] }]>;
       };
-      broadcastFn: jest.Mock;
+      broadcastFn: Mock;
     }> {
-      const broadcastFn = jest.fn();
+      const broadcastFn = vi.fn();
 
       let result = await service.applyAction(sessionId, 1, { type: 'deal' }, broadcastFn);
       let phase = getPhase(result.playerViews);
@@ -892,8 +892,8 @@ describe('GameService', () => {
       await service.cancelSession(sessionId, 1);
 
       // Advance timers — the scheduled event should NOT fire (no broadcast, no error)
-      const broadcastSpy = jest.fn();
-      jest.advanceTimersByTime(5000);
+      const broadcastSpy = vi.fn();
+      vi.advanceTimersByTime(5000);
 
       // Session is gone — getPlayerView returns null
       expect(service.getPlayerView(sessionId, 1)).toBeNull();
@@ -914,7 +914,7 @@ describe('GameService', () => {
       expect(cleaned).toBe(sessionId);
 
       // Advance timers — the scheduled event should NOT fire
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       // Session is gone
       expect(service.getPlayerView(sessionId, 1)).toBeNull();
@@ -922,7 +922,7 @@ describe('GameService', () => {
 
     it('should clear timer references when game ends via scheduled event', async () => {
       const sessionId = await setupActiveGame();
-      const broadcastFn = jest.fn();
+      const broadcastFn = vi.fn();
 
       let result = await service.applyAction(sessionId, 1, { type: 'deal' }, broadcastFn);
       let phase = getPhase(result.playerViews);
@@ -948,7 +948,7 @@ describe('GameService', () => {
         const active = getActivePlayer(result.playerViews);
         if (active === null) {
           // In pending state — advance timers to fire trick_advance
-          jest.advanceTimersByTime(2000);
+          vi.advanceTimersByTime(2000);
 
           // Check if game ended via broadcast
           const lastCall = broadcastFn.mock.calls[broadcastFn.mock.calls.length - 1];
@@ -996,8 +996,8 @@ describe('GameService', () => {
 
       // If not game over yet, advance timers for the final trick_advance → score → game_scored
       if (!gameOver) {
-        jest.advanceTimersByTime(2000); // fires trick_advance → transitions to score
-        jest.advanceTimersByTime(1); // fires chained game_scored → computes scores → game over
+        vi.advanceTimersByTime(2000); // fires trick_advance → transitions to score
+        vi.advanceTimersByTime(1); // fires chained game_scored → computes scores → game over
       }
 
       // Session should now be cleaned up (game_scored auto-fires and ends the game)
@@ -1043,7 +1043,7 @@ describe('GameService', () => {
               mockSessionRepo as unknown as GameSessionRepository,
               roomService as unknown as RoomService,
               {
-                bufferEvent: jest
+                bufferEvent: vi
                   .fn()
                   .mockImplementation((buffer, event, message, roomId, sessionId) => {
                     buffer.push({
@@ -1057,15 +1057,15 @@ describe('GameService', () => {
                       createdAt: new Date(),
                     });
                   }),
-                flushBuffer: jest.fn().mockResolvedValue(undefined),
-                recordParticipants: jest.fn().mockResolvedValue(undefined),
-                getRoomLog: jest.fn().mockResolvedValue([]),
-                getCatchUpEntries: jest.fn().mockReturnValue([]),
+                flushBuffer: vi.fn().mockResolvedValue(undefined),
+                recordParticipants: vi.fn().mockResolvedValue(undefined),
+                getRoomLog: vi.fn().mockResolvedValue([]),
+                getCatchUpEntries: vi.fn().mockReturnValue([]),
               } as unknown as EventLogService,
               {
-                writeStats: jest.fn().mockResolvedValue(undefined),
+                writeStats: vi.fn().mockResolvedValue(undefined),
               } as unknown as StatsService,
-              { findByRoomId: jest.fn().mockResolvedValue(null) } as any,
+              { findByRoomId: vi.fn().mockResolvedValue(null) } as any,
             );
 
             const roomId = 1;
@@ -1121,7 +1121,7 @@ describe('GameService', () => {
             mockSessionRepo as unknown as GameSessionRepository,
             roomService as unknown as RoomService,
             {
-              bufferEvent: jest
+              bufferEvent: vi
                 .fn()
                 .mockImplementation((buffer, event, message, roomId, sessionId) => {
                   buffer.push({
@@ -1135,15 +1135,15 @@ describe('GameService', () => {
                     createdAt: new Date(),
                   });
                 }),
-              flushBuffer: jest.fn().mockResolvedValue(undefined),
-              recordParticipants: jest.fn().mockResolvedValue(undefined),
-              getRoomLog: jest.fn().mockResolvedValue([]),
-              getCatchUpEntries: jest.fn().mockReturnValue([]),
+              flushBuffer: vi.fn().mockResolvedValue(undefined),
+              recordParticipants: vi.fn().mockResolvedValue(undefined),
+              getRoomLog: vi.fn().mockResolvedValue([]),
+              getCatchUpEntries: vi.fn().mockReturnValue([]),
             } as unknown as EventLogService,
             {
-              writeStats: jest.fn().mockResolvedValue(undefined),
+              writeStats: vi.fn().mockResolvedValue(undefined),
             } as unknown as StatsService,
-            { findByRoomId: jest.fn().mockResolvedValue(null) } as any,
+            { findByRoomId: vi.fn().mockResolvedValue(null) } as any,
           );
 
           const roomId = 1;

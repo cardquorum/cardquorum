@@ -1,5 +1,6 @@
 import { BadRequestException, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { type ConfigService } from '@nestjs/config';
+import { type Mock } from 'vitest';
 import { type StrategiesResponse } from '@cardquorum/shared';
 import { AuthController } from './auth.controller';
 import { type AuthService } from './auth.service';
@@ -7,40 +8,40 @@ import { REQUEST_USER_KEY } from './http-auth.guard';
 import { type SessionService } from './session.service';
 
 // `jose` is ESM-only and loaded through the jose-loader seam; mock the seam.
-jest.mock('./jose-loader', () => ({
-  loadJose: jest.fn(async () => ({
-    createRemoteJWKSet: jest.fn().mockReturnValue(jest.fn()),
-    jwtVerify: jest.fn(),
+vi.mock('./jose-loader', () => ({
+  loadJose: vi.fn(async () => ({
+    createRemoteJWKSet: vi.fn().mockReturnValue(vi.fn()),
+    jwtVerify: vi.fn(),
   })),
 }));
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let authService: Record<string, jest.Mock | unknown>;
-  let sessionService: Record<string, jest.Mock>;
+  let authService: Record<string, Mock | unknown>;
+  let sessionService: Record<string, Mock>;
 
   beforeEach(() => {
     authService = {
       enabledStrategies: ['basic', 'oidc'],
-      isStrategyEnabled: jest.fn(() => true),
-      getOidcAuthorizationUrl: jest.fn().mockReturnValue('https://provider/authorize?state=abc'),
-      getEndSessionUrl: jest.fn().mockReturnValue(null),
-      oidcCallback: jest.fn().mockResolvedValue({
+      isStrategyEnabled: vi.fn(() => true),
+      getOidcAuthorizationUrl: vi.fn().mockReturnValue('https://provider/authorize?state=abc'),
+      getEndSessionUrl: vi.fn().mockReturnValue(null),
+      oidcCallback: vi.fn().mockResolvedValue({
         sessionId: 'new-session',
         user: { userId: 1, username: 'alice', displayName: 'Alice' },
       }),
-      oidcRegister: jest.fn(),
-      getCredentialMethods: jest.fn(),
-      linkBasicCredential: jest.fn(),
-      unlinkCredential: jest.fn(),
-      linkOidcCredential: jest.fn(),
-      unlinkOidcCredential: jest.fn(),
-      verifyBasicCredential: jest.fn(),
-      backchannelLogout: jest.fn(),
+      oidcRegister: vi.fn(),
+      getCredentialMethods: vi.fn(),
+      linkBasicCredential: vi.fn(),
+      unlinkCredential: vi.fn(),
+      linkOidcCredential: vi.fn(),
+      unlinkOidcCredential: vi.fn(),
+      verifyBasicCredential: vi.fn(),
+      backchannelLogout: vi.fn(),
     };
-    sessionService = { deleteSession: jest.fn(), validateSession: jest.fn() };
+    sessionService = { deleteSession: vi.fn(), validateSession: vi.fn() };
     const config = {
-      get: jest.fn((key: string, fallback?: unknown) => {
+      get: vi.fn((key: string, fallback?: unknown) => {
         if (key === 'NODE_ENV') return 'development';
         return fallback;
       }),
@@ -62,7 +63,7 @@ describe('AuthController', () => {
 
   describe('PATCH /auth/oidc/register', () => {
     it('should call oidcRegister and redirect', async () => {
-      (authService['oidcRegister'] as jest.Mock).mockResolvedValue(undefined);
+      (authService['oidcRegister'] as Mock).mockResolvedValue(undefined);
       const request = {
         [REQUEST_USER_KEY]: {
           userId: 1,
@@ -86,7 +87,7 @@ describe('AuthController', () => {
 
   describe('GET /auth/credentials', () => {
     it('should return methods for authenticated user', async () => {
-      (authService['getCredentialMethods'] as jest.Mock).mockResolvedValue(['basic', 'oidc']);
+      (authService['getCredentialMethods'] as Mock).mockResolvedValue(['basic', 'oidc']);
       const request = {
         [REQUEST_USER_KEY]: { userId: 1, displayName: 'Alice', authMethod: 'basic' },
       };
@@ -99,11 +100,11 @@ describe('AuthController', () => {
 
   describe('POST /auth/credentials/basic', () => {
     it('should link basic credential and return 204', async () => {
-      (authService['linkBasicCredential'] as jest.Mock).mockResolvedValue(undefined);
+      (authService['linkBasicCredential'] as Mock).mockResolvedValue(undefined);
       const request = {
         [REQUEST_USER_KEY]: { userId: 1, displayName: 'Alice', authMethod: 'oidc' },
       };
-      const reply = { status: jest.fn().mockReturnThis(), send: jest.fn() };
+      const reply = { status: vi.fn().mockReturnThis(), send: vi.fn() };
 
       await controller.linkBasicCredential({ password: 'newpass' }, request as any, reply as any);
 
@@ -114,12 +115,12 @@ describe('AuthController', () => {
 
   describe('DELETE /auth/credentials/basic', () => {
     it('should verify password and unlink basic credential', async () => {
-      (authService['verifyBasicCredential'] as jest.Mock).mockResolvedValue(undefined);
-      (authService['unlinkCredential'] as jest.Mock).mockResolvedValue(undefined);
+      (authService['verifyBasicCredential'] as Mock).mockResolvedValue(undefined);
+      (authService['unlinkCredential'] as Mock).mockResolvedValue(undefined);
       const request = {
         [REQUEST_USER_KEY]: { userId: 1, displayName: 'Alice', authMethod: 'basic' },
       };
-      const reply = { status: jest.fn().mockReturnThis(), send: jest.fn() };
+      const reply = { status: vi.fn().mockReturnThis(), send: vi.fn() };
 
       await controller.unlinkBasicCredential(
         { password: 'password' },
@@ -133,13 +134,13 @@ describe('AuthController', () => {
     });
 
     it('should throw UnauthorizedException for wrong password', async () => {
-      (authService['verifyBasicCredential'] as jest.Mock).mockRejectedValue(
+      (authService['verifyBasicCredential'] as Mock).mockRejectedValue(
         new UnauthorizedException('Invalid password'),
       );
       const request = {
         [REQUEST_USER_KEY]: { userId: 1, displayName: 'Alice', authMethod: 'basic' },
       };
-      const reply = { status: jest.fn().mockReturnThis(), send: jest.fn() };
+      const reply = { status: vi.fn().mockReturnThis(), send: vi.fn() };
 
       await expect(
         controller.unlinkBasicCredential({ password: 'wrongpass' }, request as any, reply as any),
@@ -150,14 +151,14 @@ describe('AuthController', () => {
   describe('GET /auth/oidc/login', () => {
     it('should set state cookie with nonce.codeVerifier.state format and redirect', () => {
       const reply = {
-        header: jest.fn().mockReturnThis(),
-        status: jest.fn().mockReturnThis(),
-        redirect: jest.fn(),
+        header: vi.fn().mockReturnThis(),
+        status: vi.fn().mockReturnThis(),
+        redirect: vi.fn(),
       };
 
       controller.oidcLogin(undefined, reply as any);
 
-      const cookieHeader = (reply.header as jest.Mock).mock.calls.find(
+      const cookieHeader = (reply.header as Mock).mock.calls.find(
         (c: string[]) => c[0] === 'Set-Cookie',
       )?.[1] as string;
       // Cookie value must have two dots separating three non-empty segments
@@ -177,18 +178,18 @@ describe('AuthController', () => {
 
     it('should include code_challenge param in the authorization URL', () => {
       const reply = {
-        header: jest.fn().mockReturnThis(),
-        status: jest.fn().mockReturnThis(),
-        redirect: jest.fn(),
+        header: vi.fn().mockReturnThis(),
+        status: vi.fn().mockReturnThis(),
+        redirect: vi.fn(),
       };
-      (authService['getOidcAuthorizationUrl'] as jest.Mock).mockImplementation(
+      (authService['getOidcAuthorizationUrl'] as Mock).mockImplementation(
         (state: string, nonce: string, codeChallenge: string) =>
           `https://provider/authorize?state=${state}&nonce=${nonce}&code_challenge=${codeChallenge}&code_challenge_method=S256`,
       );
 
       controller.oidcLogin(undefined, reply as any);
 
-      const redirectUrl = (reply.redirect as jest.Mock).mock.calls[0][0] as string;
+      const redirectUrl = (reply.redirect as Mock).mock.calls[0][0] as string;
       expect(redirectUrl).toContain('code_challenge=');
       expect(redirectUrl).toContain('code_challenge_method=S256');
     });
@@ -204,9 +205,9 @@ describe('AuthController', () => {
     });
 
     const makeReply = () => ({
-      header: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-      redirect: jest.fn(),
+      header: vi.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      redirect: vi.fn(),
     });
 
     it('should redirect to /login?error=oidc_failed when IdP returns error', async () => {
@@ -263,9 +264,7 @@ describe('AuthController', () => {
     });
 
     it('should redirect to /login?error=oidc_failed on service error', async () => {
-      (authService['oidcCallback'] as jest.Mock).mockRejectedValue(
-        new Error('token exchange failed'),
-      );
+      (authService['oidcCallback'] as Mock).mockRejectedValue(new Error('token exchange failed'));
       const stateValue = 'valid-state';
       const reply = makeReply();
       const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
@@ -285,13 +284,13 @@ describe('AuthController', () => {
 
     describe('oidc callback with link action', () => {
       it('should link OIDC credential and redirect to /user?linked=oidc', async () => {
-        (authService['linkOidcCredential'] as jest.Mock).mockResolvedValue(undefined);
+        (authService['linkOidcCredential'] as Mock).mockResolvedValue(undefined);
         const stateValue = 'state123:link';
         const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
         (request as any).cookies['cq_session'] = 'valid-session';
         const reply = makeReply();
 
-        sessionService['validateSession'] = jest.fn().mockResolvedValue({
+        sessionService['validateSession'] = vi.fn().mockResolvedValue({
           userId: 1,
           displayName: 'Alice',
           authMethod: 'basic',
@@ -317,14 +316,14 @@ describe('AuthController', () => {
       });
 
       it('should redirect to /user?error=oidc_conflict on link ConflictException', async () => {
-        (authService['linkOidcCredential'] as jest.Mock).mockRejectedValue(
+        (authService['linkOidcCredential'] as Mock).mockRejectedValue(
           new ConflictException('already linked'),
         );
         const stateValue = 'state123:link';
         const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
         (request as any).cookies['cq_session'] = 'valid-session';
         const reply = makeReply();
-        sessionService['validateSession'] = jest.fn().mockResolvedValue({
+        sessionService['validateSession'] = vi.fn().mockResolvedValue({
           userId: 1,
           displayName: 'Alice',
           authMethod: 'basic',
@@ -344,14 +343,14 @@ describe('AuthController', () => {
       });
 
       it('should redirect to /user?error=oidc_failed on link generic error', async () => {
-        (authService['linkOidcCredential'] as jest.Mock).mockRejectedValue(
+        (authService['linkOidcCredential'] as Mock).mockRejectedValue(
           new Error('token exchange failed'),
         );
         const stateValue = 'state123:link';
         const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
         (request as any).cookies['cq_session'] = 'valid-session';
         const reply = makeReply();
-        sessionService['validateSession'] = jest.fn().mockResolvedValue({
+        sessionService['validateSession'] = vi.fn().mockResolvedValue({
           userId: 1,
           displayName: 'Alice',
           authMethod: 'basic',
@@ -375,7 +374,7 @@ describe('AuthController', () => {
         const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
         const reply = makeReply();
 
-        sessionService['validateSession'] = jest.fn().mockResolvedValue(null);
+        sessionService['validateSession'] = vi.fn().mockResolvedValue(null);
 
         await controller.oidcCallback(
           'auth-code',
@@ -392,13 +391,13 @@ describe('AuthController', () => {
 
     describe('oidc callback with unlink action', () => {
       it('should unlink OIDC credential and redirect to /user?unlinked=oidc', async () => {
-        (authService['unlinkOidcCredential'] as jest.Mock).mockResolvedValue(undefined);
+        (authService['unlinkOidcCredential'] as Mock).mockResolvedValue(undefined);
         const stateValue = 'state123:unlink';
         const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
         (request as any).cookies['cq_session'] = 'valid-session';
         const reply = makeReply();
 
-        sessionService['validateSession'] = jest.fn().mockResolvedValue({
+        sessionService['validateSession'] = vi.fn().mockResolvedValue({
           userId: 1,
           displayName: 'Alice',
           authMethod: 'basic',
@@ -424,14 +423,14 @@ describe('AuthController', () => {
       });
 
       it('should redirect to /user?error=last_credential on unlink ConflictException', async () => {
-        (authService['unlinkOidcCredential'] as jest.Mock).mockRejectedValue(
+        (authService['unlinkOidcCredential'] as Mock).mockRejectedValue(
           new ConflictException('last credential'),
         );
         const stateValue = 'state123:unlink';
         const request = makeRequest(makeStateCookie('mynonce', 'myverifier', stateValue));
         (request as any).cookies['cq_session'] = 'valid-session';
         const reply = makeReply();
-        sessionService['validateSession'] = jest.fn().mockResolvedValue({
+        sessionService['validateSession'] = vi.fn().mockResolvedValue({
           userId: 1,
           displayName: 'Alice',
           authMethod: 'basic',
@@ -453,7 +452,7 @@ describe('AuthController', () => {
 
     describe('oidc callback login redirect', () => {
       it('should redirect to /register/oidc when username starts with user_', async () => {
-        (authService['oidcCallback'] as jest.Mock).mockResolvedValue({
+        (authService['oidcCallback'] as Mock).mockResolvedValue({
           sessionId: 'new-session',
           user: { userId: 2, username: 'user_a1b2c3d4', displayName: null },
         });
@@ -474,7 +473,7 @@ describe('AuthController', () => {
       });
 
       it('should redirect to / when username does not start with user_', async () => {
-        (authService['oidcCallback'] as jest.Mock).mockResolvedValue({
+        (authService['oidcCallback'] as Mock).mockResolvedValue({
           sessionId: 'new-session',
           user: { userId: 1, username: 'alice', displayName: 'Alice' },
         });
@@ -522,7 +521,7 @@ describe('AuthController', () => {
 
   describe('POST /auth/oidc/backchannel-logout', () => {
     it('should return 200 and call backchannelLogout with the token', async () => {
-      (authService['backchannelLogout'] as jest.Mock).mockResolvedValue(undefined);
+      (authService['backchannelLogout'] as Mock).mockResolvedValue(undefined);
       const request = { body: { logout_token: 'signed-logout-token' } };
 
       await controller.backchannelLogout(request as any);
@@ -540,7 +539,7 @@ describe('AuthController', () => {
     });
 
     it('should propagate errors from backchannelLogout', async () => {
-      (authService['backchannelLogout'] as jest.Mock).mockRejectedValue(
+      (authService['backchannelLogout'] as Mock).mockRejectedValue(
         new UnauthorizedException('invalid token'),
       );
       const request = { body: { logout_token: 'bad-token' } };
@@ -553,21 +552,21 @@ describe('AuthController', () => {
 
   describe('POST /auth/logout', () => {
     const makeReply = () => ({
-      header: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
+      header: vi.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      send: vi.fn(),
     });
 
     it('should return { ok: true } with no endSessionUrl for a basic session', async () => {
-      sessionService['validateSession'] = jest.fn().mockResolvedValue({
+      sessionService['validateSession'] = vi.fn().mockResolvedValue({
         userId: 1,
         username: 'alice',
         displayName: null,
         authMethod: 'basic',
         createdAt: new Date(),
       });
-      sessionService['deleteSession'] = jest.fn().mockResolvedValue(undefined);
-      (authService['getEndSessionUrl'] as jest.Mock).mockReturnValue(null);
+      sessionService['deleteSession'] = vi.fn().mockResolvedValue(undefined);
+      (authService['getEndSessionUrl'] as Mock).mockReturnValue(null);
       const request = { cookies: { cq_session: 'session-abc' } };
       const reply = makeReply();
 
@@ -578,15 +577,15 @@ describe('AuthController', () => {
     });
 
     it('should return endSessionUrl when the session is an OIDC session and IdP supports end_session', async () => {
-      sessionService['validateSession'] = jest.fn().mockResolvedValue({
+      sessionService['validateSession'] = vi.fn().mockResolvedValue({
         userId: 1,
         username: 'alice',
         displayName: null,
         authMethod: 'oidc',
         createdAt: new Date(),
       });
-      sessionService['deleteSession'] = jest.fn().mockResolvedValue(undefined);
-      (authService['getEndSessionUrl'] as jest.Mock).mockReturnValue(
+      sessionService['deleteSession'] = vi.fn().mockResolvedValue(undefined);
+      (authService['getEndSessionUrl'] as Mock).mockReturnValue(
         'https://idp.example.com/end-session?post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A4200',
       );
       const request = { cookies: { cq_session: 'session-abc' } };
@@ -603,15 +602,15 @@ describe('AuthController', () => {
     });
 
     it('should return { ok: true } with no endSessionUrl for an OIDC session when IdP has no end_session_endpoint', async () => {
-      sessionService['validateSession'] = jest.fn().mockResolvedValue({
+      sessionService['validateSession'] = vi.fn().mockResolvedValue({
         userId: 1,
         username: 'alice',
         displayName: null,
         authMethod: 'oidc',
         createdAt: new Date(),
       });
-      sessionService['deleteSession'] = jest.fn().mockResolvedValue(undefined);
-      (authService['getEndSessionUrl'] as jest.Mock).mockReturnValue(null);
+      sessionService['deleteSession'] = vi.fn().mockResolvedValue(undefined);
+      (authService['getEndSessionUrl'] as Mock).mockReturnValue(null);
       const request = { cookies: { cq_session: 'session-abc' } };
       const reply = makeReply();
 

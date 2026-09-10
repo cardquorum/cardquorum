@@ -71,11 +71,15 @@
       "executor": "@nx/eslint:lint"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "@angular/build:unit-test",
+      "outputs": ["{workspaceRoot}/coverage/frontend"],
       "options": {
-        "jestConfig": "apps/frontend/jest.config.cts",
-        "tsConfig": "apps/frontend/tsconfig.spec.json"
+        "runner": "vitest",
+        "buildTarget": "frontend:build:development",
+        "tsConfig": "apps/frontend/tsconfig.spec.json",
+        "setupFiles": ["apps/frontend/src/test-setup.ts"],
+        "watch": false,
+        "isolate": true
       }
     },
     "serve-static": {

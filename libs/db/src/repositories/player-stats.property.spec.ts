@@ -121,12 +121,12 @@ function createInMemoryDb(rawRows: RawStatRow[], userTable: Map<number, UserInfo
 
   // Build a chainable mock that resolves to the computed aggregation
   const makeRoomChain = () => ({
-    from: jest.fn(() => ({
-      innerJoin: jest.fn(() => ({
-        innerJoin: jest.fn(() => ({
-          where: jest.fn(() => ({
-            groupBy: jest.fn(() => ({
-              orderBy: jest.fn(() => Promise.resolve(computeRoomAggregation())),
+    from: vi.fn(() => ({
+      innerJoin: vi.fn(() => ({
+        innerJoin: vi.fn(() => ({
+          where: vi.fn(() => ({
+            groupBy: vi.fn(() => ({
+              orderBy: vi.fn(() => Promise.resolve(computeRoomAggregation())),
             })),
           })),
         })),
@@ -135,9 +135,9 @@ function createInMemoryDb(rawRows: RawStatRow[], userTable: Map<number, UserInfo
   });
 
   const makeUserChain = () => ({
-    from: jest.fn(() => ({
-      where: jest.fn(() => ({
-        groupBy: jest.fn(() => {
+    from: vi.fn(() => ({
+      where: vi.fn(() => ({
+        groupBy: vi.fn(() => {
           const result = computeUserAggregation();
           // aggregateByUser uses destructuring [row] so return array
           return result.gamesPlayed > 0 ? Promise.resolve([result]) : Promise.resolve([]);
@@ -149,10 +149,10 @@ function createInMemoryDb(rawRows: RawStatRow[], userTable: Map<number, UserInfo
   const db = {
     _ctx: ctx,
     _mode: 'room' as 'room' | 'user',
-    insert: jest.fn(() => ({
-      values: jest.fn(() => Promise.resolve()),
+    insert: vi.fn(() => ({
+      values: vi.fn(() => Promise.resolve()),
     })),
-    select: jest.fn(() => {
+    select: vi.fn(() => {
       if (db._mode === 'room') return makeRoomChain();
       return makeUserChain();
     }),

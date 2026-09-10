@@ -1,4 +1,6 @@
+import { type Mocked } from 'vitest';
 import { type WebSocket } from 'ws';
+import { RoomManager } from '@cardquorum/engine';
 import { WS_EMIT, type UserIdentity } from '@cardquorum/shared';
 import { type RoomService } from '../room/room.service';
 import { WsConnectionService } from '../ws/ws-connection.service';
@@ -9,21 +11,19 @@ describe('ChatGateway', () => {
   let gateway: ChatGateway;
   let connectionService: WsConnectionService;
   let roomService: RoomService;
-  let chatService: jest.Mocked<ChatService>;
+  let chatService: Mocked<ChatService>;
 
   const aliceIdentity: UserIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
 
-  const createMockClient = () => ({ send: jest.fn(), close: jest.fn() }) as unknown as WebSocket;
+  const createMockClient = () => ({ send: vi.fn(), close: vi.fn() }) as unknown as WebSocket;
 
   beforeEach(() => {
-    const { RoomManager } = jest.requireActual('@cardquorum/engine');
-
     connectionService = new WsConnectionService();
-    roomService = { manager: new RoomManager(), broadcastToRoom: jest.fn() } as any;
+    roomService = { manager: new RoomManager(), broadcastToRoom: vi.fn() } as any;
 
     chatService = {
-      saveMessage: jest.fn(),
-      getRecentMessages: jest.fn().mockResolvedValue([]),
+      saveMessage: vi.fn(),
+      getRecentMessages: vi.fn().mockResolvedValue([]),
     } as any;
 
     gateway = new ChatGateway(connectionService, roomService, chatService);

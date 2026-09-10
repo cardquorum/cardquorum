@@ -1,19 +1,20 @@
+import { type Mock } from 'vitest';
 import { BlockService } from './block.service';
 
 describe('BlockService', () => {
   let service: BlockService;
   let mockBlockRepo: {
-    create: jest.Mock;
-    deleteByBlockerAndBlocked: jest.Mock;
-    findByBlocker: jest.Mock;
-    findBlockedIds: jest.Mock;
-    isBlocked: jest.Mock;
+    create: Mock;
+    deleteByBlockerAndBlocked: Mock;
+    findByBlocker: Mock;
+    findBlockedIds: Mock;
+    isBlocked: Mock;
   };
   let mockFriendshipRepo: {
-    deleteBetweenUsers: jest.Mock;
+    deleteBetweenUsers: Mock;
   };
   let mockUserRepo: {
-    findById: jest.Mock;
+    findById: Mock;
   };
 
   const now = new Date();
@@ -21,17 +22,17 @@ describe('BlockService', () => {
 
   beforeEach(() => {
     mockBlockRepo = {
-      create: jest.fn(),
-      deleteByBlockerAndBlocked: jest.fn(),
-      findByBlocker: jest.fn(),
-      findBlockedIds: jest.fn(),
-      isBlocked: jest.fn(),
+      create: vi.fn(),
+      deleteByBlockerAndBlocked: vi.fn(),
+      findByBlocker: vi.fn(),
+      findBlockedIds: vi.fn(),
+      isBlocked: vi.fn(),
     };
     mockFriendshipRepo = {
-      deleteBetweenUsers: jest.fn(),
+      deleteBetweenUsers: vi.fn(),
     };
     mockUserRepo = {
-      findById: jest.fn(),
+      findById: vi.fn(),
     };
 
     service = new BlockService(

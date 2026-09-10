@@ -1,5 +1,6 @@
+import { type Mock, type Mocked } from 'vitest';
 import { type WebSocket } from 'ws';
-import { type RoomManager } from '@cardquorum/engine';
+import { RoomManager } from '@cardquorum/engine';
 import { WS_EMIT, type UserIdentity } from '@cardquorum/shared';
 import { type RoomService } from '../room/room.service';
 import { WsConnectionService } from '../ws/ws-connection.service';
@@ -10,28 +11,27 @@ import { type GameService } from './game.service';
 describe('GameGateway', () => {
   let gateway: GameGateway;
   let connectionService: WsConnectionService;
-  let gameService: jest.Mocked<GameService>;
+  let gameService: Mocked<GameService>;
   let roomService: {
     manager: RoomManager;
     broadcastToRoom: (roomId: string, event: string, data: unknown) => void;
-    findById: jest.Mock;
-    isMember: jest.Mock;
+    findById: Mock;
+    isMember: Mock;
   };
 
   const aliceIdentity: UserIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
   const bobIdentity: UserIdentity = { userId: 2, username: 'bob', displayName: 'Bob' };
   const charlieIdentity: UserIdentity = { userId: 3, username: 'charlie', displayName: 'Charlie' };
 
-  const createMockClient = () => ({ send: jest.fn(), close: jest.fn() }) as unknown as WebSocket;
+  const createMockClient = () => ({ send: vi.fn(), close: vi.fn() }) as unknown as WebSocket;
 
   beforeEach(() => {
-    const { RoomManager: RM } = jest.requireActual('@cardquorum/engine');
     connectionService = new WsConnectionService();
-    const manager = new RM();
+    const manager = new RoomManager();
     roomService = {
       manager,
-      findById: jest.fn().mockResolvedValue({ id: 1, ownerId: aliceIdentity.userId }),
-      isMember: jest.fn().mockResolvedValue(true),
+      findById: vi.fn().mockResolvedValue({ id: 1, ownerId: aliceIdentity.userId }),
+      isMember: vi.fn().mockResolvedValue(true),
       broadcastToRoom(roomId: string, event: string, data: unknown) {
         const room = manager.getRoom(roomId);
         if (!room) return;
@@ -44,15 +44,15 @@ describe('GameGateway', () => {
     };
 
     gameService = {
-      createSession: jest.fn(),
-      startSession: jest.fn(),
-      applyAction: jest.fn(),
-      cancelSession: jest.fn(),
-      cleanupDisconnectedCreator: jest.fn(),
-      getPlayerViewByRoom: jest.fn(),
-      getSessionInfoByRoom: jest.fn(),
-      getEventBufferByRoom: jest.fn().mockReturnValue(null),
-      getTurnTimingInfo: jest.fn().mockReturnValue(null),
+      createSession: vi.fn(),
+      startSession: vi.fn(),
+      applyAction: vi.fn(),
+      cancelSession: vi.fn(),
+      cleanupDisconnectedCreator: vi.fn(),
+      getPlayerViewByRoom: vi.fn(),
+      getSessionInfoByRoom: vi.fn(),
+      getEventBufferByRoom: vi.fn().mockReturnValue(null),
+      getTurnTimingInfo: vi.fn().mockReturnValue(null),
     } as any;
 
     gateway = new GameGateway(
@@ -60,11 +60,11 @@ describe('GameGateway', () => {
       roomService as unknown as RoomService,
       gameService,
       {
-        bufferEvent: jest.fn(),
-        flushBuffer: jest.fn().mockResolvedValue(undefined),
-        recordParticipants: jest.fn().mockResolvedValue(undefined),
-        getRoomLog: jest.fn().mockResolvedValue([]),
-        getCatchUpEntries: jest.fn().mockReturnValue([]),
+        bufferEvent: vi.fn(),
+        flushBuffer: vi.fn().mockResolvedValue(undefined),
+        recordParticipants: vi.fn().mockResolvedValue(undefined),
+        getRoomLog: vi.fn().mockResolvedValue([]),
+        getCatchUpEntries: vi.fn().mockReturnValue([]),
       } as unknown as EventLogService,
     );
     gateway.onModuleInit();
@@ -101,7 +101,7 @@ describe('GameGateway', () => {
       );
 
       for (const client of [client1, client2]) {
-        const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+        const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
         expect(parsed.event).toBe(WS_EMIT.GAME_CREATED);
         expect(parsed.data.sessionId).toBe(1);
       }
@@ -119,7 +119,7 @@ describe('GameGateway', () => {
         config: {},
       });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_ERROR);
       expect(parsed.data.message).toBe('Only the room owner can create a game');
     });
@@ -137,7 +137,7 @@ describe('GameGateway', () => {
         config: {},
       });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_ERROR);
       expect(parsed.data.message).toBe('Failed to create game session');
     });
@@ -165,7 +165,7 @@ describe('GameGateway', () => {
 
       expect(gameService.startSession).toHaveBeenCalledWith(1, aliceIdentity.userId);
 
-      const parse = (c: WebSocket) => JSON.parse((c.send as jest.Mock).mock.calls[0][0]);
+      const parse = (c: WebSocket) => JSON.parse((c.send as Mock).mock.calls[0][0]);
 
       expect(parse(client1).event).toBe(WS_EMIT.GAME_STARTED);
       expect(parse(client1).data.state).toEqual({ hand: ['alice-view'] });
@@ -190,7 +190,7 @@ describe('GameGateway', () => {
 
       await gateway.handleGameStart(client, { sessionId: 1 });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_ERROR);
     });
   });
@@ -215,7 +215,7 @@ describe('GameGateway', () => {
         action: { type: 'deal' },
       });
 
-      const parse = (c: WebSocket) => JSON.parse((c.send as jest.Mock).mock.calls[0][0]);
+      const parse = (c: WebSocket) => JSON.parse((c.send as Mock).mock.calls[0][0]);
       expect(parse(client1).event).toBe(WS_EMIT.GAME_STATE_UPDATE);
       expect(parse(client2).event).toBe(WS_EMIT.GAME_STATE_UPDATE);
     });
@@ -242,7 +242,7 @@ describe('GameGateway', () => {
       });
 
       for (const client of [client1, client2]) {
-        const calls = (client.send as jest.Mock).mock.calls;
+        const calls = (client.send as Mock).mock.calls;
         // First message: GAME_STATE_UPDATE with final scored state
         const stateUpdate = JSON.parse(calls[0][0]);
         expect(stateUpdate.event).toBe(WS_EMIT.GAME_STATE_UPDATE);
@@ -300,8 +300,8 @@ describe('GameGateway', () => {
       });
 
       // Clear the initial broadcast from the action result
-      (client1.send as jest.Mock).mockClear();
-      (client2.send as jest.Mock).mockClear();
+      (client1.send as Mock).mockClear();
+      (client2.send as Mock).mockClear();
 
       // Simulate a scheduled event firing via the captured callback
       capturedBroadcastFn!({
@@ -312,7 +312,7 @@ describe('GameGateway', () => {
         ],
       });
 
-      const parse = (c: WebSocket) => JSON.parse((c.send as jest.Mock).mock.calls[0][0]);
+      const parse = (c: WebSocket) => JSON.parse((c.send as Mock).mock.calls[0][0]);
       expect(parse(client1).event).toBe(WS_EMIT.GAME_STATE_UPDATE);
       expect(parse(client1).data.sessionId).toBe(5);
       expect(parse(client1).data.state).toEqual({ phase: 'play', trick: 2 });
@@ -344,8 +344,8 @@ describe('GameGateway', () => {
         action: { type: 'play_card' },
       });
 
-      (client1.send as jest.Mock).mockClear();
-      (client2.send as jest.Mock).mockClear();
+      (client1.send as Mock).mockClear();
+      (client2.send as Mock).mockClear();
 
       const store = {
         players: [
@@ -363,7 +363,7 @@ describe('GameGateway', () => {
       });
 
       for (const client of [client1, client2]) {
-        const calls = (client.send as jest.Mock).mock.calls;
+        const calls = (client.send as Mock).mock.calls;
         // First message: GAME_STATE_UPDATE with final scored state
         const stateUpdate = JSON.parse(calls[0][0]);
         expect(stateUpdate.event).toBe(WS_EMIT.GAME_STATE_UPDATE);
@@ -387,7 +387,7 @@ describe('GameGateway', () => {
         action: { type: 'deal' },
       });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_ERROR);
       expect(parsed.data.message).toBe('Invalid action');
     });
@@ -410,7 +410,7 @@ describe('GameGateway', () => {
 
       await gateway.handleGameRejoin(client, { roomId: 1 });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_STARTED);
       expect(parsed.data.sessionId).toBe(1);
       expect(parsed.data.state.phase).toBe('pick');
@@ -430,7 +430,7 @@ describe('GameGateway', () => {
 
       await gateway.handleGameRejoin(client, { roomId: 1 });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_CREATED);
       expect(parsed.data.sessionId).toBe(1);
       expect(parsed.data.gameType).toBe('sheepshead');
@@ -444,7 +444,7 @@ describe('GameGateway', () => {
 
       await gateway.handleGameRejoin(client, { roomId: 1 });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_CANCELLED);
       expect(parsed.data.sessionId).toBe(0);
     });
@@ -467,7 +467,7 @@ describe('GameGateway', () => {
       expect(gameService.cancelSession).toHaveBeenCalledWith(1, aliceIdentity.userId);
 
       for (const client of [client1, client2]) {
-        const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+        const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
         expect(parsed.event).toBe(WS_EMIT.GAME_CANCELLED);
         expect(parsed.data.sessionId).toBe(1);
       }
@@ -483,7 +483,7 @@ describe('GameGateway', () => {
 
       await gateway.handleGameCancel(client, { sessionId: 1 });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_ERROR);
     });
   });
@@ -493,7 +493,7 @@ describe('GameGateway', () => {
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
 
-      gameService.getValidTargets = jest.fn().mockReturnValue(['trick-pile']);
+      gameService.getValidTargets = vi.fn().mockReturnValue(['trick-pile']);
 
       await gateway.handleQueryTargets(client, {
         sessionId: 1,
@@ -506,7 +506,7 @@ describe('GameGateway', () => {
         'qc',
       ]);
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_VALID_TARGETS);
       expect(parsed.data.generation).toBe(5);
       expect(parsed.data.targets).toEqual(['trick-pile']);
@@ -516,7 +516,7 @@ describe('GameGateway', () => {
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
 
-      gameService.getValidTargets = jest.fn().mockImplementation(() => {
+      gameService.getValidTargets = vi.fn().mockImplementation(() => {
         throw new Error('session not found');
       });
 
@@ -527,7 +527,7 @@ describe('GameGateway', () => {
         generation: 3,
       });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_VALID_TARGETS);
       expect(parsed.data.generation).toBe(3);
       expect(parsed.data.targets).toEqual([]);
@@ -564,7 +564,7 @@ describe('GameGateway', () => {
 
       expect(gameService.cleanupDisconnectedCreator).toHaveBeenCalledWith(aliceIdentity.userId);
 
-      const parsed = JSON.parse((bobClient.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((bobClient.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.GAME_CANCELLED);
     });
 

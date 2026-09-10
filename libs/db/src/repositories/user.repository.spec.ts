@@ -2,18 +2,18 @@ import { UserRepository } from './user.repository';
 
 function createMockDb() {
   return {
-    select: jest.fn().mockReturnThis(),
-    from: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    limit: jest.fn(),
-    insert: jest.fn().mockReturnThis(),
-    values: jest.fn().mockReturnThis(),
-    returning: jest.fn(),
-    update: jest.fn().mockReturnThis(),
-    set: jest.fn().mockReturnThis(),
-    orderBy: jest.fn().mockReturnThis(),
-    delete: jest.fn().mockReturnThis(),
-    transaction: jest.fn(),
+    select: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    limit: vi.fn(),
+    insert: vi.fn().mockReturnThis(),
+    values: vi.fn().mockReturnThis(),
+    returning: vi.fn(),
+    update: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
+    orderBy: vi.fn().mockReturnThis(),
+    delete: vi.fn().mockReturnThis(),
+    transaction: vi.fn(),
   } as any;
 }
 

@@ -1,5 +1,6 @@
+import { type Mock, type Mocked } from 'vitest';
 import { type GameSessionRepository } from '@cardquorum/db';
-import { type RoomManager } from '@cardquorum/engine';
+import { RoomManager } from '@cardquorum/engine';
 import { type RosterState } from '@cardquorum/shared';
 import { type RoomService } from '../room/room.service';
 import { type StatsService } from '../stats/stats.service';
@@ -8,28 +9,28 @@ import { GameService } from './game.service';
 
 describe('Force-abandon flow', () => {
   let service: GameService;
-  let mockSessionRepo: jest.Mocked<
+  let mockSessionRepo: Mocked<
     Pick<GameSessionRepository, 'create' | 'updateStatusAndTimestamp' | 'updateStore'>
   >;
   let roomService: {
     manager: RoomManager;
-    getRoster: jest.Mock;
-    handlePostGame: jest.Mock;
-    toggleReady: jest.Mock;
-    broadcastToRoom: jest.Mock;
-    demoteToSpectator: jest.Mock;
-    findById: jest.Mock;
+    getRoster: Mock;
+    handlePostGame: Mock;
+    toggleReady: Mock;
+    broadcastToRoom: Mock;
+    demoteToSpectator: Mock;
+    findById: Mock;
   };
   let mockEventLogService: {
-    bufferEvent: jest.Mock;
-    flushBuffer: jest.Mock;
-    recordParticipants: jest.Mock;
-    getRoomLog: jest.Mock;
-    getCatchUpEntries: jest.Mock;
+    bufferEvent: Mock;
+    flushBuffer: Mock;
+    recordParticipants: Mock;
+    getRoomLog: Mock;
+    getCatchUpEntries: Mock;
   };
   let mockSettingsRepo: {
-    findByRoomId: jest.Mock;
-    upsert: jest.Mock;
+    findByRoomId: Mock;
+    upsert: Mock;
   };
 
   const aliceIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
@@ -81,29 +82,28 @@ describe('Force-abandon flow', () => {
   }
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     mockSessionRepo = {
-      create: jest.fn().mockResolvedValue({ id: 1 }),
-      updateStatusAndTimestamp: jest.fn().mockResolvedValue({}),
-      updateStore: jest.fn().mockResolvedValue({}),
+      create: vi.fn().mockResolvedValue({ id: 1 }),
+      updateStatusAndTimestamp: vi.fn().mockResolvedValue({}),
+      updateStore: vi.fn().mockResolvedValue({}),
     };
 
-    const { RoomManager: RM } = jest.requireActual('@cardquorum/engine');
     roomService = {
-      manager: new RM(),
-      getRoster: jest
+      manager: new RoomManager(),
+      getRoster: vi
         .fn()
         .mockResolvedValue(buildRoster([aliceIdentity, bobIdentity, charlieIdentity])),
-      handlePostGame: jest.fn().mockResolvedValue(buildRoster([])),
-      toggleReady: jest.fn().mockResolvedValue(buildRoster([])),
-      broadcastToRoom: jest.fn(),
-      demoteToSpectator: jest.fn().mockResolvedValue(undefined),
-      findById: jest.fn().mockResolvedValue({ id: 1, ownerId: 1 }),
+      handlePostGame: vi.fn().mockResolvedValue(buildRoster([])),
+      toggleReady: vi.fn().mockResolvedValue(buildRoster([])),
+      broadcastToRoom: vi.fn(),
+      demoteToSpectator: vi.fn().mockResolvedValue(undefined),
+      findById: vi.fn().mockResolvedValue({ id: 1, ownerId: 1 }),
     };
 
     mockEventLogService = {
-      bufferEvent: jest.fn().mockImplementation((buffer, event, message, roomId, sessionId) => {
+      bufferEvent: vi.fn().mockImplementation((buffer, event, message, roomId, sessionId) => {
         buffer.push({
           roomId,
           sessionId,
@@ -115,15 +115,15 @@ describe('Force-abandon flow', () => {
           createdAt: new Date(),
         });
       }),
-      flushBuffer: jest.fn().mockResolvedValue(undefined),
-      recordParticipants: jest.fn().mockResolvedValue(undefined),
-      getRoomLog: jest.fn().mockResolvedValue([]),
-      getCatchUpEntries: jest.fn().mockReturnValue([]),
+      flushBuffer: vi.fn().mockResolvedValue(undefined),
+      recordParticipants: vi.fn().mockResolvedValue(undefined),
+      getRoomLog: vi.fn().mockResolvedValue([]),
+      getCatchUpEntries: vi.fn().mockReturnValue([]),
     };
 
     mockSettingsRepo = {
-      findByRoomId: jest.fn().mockResolvedValue({ turnTimeLimit: 60 }),
-      upsert: jest.fn().mockImplementation(async (roomId, settings) => ({
+      findByRoomId: vi.fn().mockResolvedValue({ turnTimeLimit: 60 }),
+      upsert: vi.fn().mockImplementation(async (roomId, settings) => ({
         roomId,
         ...settings,
       })),
@@ -137,14 +137,14 @@ describe('Force-abandon flow', () => {
       mockSessionRepo as unknown as GameSessionRepository,
       roomService as unknown as RoomService,
       mockEventLogService as unknown as EventLogService,
-      { writeStats: jest.fn().mockResolvedValue(undefined) } as unknown as StatsService,
+      { writeStats: vi.fn().mockResolvedValue(undefined) } as unknown as StatsService,
       mockSettingsRepo as any,
     );
   });
 
   afterEach(() => {
     service.onModuleDestroy();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   async function setupActiveGame(): Promise<number> {
@@ -158,7 +158,7 @@ describe('Force-abandon flow', () => {
       const sessionId = await setupActiveGame();
 
       // Advance time past the turn time limit (60s configured)
-      jest.advanceTimersByTime(61_000);
+      vi.advanceTimersByTime(61_000);
 
       // Get the active player from the game state
       const view = service.getPlayerView(sessionId, 1);
@@ -197,7 +197,7 @@ describe('Force-abandon flow', () => {
 
     it('should broadcast log entry with both player names', async () => {
       const sessionId = await setupActiveGame();
-      jest.advanceTimersByTime(61_000);
+      vi.advanceTimersByTime(61_000);
 
       const view = service.getPlayerView(sessionId, 1);
       const activePlayer = (view!.state as any).activePlayer;
@@ -224,7 +224,7 @@ describe('Force-abandon flow', () => {
   describe('force-abandon validation failures', () => {
     it('should reject when requester is not the room owner', async () => {
       const sessionId = await setupActiveGame();
-      jest.advanceTimersByTime(61_000);
+      vi.advanceTimersByTime(61_000);
 
       // Bob (userId=2) is not the owner
       roomService.findById.mockResolvedValue({ id: 1, ownerId: 1 });
@@ -239,7 +239,7 @@ describe('Force-abandon flow', () => {
 
     it('should reject when target is not the active player', async () => {
       const sessionId = await setupActiveGame();
-      jest.advanceTimersByTime(61_000);
+      vi.advanceTimersByTime(61_000);
 
       const view = service.getPlayerView(sessionId, 1);
       const activePlayer = (view!.state as any).activePlayer;
@@ -262,7 +262,7 @@ describe('Force-abandon flow', () => {
         mockSessionRepo as unknown as GameSessionRepository,
         roomService as unknown as RoomService,
         mockEventLogService as unknown as EventLogService,
-        { writeStats: jest.fn().mockResolvedValue(undefined) } as unknown as StatsService,
+        { writeStats: vi.fn().mockResolvedValue(undefined) } as unknown as StatsService,
         mockSettingsRepo as any,
       );
 
@@ -270,7 +270,7 @@ describe('Force-abandon flow', () => {
       await service.createSession(1, 'sheepshead', validConfig, 1);
       await service.startSession(2, 1);
 
-      jest.advanceTimersByTime(61_000);
+      vi.advanceTimersByTime(61_000);
 
       const view = service.getPlayerView(2, 1);
       const activePlayer = (view!.state as any).activePlayer;

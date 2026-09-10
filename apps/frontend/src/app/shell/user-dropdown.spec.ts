@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { type Mock } from 'vitest';
 import { AuthService } from '../auth/auth.service';
 import { UserDropdown } from './user-dropdown';
 
@@ -8,12 +9,12 @@ describe('UserDropdown', () => {
   let fixture: ComponentFixture<UserDropdown>;
   let el: HTMLElement;
   let router: Router;
-  let mockAuthService: { user: ReturnType<typeof signal>; logout: jest.Mock };
+  let mockAuthService: { user: ReturnType<typeof signal>; logout: Mock };
 
   beforeEach(async () => {
     mockAuthService = {
       user: signal({ userId: 1, displayName: 'Alice' }),
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -62,7 +63,7 @@ describe('UserDropdown', () => {
   });
 
   it('navigates to /user/account on Account click', () => {
-    jest.spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
     const btn = el.querySelector('[data-testid="user-menu-trigger"]') as HTMLButtonElement;
     btn.click();
     fixture.detectChanges();
@@ -75,7 +76,7 @@ describe('UserDropdown', () => {
   });
 
   it('navigates to /user/stats on Stats click', () => {
-    jest.spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
     const btn = el.querySelector('[data-testid="user-menu-trigger"]') as HTMLButtonElement;
     btn.click();
     fixture.detectChanges();

@@ -68,11 +68,11 @@ describe('RoomMembersTab', () => {
     players: playersSignal,
     spectators: spectatorsSignal,
     rotationMode: rotationModeSignal,
-    reorderRoster: jest.fn().mockReturnValue(of({})),
-    kickUser: jest.fn().mockReturnValue(of({})),
-    toggleRotate: jest.fn().mockReturnValue(of({})),
-    toggleReady: jest.fn(),
-    setRotationMode: jest.fn(),
+    reorderRoster: vi.fn().mockReturnValue(of({})),
+    kickUser: vi.fn().mockReturnValue(of({})),
+    toggleRotate: vi.fn().mockReturnValue(of({})),
+    toggleReady: vi.fn(),
+    setRotationMode: vi.fn(),
   };
 
   const membersSignal = signal<{ userId: number; username: string; displayName: string | null }[]>(
@@ -92,8 +92,8 @@ describe('RoomMembersTab', () => {
   const mockForceAbandonService = {
     showButton: showButtonSignal,
     activePlayerUserId: activePlayerUserIdSignal,
-    confirmForceAbandon: jest.fn(),
-    dismissModal: jest.fn(),
+    confirmForceAbandon: vi.fn(),
+    dismissModal: vi.fn(),
   };
 
   const userSignal = signal<{
@@ -106,23 +106,23 @@ describe('RoomMembersTab', () => {
   };
 
   const mockRoomService = {
-    getInvites: jest.fn().mockReturnValue(of([])),
-    getBans: jest.fn().mockReturnValue(of([])),
-    banUser: jest.fn().mockReturnValue(of({})),
-    uninviteUser: jest.fn().mockReturnValue(of({})),
-    unbanUser: jest.fn().mockReturnValue(of({})),
-    inviteUser: jest.fn().mockReturnValue(of({})),
+    getInvites: vi.fn().mockReturnValue(of([])),
+    getBans: vi.fn().mockReturnValue(of([])),
+    banUser: vi.fn().mockReturnValue(of({})),
+    uninviteUser: vi.fn().mockReturnValue(of({})),
+    unbanUser: vi.fn().mockReturnValue(of({})),
+    inviteUser: vi.fn().mockReturnValue(of({})),
   };
 
   const mockHttpClient = {
-    get: jest.fn().mockReturnValue(of([])),
+    get: vi.fn().mockReturnValue(of([])),
   };
 
   const mockWsService = {
-    on: jest.fn().mockReturnValue(() => {
+    on: vi.fn().mockReturnValue(() => {
       /* empty */
     }),
-    send: jest.fn(),
+    send: vi.fn(),
   };
 
   const mockThemeService = {
@@ -140,7 +140,7 @@ describe('RoomMembersTab', () => {
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     playersSignal.set([]);
     spectatorsSignal.set([]);
     rotationModeSignal.set('rotate-players');

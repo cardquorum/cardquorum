@@ -3,6 +3,7 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
+import { type Mock } from 'vitest';
 import type {
   GameTablePlugin,
   ReplayDataResponse,
@@ -65,15 +66,15 @@ describe('ReplayPage summary integration', () => {
     playerView: ReturnType<typeof signal<unknown>>;
     currentEventMessage: ReturnType<typeof signal<string | null>>;
     error: ReturnType<typeof signal<unknown>>;
-    initialize: jest.Mock;
-    stepForward: jest.Mock;
-    stepBackward: jest.Mock;
-    jumpToStart: jest.Mock;
-    jumpToEnd: jest.Mock;
-    goToPosition: jest.Mock;
+    initialize: Mock;
+    stepForward: Mock;
+    stepBackward: Mock;
+    jumpToStart: Mock;
+    jumpToEnd: Mock;
+    goToPosition: Mock;
   };
-  let mockReplayApi: { getReplayData: jest.Mock; getSessions: jest.Mock };
-  let mockSummaryApi: { getSummaryData: jest.Mock };
+  let mockReplayApi: { getReplayData: Mock; getSessions: Mock };
+  let mockSummaryApi: { getSummaryData: Mock };
   let mockAuth: { user: ReturnType<typeof signal> };
   let paramMapSubject: BehaviorSubject<{
     get: (key: string) => string | null;
@@ -84,38 +85,30 @@ describe('ReplayPage summary integration', () => {
 
   function setupPlugins(withSummary: boolean) {
     const plugin: Partial<GameTablePlugin> = {
-      getCardAsset: jest.fn(),
-      getLegalCards: jest.fn(),
-      getActiveOverlay: jest.fn(),
-      buildPlayCardEvent: jest.fn(),
-      buildBuryEvent: jest.fn(),
-      getCurrentTrick: jest.fn(),
-      getPlayerSeats: jest.fn(),
-      getStatusInfo: jest.fn(),
-      getMyHand: jest.fn(),
-      getBlindCards: jest.fn(),
-      getBuryCount: jest.fn(),
-      buildMoveEvent: jest.fn(),
-      getDefaultTarget: jest.fn(),
+      getCardAsset: vi.fn(),
+      getLegalCards: vi.fn(),
+      getActiveOverlay: vi.fn(),
+      buildPlayCardEvent: vi.fn(),
+      buildBuryEvent: vi.fn(),
+      getCurrentTrick: vi.fn(),
+      getPlayerSeats: vi.fn(),
+      getStatusInfo: vi.fn(),
+      getMyHand: vi.fn(),
+      getBlindCards: vi.fn(),
+      getBuryCount: vi.fn(),
+      buildMoveEvent: vi.fn(),
+      getDefaultTarget: vi.fn(),
     };
     if (withSummary) {
       plugin.getSummaryComponent = () => MockSummaryComponent;
     }
-    Object.defineProperty(gameRegistry, 'GAME_TABLE_PLUGINS', {
-      value: { sheepshead: plugin },
-      writable: true,
-      configurable: true,
-    });
+    Object.assign(gameRegistry.GAME_TABLE_PLUGINS, { sheepshead: plugin });
     // Replace the real SheepsheadTable with a mock to avoid rendering game-specific logic
-    Object.defineProperty(gameRegistry, 'GAME_TABLE_COMPONENTS', {
-      value: { sheepshead: MockGameTableComponent },
-      writable: true,
-      configurable: true,
-    });
+    Object.assign(gameRegistry.GAME_TABLE_COMPONENTS, { sheepshead: MockGameTableComponent });
   }
 
   beforeEach(async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     mockReplayEngine = {
       currentPosition: signal(0),
@@ -123,16 +116,16 @@ describe('ReplayPage summary integration', () => {
       playerView: signal(null),
       currentEventMessage: signal(null),
       error: signal(null),
-      initialize: jest.fn(),
-      stepForward: jest.fn(),
-      stepBackward: jest.fn(),
-      jumpToStart: jest.fn(),
-      jumpToEnd: jest.fn(),
-      goToPosition: jest.fn(),
+      initialize: vi.fn(),
+      stepForward: vi.fn(),
+      stepBackward: vi.fn(),
+      jumpToStart: vi.fn(),
+      jumpToEnd: vi.fn(),
+      goToPosition: vi.fn(),
     };
 
     mockReplayApi = {
-      getReplayData: jest.fn().mockReturnValue(
+      getReplayData: vi.fn().mockReturnValue(
         of({
           sessionId: 1,
           gameType: 'sheepshead',
@@ -148,11 +141,11 @@ describe('ReplayPage summary integration', () => {
           events: [],
         } satisfies ReplayDataResponse),
       ),
-      getSessions: jest.fn().mockReturnValue(of({ sessions: [], nextCursor: null })),
+      getSessions: vi.fn().mockReturnValue(of({ sessions: [], nextCursor: null })),
     };
 
     mockSummaryApi = {
-      getSummaryData: jest.fn().mockReturnValue(of(MOCK_SUMMARY_DATA)),
+      getSummaryData: vi.fn().mockReturnValue(of(MOCK_SUMMARY_DATA)),
     };
 
     mockAuth = {
@@ -190,8 +183,13 @@ describe('ReplayPage summary integration', () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
     TestBed.resetTestingModule();
+    // Restore the module-scoped registry objects to a neutral state so sibling
+    // tests don't inherit stub values. (Object.assign is required because native-ESM
+    // namespace properties are non-configurable and Object.defineProperty throws.)
+    Object.assign(gameRegistry.GAME_TABLE_PLUGINS, { sheepshead: null });
+    Object.assign(gameRegistry.GAME_TABLE_COMPONENTS, { sheepshead: null });
   });
 
   function createComponent() {
@@ -232,7 +230,7 @@ describe('ReplayPage summary integration', () => {
       expect(el.querySelector('app-game-summary-shell')).toBeNull();
 
       // After 500ms, overlay should appear
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeTruthy();
@@ -248,7 +246,7 @@ describe('ReplayPage summary integration', () => {
       mockReplayEngine.playerView.set({ phase: 'score', players: [] });
       fixture.detectChanges();
 
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeNull();
@@ -264,7 +262,7 @@ describe('ReplayPage summary integration', () => {
       mockReplayEngine.playerView.set({ phase: 'score', players: [] });
       fixture.detectChanges();
 
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeNull();
@@ -280,7 +278,7 @@ describe('ReplayPage summary integration', () => {
       mockReplayEngine.playerView.set({ phase: 'play', players: [] });
       fixture.detectChanges();
 
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeNull();
@@ -298,7 +296,7 @@ describe('ReplayPage summary integration', () => {
       mockReplayEngine.currentPosition.set(5);
       mockReplayEngine.playerView.set({ phase: 'score', players: [] });
       fixture.detectChanges();
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeTruthy();
@@ -321,7 +319,7 @@ describe('ReplayPage summary integration', () => {
       mockReplayEngine.currentPosition.set(5);
       mockReplayEngine.playerView.set({ phase: 'score', players: [] });
       fixture.detectChanges();
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeTruthy();
@@ -337,7 +335,7 @@ describe('ReplayPage summary integration', () => {
       mockReplayEngine.currentPosition.set(5);
       mockReplayEngine.playerView.set({ phase: 'score', players: [] });
       fixture.detectChanges();
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       fixture.detectChanges();
 
       expect(el.querySelector('app-game-summary-shell')).toBeTruthy();

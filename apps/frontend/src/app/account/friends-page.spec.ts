@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
+import { type Mock } from 'vitest';
 import {
   type BlockedUserResponse,
   type FriendRequestResponse,
@@ -58,22 +59,22 @@ describe('FriendsPage', () => {
     incomingRequests: incomingSignal.asReadonly(),
     outgoingRequests: outgoingSignal.asReadonly(),
     searchResults: searchSignal.asReadonly(),
-    loadFriends: jest.fn(),
-    loadIncomingRequests: jest.fn(),
-    loadOutgoingRequests: jest.fn(),
-    searchUsers: jest.fn(),
-    sendRequest: jest.fn(),
-    acceptRequest: jest.fn(),
-    denyRequest: jest.fn(),
-    cancelRequest: jest.fn(),
-    removeFriend: jest.fn(),
+    loadFriends: vi.fn(),
+    loadIncomingRequests: vi.fn(),
+    loadOutgoingRequests: vi.fn(),
+    searchUsers: vi.fn(),
+    sendRequest: vi.fn(),
+    acceptRequest: vi.fn(),
+    denyRequest: vi.fn(),
+    cancelRequest: vi.fn(),
+    removeFriend: vi.fn(),
   };
 
   const mockBlockService = {
     blockedUsers: blockedSignal.asReadonly(),
-    loadBlockedUsers: jest.fn(),
-    blockUser: jest.fn(),
-    unblockUser: jest.fn(),
+    loadBlockedUsers: vi.fn(),
+    blockUser: vi.fn(),
+    unblockUser: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -83,10 +84,10 @@ describe('FriendsPage', () => {
     searchSignal.set([]);
     blockedSignal.set([]);
     Object.values(mockFriendService).forEach((v) => {
-      if (typeof v === 'function' && 'mockClear' in v) (v as jest.Mock).mockClear();
+      if (typeof v === 'function' && 'mockClear' in v) (v as Mock).mockClear();
     });
     Object.values(mockBlockService).forEach((v) => {
-      if (typeof v === 'function' && 'mockClear' in v) (v as jest.Mock).mockClear();
+      if (typeof v === 'function' && 'mockClear' in v) (v as Mock).mockClear();
     });
 
     await TestBed.configureTestingModule({
@@ -167,13 +168,13 @@ describe('FriendsPage', () => {
   });
 
   it('search triggers after debounce', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const input = el.querySelector('[data-testid="search-input"]') as HTMLInputElement;
     input.value = 'fra';
     input.dispatchEvent(new Event('input'));
-    jest.advanceTimersByTime(300);
+    vi.advanceTimersByTime(300);
     expect(mockFriendService.searchUsers).toHaveBeenCalledWith('fra');
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('shows search results with add button', () => {

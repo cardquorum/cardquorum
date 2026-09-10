@@ -1,11 +1,19 @@
 {
   "extends": ["../../../tsconfig.base.json", "../../../tsconfig.node.json"],
-  "compilerOptions": { "outDir": "./out-tsc/lib" },
+  "compilerOptions": {
+    "outDir": "./out-tsc/lib"
+  },
   "include": ["src/**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts", "jest.config.ts", "jest.config.cts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "references": [
-    { "path": "../../db/tsconfig.lib.json" },
-    { "path": "../../engine/tsconfig.lib.json" },
-    { "path": "../../shared/tsconfig.lib.json" }
+    {
+      "path": "../../db/tsconfig.lib.json"
+    },
+    {
+      "path": "../../engine/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/tsconfig.lib.json"
+    }
   ]
 }

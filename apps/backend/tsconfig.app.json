@@ -21,7 +21,7 @@
     "importHelpers": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts", "jest.config.ts", "jest.config.cts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "references": [
     { "path": "../../libs/shared/tsconfig.lib.json" },
     { "path": "../../libs/engine/tsconfig.lib.json" },

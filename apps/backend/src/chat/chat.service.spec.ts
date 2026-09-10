@@ -1,14 +1,15 @@
+import { type Mocked } from 'vitest';
 import { type MessageRepository } from '@cardquorum/db';
 import { ChatService } from './chat.service';
 
 describe('ChatService', () => {
   let service: ChatService;
-  let mockRepo: jest.Mocked<Pick<MessageRepository, 'insert' | 'findByRoomId'>>;
+  let mockRepo: Mocked<Pick<MessageRepository, 'insert' | 'findByRoomId'>>;
 
   beforeEach(() => {
     mockRepo = {
-      insert: jest.fn(),
-      findByRoomId: jest.fn(),
+      insert: vi.fn(),
+      findByRoomId: vi.fn(),
     };
     service = new ChatService(mockRepo as unknown as MessageRepository);
   });

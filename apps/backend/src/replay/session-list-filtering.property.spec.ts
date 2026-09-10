@@ -79,7 +79,7 @@ describe('Session list filtering', () => {
    */
   function buildServiceWithSessions(allSessions: MockSession[]) {
     const mockSessionRepo = {
-      findByUserIdPaginated: jest.fn(async (_userId: number, options: SessionListOptions) => {
+      findByUserIdPaginated: vi.fn(async (_userId: number, options: SessionListOptions) => {
         let filtered = allSessions.filter((s) => options.statuses.includes(s.status));
 
         if (options.gameType) {

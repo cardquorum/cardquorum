@@ -2,16 +2,16 @@ import { CredentialRepository } from './credential.repository';
 
 function createMockDb() {
   return {
-    select: jest.fn().mockReturnThis(),
-    from: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    innerJoin: jest.fn().mockReturnThis(),
-    limit: jest.fn(),
-    insert: jest.fn().mockReturnThis(),
-    values: jest.fn().mockReturnThis(),
-    returning: jest.fn(),
-    onConflictDoUpdate: jest.fn().mockReturnThis(),
-    delete: jest.fn().mockReturnThis(),
+    select: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    innerJoin: vi.fn().mockReturnThis(),
+    limit: vi.fn(),
+    insert: vi.fn().mockReturnThis(),
+    values: vi.fn().mockReturnThis(),
+    returning: vi.fn(),
+    onConflictDoUpdate: vi.fn().mockReturnThis(),
+    delete: vi.fn().mockReturnThis(),
   } as any;
 }
 

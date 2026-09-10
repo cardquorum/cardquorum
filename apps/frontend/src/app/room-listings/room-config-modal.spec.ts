@@ -50,13 +50,13 @@ describe('RoomConfigModal', () => {
   let el: HTMLElement;
 
   const mockRoomService = {
-    updateRoom: jest.fn(),
-    deleteRoom: jest.fn(),
+    updateRoom: vi.fn(),
+    deleteRoom: vi.fn(),
   };
 
   beforeEach(async () => {
-    HTMLDialogElement.prototype.showModal = jest.fn();
-    HTMLDialogElement.prototype.close = jest.fn();
+    HTMLDialogElement.prototype.showModal = vi.fn();
+    HTMLDialogElement.prototype.close = vi.fn();
     mockRoomService.updateRoom.mockReset();
     mockRoomService.deleteRoom.mockReset();
 

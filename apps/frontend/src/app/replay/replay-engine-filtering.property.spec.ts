@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import * as fc from 'fast-check';
 import type { ReplayEventDto, ReplayParticipantDto } from '@cardquorum/shared';
 import { ReplayEngineService } from './replay-engine.service';
@@ -85,12 +86,12 @@ const PARTICIPANTS: ReplayParticipantDto[] = [
  * that would pass through applyEvent. We only care about the filtering logic.
  */
 function initializeWithEvents(events: ReplayEventDto[]): ReplayEngineService {
-  const service = new ReplayEngineService();
+  const service = TestBed.runInInjectionContext(() => new ReplayEngineService());
 
   // Spy on goToPosition to prevent it from actually applying events
   // (which would fail since our generated events don't have valid payloads).
   // The filtering happens before goToPosition is called.
-  jest.spyOn(service, 'goToPosition').mockImplementation((pos: number) => {
+  vi.spyOn(service, 'goToPosition').mockImplementation((pos: number) => {
     // Only set position-related signals without applying events
     // This is safe because we're testing filtering, not event application
     if (pos === 0) {
@@ -155,7 +156,7 @@ describe('Synthetic event filtering', () => {
   it('relative order of non-synthetic events is preserved after filtering', () => {
     fc.assert(
       fc.property(mixedEventArrayArb, (events) => {
-        const service = new ReplayEngineService();
+        const service = TestBed.runInInjectionContext(() => new ReplayEngineService());
 
         // Access the internal filtered events by checking the service behavior.
         // We initialize and then verify order by checking that totalEvents matches
@@ -168,7 +169,7 @@ describe('Synthetic event filtering', () => {
         );
 
         // Mock goToPosition to avoid applying invalid events
-        jest.spyOn(service, 'goToPosition').mockImplementation(() => {
+        vi.spyOn(service, 'goToPosition').mockImplementation(() => {
           /* empty */
         });
 

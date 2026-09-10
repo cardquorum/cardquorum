@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
+import { type Mock } from 'vitest';
 import type { GameLogBroadcast, GameTablePlugin, UserIdentity } from '@cardquorum/shared';
 import * as gameRegistry from '../game/game-registry';
 import { GameService } from '../game/game.service';
@@ -38,37 +39,33 @@ describe('SessionBoundaryMarker summary link', () => {
   let fixture: ComponentFixture<SessionBoundaryMarker>;
   let el: HTMLElement;
   let mockGameService: { gameType: ReturnType<typeof signal<string | null>> };
-  let mockSummaryApiService: { getSummaryData: jest.Mock };
+  let mockSummaryApiService: { getSummaryData: Mock };
 
   function setupPlugins(withSummary: boolean) {
     const plugin: Partial<GameTablePlugin> = {
-      getCardAsset: jest.fn(),
-      getLegalCards: jest.fn(),
-      getActiveOverlay: jest.fn(),
-      buildPlayCardEvent: jest.fn(),
-      buildBuryEvent: jest.fn(),
-      getCurrentTrick: jest.fn(),
-      getPlayerSeats: jest.fn(),
-      getStatusInfo: jest.fn(),
-      getMyHand: jest.fn(),
-      getBlindCards: jest.fn(),
-      getBuryCount: jest.fn(),
-      buildMoveEvent: jest.fn(),
-      getDefaultTarget: jest.fn(),
+      getCardAsset: vi.fn(),
+      getLegalCards: vi.fn(),
+      getActiveOverlay: vi.fn(),
+      buildPlayCardEvent: vi.fn(),
+      buildBuryEvent: vi.fn(),
+      getCurrentTrick: vi.fn(),
+      getPlayerSeats: vi.fn(),
+      getStatusInfo: vi.fn(),
+      getMyHand: vi.fn(),
+      getBlindCards: vi.fn(),
+      getBuryCount: vi.fn(),
+      buildMoveEvent: vi.fn(),
+      getDefaultTarget: vi.fn(),
     };
     if (withSummary) {
       plugin.getSummaryComponent = () => MockSummaryComponent;
     }
-    Object.defineProperty(gameRegistry, 'GAME_TABLE_PLUGINS', {
-      value: { sheepshead: plugin },
-      writable: true,
-      configurable: true,
-    });
+    Object.assign(gameRegistry.GAME_TABLE_PLUGINS, { sheepshead: plugin });
   }
 
   beforeEach(async () => {
     mockGameService = { gameType: signal<string | null>('sheepshead') };
-    mockSummaryApiService = { getSummaryData: jest.fn() };
+    mockSummaryApiService = { getSummaryData: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [SessionBoundaryMarker, MockSummaryComponent],
@@ -80,7 +77,13 @@ describe('SessionBoundaryMarker summary link', () => {
     }).compileComponents();
   });
 
-  afterEach(() => TestBed.resetTestingModule());
+  afterEach(() => {
+    TestBed.resetTestingModule();
+    // Restore the original plugin after each test so the module-scoped object
+    // doesn't carry stub state into sibling tests within this file.
+    // (Object.assign was used because native-ESM namespace properties are non-configurable.)
+    Object.assign(gameRegistry.GAME_TABLE_PLUGINS, { sheepshead: null });
+  });
 
   function createComponent(entry: GameLogBroadcast = FINISHED_ENTRY) {
     fixture = TestBed.createComponent(SessionBoundaryMarker);

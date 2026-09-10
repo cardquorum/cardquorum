@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { type Mock } from 'vitest';
 import { WS_EMIT, WS_EVENT } from '@cardquorum/shared';
 import { WebSocketService } from '../websocket.service';
 import { GameService } from './game.service';
@@ -6,21 +7,21 @@ import { GameService } from './game.service';
 describe('GameService – target query', () => {
   let service: GameService;
   let wsHandlers: Record<string, ((data: unknown) => void)[]>;
-  let mockWsService: { on: jest.Mock; send: jest.Mock; onConnect: jest.Mock };
+  let mockWsService: { on: Mock; send: Mock; onConnect: Mock };
 
   beforeEach(() => {
     wsHandlers = {};
 
     mockWsService = {
-      on: jest.fn().mockImplementation((event: string, handler: (data: unknown) => void) => {
+      on: vi.fn().mockImplementation((event: string, handler: (data: unknown) => void) => {
         if (!wsHandlers[event]) wsHandlers[event] = [];
         wsHandlers[event].push(handler);
         return () => {
           wsHandlers[event] = wsHandlers[event].filter((h) => h !== handler);
         };
       }),
-      send: jest.fn(),
-      onConnect: jest.fn().mockReturnValue(() => {
+      send: vi.fn(),
+      onConnect: vi.fn().mockReturnValue(() => {
         /* noop */
       }),
     };
@@ -61,7 +62,7 @@ describe('GameService – target query', () => {
       service.queryTargets('hand', ['qc'], 1);
 
       const targetCalls = mockWsService.send.mock.calls.filter(
-        ([event]: [string]) => event === WS_EVENT.GAME_QUERY_TARGETS,
+        ([event]) => event === WS_EVENT.GAME_QUERY_TARGETS,
       );
       expect(targetCalls).toHaveLength(0);
     });

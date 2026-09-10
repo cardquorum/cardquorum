@@ -1,18 +1,19 @@
+import { type Mocked } from 'vitest';
 import { type SessionRepository } from '@cardquorum/db';
 import { SessionService } from './session.service';
 
 describe('SessionService', () => {
   let service: SessionService;
-  let sessionRepo: jest.Mocked<
+  let sessionRepo: Mocked<
     Pick<SessionRepository, 'create' | 'findValidSession' | 'deleteById' | 'deleteAllByUserId'>
   >;
 
   beforeEach(() => {
     sessionRepo = {
-      create: jest.fn(),
-      findValidSession: jest.fn(),
-      deleteById: jest.fn(),
-      deleteAllByUserId: jest.fn(),
+      create: vi.fn(),
+      findValidSession: vi.fn(),
+      deleteById: vi.fn(),
+      deleteAllByUserId: vi.fn(),
     };
     service = new SessionService(sessionRepo as unknown as SessionRepository);
   });

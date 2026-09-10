@@ -30,12 +30,12 @@ describe('CreateRoomModal', () => {
   let el: HTMLElement;
 
   const mockRoomService = {
-    createRoom: jest.fn(),
+    createRoom: vi.fn(),
   };
 
   beforeEach(async () => {
-    HTMLDialogElement.prototype.showModal = jest.fn();
-    HTMLDialogElement.prototype.close = jest.fn();
+    HTMLDialogElement.prototype.showModal = vi.fn();
+    HTMLDialogElement.prototype.close = vi.fn();
     mockRoomService.createRoom.mockReset();
 
     await TestBed.configureTestingModule({
@@ -65,7 +65,7 @@ describe('CreateRoomModal', () => {
 
   it('emits created on successful submit', () => {
     mockRoomService.createRoom.mockReturnValue(of(ROOM));
-    const spy = jest.fn();
+    const spy = vi.fn();
     fixture.componentRef.instance.created.subscribe(spy);
 
     fixture.componentRef.instance['form'].patchValue({ name: 'New Room' });
@@ -90,7 +90,7 @@ describe('CreateRoomModal', () => {
   });
 
   it('emits closed on cancel click', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     fixture.componentRef.instance.closed.subscribe(spy);
 
     const cancel = el.querySelector('[data-testid="cancel-btn"]') as HTMLButtonElement;

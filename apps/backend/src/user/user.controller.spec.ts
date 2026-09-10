@@ -1,4 +1,5 @@
 import { UnauthorizedException } from '@nestjs/common';
+import { type Mock } from 'vitest';
 import { type SessionIdentity } from '@cardquorum/shared';
 import { REQUEST_SESSION_KEY } from '../auth/http-auth.guard';
 import { UserController } from './user.controller';
@@ -20,37 +21,37 @@ function makeRequest(identity: SessionIdentity, sessionCreatedAt = new Date()): 
 }
 
 function makeReply(): any {
-  return { header: jest.fn().mockReturnThis() };
+  return { header: vi.fn().mockReturnThis() };
 }
 
 describe('UserController', () => {
   let controller: UserController;
   let userService: {
-    deleteAccount: jest.Mock;
-    getProfile: jest.Mock;
-    updateUsername: jest.Mock;
-    updateDisplayName: jest.Mock;
-    searchUsers: jest.Mock;
+    deleteAccount: Mock;
+    getProfile: Mock;
+    updateUsername: Mock;
+    updateDisplayName: Mock;
+    searchUsers: Mock;
   };
   let roomService: {
-    broadcastToRoom: jest.Mock;
-    manager: { getRoom: jest.Mock; leaveRoom: jest.Mock };
+    broadcastToRoom: Mock;
+    manager: { getRoom: Mock; leaveRoom: Mock };
   };
-  let connectionService: { getClientsByUserId: jest.Mock };
+  let connectionService: { getClientsByUserId: Mock };
 
   beforeEach(() => {
     userService = {
-      deleteAccount: jest.fn(),
-      getProfile: jest.fn(),
-      updateUsername: jest.fn(),
-      updateDisplayName: jest.fn(),
-      searchUsers: jest.fn(),
+      deleteAccount: vi.fn(),
+      getProfile: vi.fn(),
+      updateUsername: vi.fn(),
+      updateDisplayName: vi.fn(),
+      searchUsers: vi.fn(),
     };
     roomService = {
-      broadcastToRoom: jest.fn(),
-      manager: { getRoom: jest.fn().mockReturnValue(null), leaveRoom: jest.fn() },
+      broadcastToRoom: vi.fn(),
+      manager: { getRoom: vi.fn().mockReturnValue(null), leaveRoom: vi.fn() },
     };
-    connectionService = { getClientsByUserId: jest.fn().mockReturnValue([]) };
+    connectionService = { getClientsByUserId: vi.fn().mockReturnValue([]) };
 
     controller = new UserController(
       userService as any,
@@ -81,7 +82,7 @@ describe('UserController', () => {
   describe('deleteAccount', () => {
     it('should delete account, broadcast room deletions, and close WS connections', async () => {
       userService.deleteAccount.mockResolvedValue({ ownedRoomIds: [10, 20] });
-      const mockWs = { close: jest.fn() };
+      const mockWs = { close: vi.fn() };
       connectionService.getClientsByUserId.mockReturnValue([{ ws: mockWs }]);
       roomService.manager.getRoom.mockReturnValue({ members: new Map([['conn-1', {}]]) });
       const reply = makeReply();

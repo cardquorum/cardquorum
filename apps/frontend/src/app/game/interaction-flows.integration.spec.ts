@@ -1,3 +1,4 @@
+import { type Mock } from 'vitest';
 import {
   InteractionController,
   type InteractionDispatcher,
@@ -85,8 +86,8 @@ function createWiredController(state: GameState, validActions: string[]) {
   const ctrl = new InteractionController();
 
   const dispatcher: InteractionDispatcher = {
-    queryTargets: jest.fn(),
-    sendAction: jest.fn(),
+    queryTargets: vi.fn(),
+    sendAction: vi.fn(),
   };
 
   const pluginAdapter: InteractionPluginAdapter = {
@@ -105,7 +106,7 @@ function createWiredController(state: GameState, validActions: string[]) {
 
 /** Extract the generation from the last queryTargets call. */
 function lastQueryGeneration(dispatcher: InteractionDispatcher): number {
-  const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+  const calls = (dispatcher.queryTargets as Mock).mock.calls;
   return calls[calls.length - 1][2] as number;
 }
 
@@ -137,7 +138,7 @@ describe('Select-then-target flow dispatches correct play_card event', () => {
 
     // Verify the dispatched action matches what SheepsheadTablePlugin.buildPlayCardEvent produces
     expect(dispatcher.sendAction).toHaveBeenCalledTimes(1);
-    const sentAction = (dispatcher.sendAction as jest.Mock).mock.calls[0][0];
+    const sentAction = (dispatcher.sendAction as Mock).mock.calls[0][0];
     expect(sentAction.type).toBe('play_card');
     expect(sentAction.payload).toEqual({ card: { name: 'qc' } });
 
@@ -175,7 +176,7 @@ describe('Bury flow dispatches correct bury event via interaction system', () =>
 
     // Verify the dispatched action is a bury event with both cards
     expect(dispatcher.sendAction).toHaveBeenCalledTimes(1);
-    const sentAction = (dispatcher.sendAction as jest.Mock).mock.calls[0][0];
+    const sentAction = (dispatcher.sendAction as Mock).mock.calls[0][0];
     expect(sentAction.type).toBe('bury');
     expect(sentAction.payload.cards).toHaveLength(2);
     const buriedNames = sentAction.payload.cards.map((c: { name: string }) => c.name);
@@ -202,7 +203,7 @@ describe('Double-click shortcut dispatches immediately during play phase', () =>
 
     // sendAction called with the correct play_card event
     expect(dispatcher.sendAction).toHaveBeenCalledTimes(1);
-    const sentAction = (dispatcher.sendAction as jest.Mock).mock.calls[0][0];
+    const sentAction = (dispatcher.sendAction as Mock).mock.calls[0][0];
     expect(sentAction.type).toBe('play_card');
     expect(sentAction.payload).toEqual({ card: { name: 'qc' } });
 

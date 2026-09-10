@@ -1,4 +1,6 @@
+import { type Mock, type Mocked } from 'vitest';
 import { type WebSocket } from 'ws';
+import { RoomManager } from '@cardquorum/engine';
 import { WS_EMIT, type RosterState, type UserIdentity } from '@cardquorum/shared';
 import { type GameService } from '../game/game.service';
 import { WsConnectionService } from '../ws/ws-connection.service';
@@ -9,7 +11,7 @@ describe('RoomGateway', () => {
   let gateway: RoomGateway;
   let connectionService: WsConnectionService;
   let roomService: RoomService;
-  let gameService: jest.Mocked<Pick<GameService, 'isGameActive'>>;
+  let gameService: Mocked<Pick<GameService, 'isGameActive'>>;
 
   const aliceIdentity: UserIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
   const bobIdentity: UserIdentity = { userId: 2, username: 'bob', displayName: 'Bob' };
@@ -17,33 +19,31 @@ describe('RoomGateway', () => {
 
   const emptyRoster: RosterState = { players: [], spectators: [], rotationMode: 'none' };
 
-  const createMockClient = () => ({ send: jest.fn(), close: jest.fn() }) as unknown as WebSocket;
+  const createMockClient = () => ({ send: vi.fn(), close: vi.fn() }) as unknown as WebSocket;
 
   /** Helper to parse all messages sent to a mock client */
   const parseSentMessages = (client: WebSocket) =>
-    (client.send as jest.Mock).mock.calls.map((c: any) => JSON.parse(c[0]));
+    (client.send as Mock).mock.calls.map((c: any) => JSON.parse(c[0]));
 
   beforeEach(() => {
-    const { RoomManager } = jest.requireActual('@cardquorum/engine');
-
     connectionService = new WsConnectionService();
 
     const manager = new RoomManager();
     roomService = {
       manager,
-      roomExists: jest.fn().mockResolvedValue(true),
-      canAccessRoom: jest.fn().mockResolvedValue(true),
-      findById: jest.fn().mockResolvedValue({ id: 1, ownerId: 1 }),
-      getRoster: jest.fn().mockResolvedValue(emptyRoster),
-      addToRoster: jest.fn().mockResolvedValue(emptyRoster),
-      removeFromRoster: jest.fn().mockResolvedValue(emptyRoster),
-      reorderRoster: jest.fn().mockResolvedValue(emptyRoster),
-      isMember: jest.fn().mockResolvedValue(false),
-      getMessageHistory: jest.fn().mockResolvedValue([]),
-      upsertGameSettings: jest.fn().mockResolvedValue({}),
-      loadGameSettings: jest.fn().mockResolvedValue(null),
-      updateLastVisitedAt: jest.fn().mockResolvedValue(undefined),
-      broadcastToRoom: jest.fn(
+      roomExists: vi.fn().mockResolvedValue(true),
+      canAccessRoom: vi.fn().mockResolvedValue(true),
+      findById: vi.fn().mockResolvedValue({ id: 1, ownerId: 1 }),
+      getRoster: vi.fn().mockResolvedValue(emptyRoster),
+      addToRoster: vi.fn().mockResolvedValue(emptyRoster),
+      removeFromRoster: vi.fn().mockResolvedValue(emptyRoster),
+      reorderRoster: vi.fn().mockResolvedValue(emptyRoster),
+      isMember: vi.fn().mockResolvedValue(false),
+      getMessageHistory: vi.fn().mockResolvedValue([]),
+      upsertGameSettings: vi.fn().mockResolvedValue({}),
+      loadGameSettings: vi.fn().mockResolvedValue(null),
+      updateLastVisitedAt: vi.fn().mockResolvedValue(undefined),
+      broadcastToRoom: vi.fn(
         (roomId: string, event: string, data: unknown, excludeConnId?: string) => {
           const room = manager.getRoom(roomId);
           if (!room) return;
@@ -58,7 +58,7 @@ describe('RoomGateway', () => {
     } as any;
 
     gameService = {
-      isGameActive: jest.fn().mockReturnValue(false),
+      isGameActive: vi.fn().mockReturnValue(false),
     };
 
     gateway = new RoomGateway(
@@ -79,7 +79,7 @@ describe('RoomGateway', () => {
       expect(roomService.roomExists).toHaveBeenCalledWith(1);
       expect(roomService.getMessageHistory).toHaveBeenCalledWith(1);
 
-      const mockSend = client.send as jest.Mock;
+      const mockSend = client.send as Mock;
       expect(mockSend).toHaveBeenCalledTimes(2);
       const calls = mockSend.mock.calls.map((c: any) => JSON.parse(c[0]).event);
       expect(calls).toContain(WS_EMIT.ROOM_JOINED);
@@ -87,13 +87,13 @@ describe('RoomGateway', () => {
     });
 
     it('should send error if room does not exist', async () => {
-      (roomService.roomExists as jest.Mock).mockResolvedValue(false);
+      (roomService.roomExists as Mock).mockResolvedValue(false);
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
 
       await gateway.handleJoinRoom(client, { roomId: 999 });
 
-      const parsed = JSON.parse((client.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.ERROR);
       expect(parsed.data.message).toBe('Room does not exist');
     });
@@ -105,12 +105,12 @@ describe('RoomGateway', () => {
       connectionService.trackClient(client2, bobIdentity);
 
       await gateway.handleJoinRoom(client1, { roomId: 1 });
-      (client1.send as jest.Mock).mockClear();
+      (client1.send as Mock).mockClear();
 
       await gateway.handleJoinRoom(client2, { roomId: 1 });
 
       // client1 should get MEMBER_JOINED for Bob
-      const calls = (client1.send as jest.Mock).mock.calls.map((c: any) => JSON.parse(c[0]).event);
+      const calls = (client1.send as Mock).mock.calls.map((c: any) => JSON.parse(c[0]).event);
       expect(calls).toContain(WS_EMIT.MEMBER_JOINED);
     });
   });
@@ -125,10 +125,10 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(client1, { roomId: 1 });
       await gateway.handleJoinRoom(client2, { roomId: 1 });
 
-      (client2.send as jest.Mock).mockClear();
+      (client2.send as Mock).mockClear();
       gateway.handleLeaveRoom(client1, { roomId: 1 });
 
-      const parsed = JSON.parse((client2.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client2.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.MEMBER_LEFT);
     });
   });
@@ -143,10 +143,10 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(client1, { roomId: 1 });
       await gateway.handleJoinRoom(client2, { roomId: 1 });
 
-      (client2.send as jest.Mock).mockClear();
+      (client2.send as Mock).mockClear();
       await connectionService.notifyDisconnect(client1);
 
-      const parsed = JSON.parse((client2.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client2.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe(WS_EMIT.MEMBER_LEFT);
       expect(parsed.data.member.displayName).toBe('Alice');
     });
@@ -169,7 +169,7 @@ describe('RoomGateway', () => {
         ],
         rotationMode: 'none',
       };
-      (roomService.addToRoster as jest.Mock).mockResolvedValue(rosterWithBob);
+      (roomService.addToRoster as Mock).mockResolvedValue(rosterWithBob);
 
       const client = createMockClient();
       connectionService.trackClient(client, bobIdentity);
@@ -183,7 +183,7 @@ describe('RoomGateway', () => {
     });
 
     it('should call addToRoster when user is not already on roster', async () => {
-      (roomService.isMember as jest.Mock).mockResolvedValue(false);
+      (roomService.isMember as Mock).mockResolvedValue(false);
 
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
@@ -194,7 +194,7 @@ describe('RoomGateway', () => {
     });
 
     it('should call getRoster (not addToRoster) when user is already on roster', async () => {
-      (roomService.isMember as jest.Mock).mockResolvedValue(true);
+      (roomService.isMember as Mock).mockResolvedValue(true);
 
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
@@ -215,7 +215,7 @@ describe('RoomGateway', () => {
     });
 
     it('should still complete join when updateLastVisitedAt fails', async () => {
-      (roomService.updateLastVisitedAt as jest.Mock).mockRejectedValue(new Error('DB error'));
+      (roomService.updateLastVisitedAt as Mock).mockRejectedValue(new Error('DB error'));
 
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
@@ -228,10 +228,8 @@ describe('RoomGateway', () => {
     });
 
     it('should send error and undo WS join when room is full', async () => {
-      (roomService.isMember as jest.Mock).mockResolvedValue(false);
-      (roomService.addToRoster as jest.Mock).mockRejectedValue(
-        new Error('Room is full (limit: 2)'),
-      );
+      (roomService.isMember as Mock).mockResolvedValue(false);
+      (roomService.addToRoster as Mock).mockRejectedValue(new Error('Room is full (limit: 2)'));
 
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
@@ -260,8 +258,8 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
 
-      (ownerClient.send as jest.Mock).mockClear();
-      (bobClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
+      (bobClient.send as Mock).mockClear();
 
       // Simulate what RoomService.kickUser does: remove from WS room + send MEMBER_KICKED
       // The real kickUserFromRoom iterates room members, sends MEMBER_KICKED, then leaveRoom
@@ -309,8 +307,8 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
       await gateway.handleJoinRoom(charlieClient, { roomId: 1 });
 
-      (ownerClient.send as jest.Mock).mockClear();
-      (charlieClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
+      (charlieClient.send as Mock).mockClear();
 
       // Kick Bob — simulate kickUserFromRoom then broadcastToRoom
       const roomKey = '1';
@@ -344,8 +342,8 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
 
-      (ownerClient.send as jest.Mock).mockClear();
-      (bobClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
+      (bobClient.send as Mock).mockClear();
 
       // Simulate what RoomService.banUser does:
       // 1. Remove from roster (broadcast ROSTER_UPDATED)
@@ -420,7 +418,7 @@ describe('RoomGateway', () => {
       };
 
       // reorderRoster broadcasts ROSTER_UPDATED internally — mock it to simulate the broadcast
-      (roomService.reorderRoster as jest.Mock).mockImplementation(async () => {
+      (roomService.reorderRoster as Mock).mockImplementation(async () => {
         roomService.broadcastToRoom('1', WS_EMIT.ROSTER_UPDATED, {
           roomId: 1,
           roster: reorderedRoster,
@@ -436,8 +434,8 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
 
-      (ownerClient.send as jest.Mock).mockClear();
-      (bobClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
+      (bobClient.send as Mock).mockClear();
 
       // Owner sends roster:update
       await gateway.handleRosterUpdate(ownerClient, {
@@ -459,7 +457,7 @@ describe('RoomGateway', () => {
     });
 
     it('should reject reorder from non-owner', async () => {
-      (roomService.findById as jest.Mock).mockResolvedValue({
+      (roomService.findById as Mock).mockResolvedValue({
         id: 1,
         ownerId: aliceIdentity.userId,
       });
@@ -468,7 +466,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(bobClient, bobIdentity);
 
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
-      (bobClient.send as jest.Mock).mockClear();
+      (bobClient.send as Mock).mockClear();
 
       await gateway.handleRosterUpdate(bobClient, {
         roomId: 1,
@@ -501,8 +499,8 @@ describe('RoomGateway', () => {
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
 
-      (ownerClient.send as jest.Mock).mockClear();
-      (bobClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
+      (bobClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -527,7 +525,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(bobClient, bobIdentity);
 
       await gateway.handleJoinRoom(bobClient, { roomId: 1 });
-      (bobClient.send as jest.Mock).mockClear();
+      (bobClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(bobClient, {
         roomId: 1,
@@ -543,13 +541,13 @@ describe('RoomGateway', () => {
     });
 
     it('should send error when upsert fails', async () => {
-      (roomService.upsertGameSettings as jest.Mock).mockRejectedValue(new Error('DB error'));
+      (roomService.upsertGameSettings as Mock).mockRejectedValue(new Error('DB error'));
 
       const ownerClient = createMockClient();
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -564,7 +562,7 @@ describe('RoomGateway', () => {
 
     it('should reject turnTimeLimit change while a game is active', async () => {
       gameService.isGameActive.mockReturnValue(true);
-      (roomService.loadGameSettings as jest.Mock).mockResolvedValue({
+      (roomService.loadGameSettings as Mock).mockResolvedValue({
         ...testSettings,
         turnTimeLimit: 60,
       });
@@ -573,7 +571,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -590,7 +588,7 @@ describe('RoomGateway', () => {
 
     it('should allow settings update with same turnTimeLimit while game is active', async () => {
       gameService.isGameActive.mockReturnValue(true);
-      (roomService.loadGameSettings as jest.Mock).mockResolvedValue({
+      (roomService.loadGameSettings as Mock).mockResolvedValue({
         ...testSettings,
         turnTimeLimit: 60,
       });
@@ -599,7 +597,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -614,7 +612,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -636,7 +634,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -658,7 +656,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -680,7 +678,7 @@ describe('RoomGateway', () => {
       connectionService.trackClient(ownerClient, aliceIdentity);
 
       await gateway.handleJoinRoom(ownerClient, { roomId: 1 });
-      (ownerClient.send as jest.Mock).mockClear();
+      (ownerClient.send as Mock).mockClear();
 
       await gateway.handleGameSettingsUpdate(ownerClient, {
         roomId: 1,
@@ -702,7 +700,7 @@ describe('RoomGateway', () => {
         autostart: true,
         updatedAt: new Date(),
       };
-      (roomService.loadGameSettings as jest.Mock).mockResolvedValue(storedRow);
+      (roomService.loadGameSettings as Mock).mockResolvedValue(storedRow);
 
       const client = createMockClient();
       connectionService.trackClient(client, aliceIdentity);
@@ -722,7 +720,7 @@ describe('RoomGateway', () => {
     });
 
     it('should return null settings when none exist', async () => {
-      (roomService.loadGameSettings as jest.Mock).mockResolvedValue(null);
+      (roomService.loadGameSettings as Mock).mockResolvedValue(null);
 
       const client = createMockClient();
       connectionService.trackClient(client, bobIdentity);

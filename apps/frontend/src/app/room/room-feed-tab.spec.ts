@@ -60,22 +60,22 @@ describe('RoomFeedTab', () => {
 
     mockChatService = {
       messages: chatMessages.asReadonly(),
-      sendMessage: jest.fn(),
-      clearMessages: jest.fn(),
+      sendMessage: vi.fn(),
+      clearMessages: vi.fn(),
     };
 
     mockGameLogService = {
       entries: gameLogEntries.asReadonly(),
       loading: loadingSignal.asReadonly(),
       exhausted: exhaustedSignal.asReadonly(),
-      requestHistory: jest.fn(),
-      clearEntries: jest.fn(),
+      requestHistory: vi.fn(),
+      clearEntries: vi.fn(),
     };
 
     const mockWs = {
-      on: jest.fn(() => jest.fn()),
-      send: jest.fn(),
-      onConnect: jest.fn(() => jest.fn()),
+      on: vi.fn(() => vi.fn()),
+      send: vi.fn(),
+      onConnect: vi.fn(() => vi.fn()),
       connected: signal(false),
     };
 
@@ -176,7 +176,7 @@ describe('RoomFeedTab', () => {
     expect(indicator).toBeNull();
   });
 
-  it('auto-scrolls to bottom when new items arrive and already at bottom', (done) => {
+  it('auto-scrolls to bottom when new items arrive and already at bottom', async () => {
     const container = el.querySelector('[role="log"]') as HTMLElement;
     // Simulate being at the bottom
     Object.defineProperty(container, 'scrollHeight', { value: 200, configurable: true });
@@ -195,11 +195,10 @@ describe('RoomFeedTab', () => {
     fixture.detectChanges();
 
     // The component uses setTimeout(0) for auto-scroll, so wait a tick
-    setTimeout(() => {
-      // scrollTop should have been set to scrollHeight (auto-scroll)
-      expect(container.scrollTop).toBe(container.scrollHeight);
-      done();
-    }, 10);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    // scrollTop should have been set to scrollHeight (auto-scroll)
+    expect(container.scrollTop).toBe(container.scrollHeight);
   });
 
   it('does not auto-scroll when user has scrolled up', () => {

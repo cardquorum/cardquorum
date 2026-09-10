@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { type Mock } from 'vitest';
 import {
   InteractionController,
   type InteractionDispatcher,
@@ -12,12 +13,12 @@ const CARD_NAMES = ['7c', '8c', '9c', 'xc', 'jc', 'qc', 'kc', 'ac', '7s', '8s', 
 
 function createMocks() {
   const dispatcher: InteractionDispatcher = {
-    queryTargets: jest.fn(),
-    sendAction: jest.fn(),
+    queryTargets: vi.fn(),
+    sendAction: vi.fn(),
   };
   const pluginAdapter: InteractionPluginAdapter = {
-    getDefaultTarget: jest.fn().mockReturnValue(null),
-    buildMoveEvent: jest.fn().mockReturnValue({ type: 'move', payload: {} }),
+    getDefaultTarget: vi.fn().mockReturnValue(null),
+    buildMoveEvent: vi.fn().mockReturnValue({ type: 'move', payload: {} }),
   };
   return { dispatcher, pluginAdapter };
 }
@@ -265,7 +266,7 @@ describe('Target query generation tracking and stale response rejection', () => 
             ctrl.selectCard('hand', cards[i], cards.length);
 
             // Each selectCard should have sent a query with incrementing generation
-            const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+            const calls = (dispatcher.queryTargets as Mock).mock.calls;
             expect(calls.length).toBeGreaterThanOrEqual(i + 1);
             const lastCall = calls[calls.length - 1];
             // generation should be a positive integer that increases
@@ -273,7 +274,7 @@ describe('Target query generation tracking and stale response rejection', () => 
           }
 
           // Verify generations are strictly increasing
-          const allGenerations = (dispatcher.queryTargets as jest.Mock).mock.calls.map(
+          const allGenerations = (dispatcher.queryTargets as Mock).mock.calls.map(
             (c: unknown[]) => c[2] as number,
           );
           for (let i = 1; i < allGenerations.length; i++) {
@@ -302,7 +303,7 @@ describe('Target query generation tracking and stale response rejection', () => 
           }
 
           // The current generation is the last one sent
-          const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+          const calls = (dispatcher.queryTargets as Mock).mock.calls;
           const currentGeneration = calls[calls.length - 1][2] as number;
 
           // Deliver a response with an old generation (any generation before the current one)
@@ -333,7 +334,7 @@ describe('Target query generation tracking and stale response rejection', () => 
             ctrl.selectCard('hand', card, 5);
           }
 
-          const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+          const calls = (dispatcher.queryTargets as Mock).mock.calls;
           const currentGeneration = calls[calls.length - 1][2] as number;
 
           // Deliver the response with the current generation
@@ -364,7 +365,7 @@ describe('Target query generation tracking and stale response rejection', () => 
           for (const card of cards) {
             ctrl.reset();
             ctrl.selectCard('hand', card, 5);
-            const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+            const calls = (dispatcher.queryTargets as Mock).mock.calls;
             generations.push(calls[calls.length - 1][2] as number);
           }
 
@@ -531,13 +532,13 @@ describe('Double-click with default target dispatches immediately without query 
           const sentinelEvent = { type: 'shortcut-move', payload: { id: Math.random() } };
 
           // Configure getDefaultTarget to return a non-null target
-          (pluginAdapter.getDefaultTarget as jest.Mock).mockReturnValue(defaultTarget);
-          (pluginAdapter.buildMoveEvent as jest.Mock).mockReturnValue(sentinelEvent);
+          (pluginAdapter.getDefaultTarget as Mock).mockReturnValue(defaultTarget);
+          (pluginAdapter.buildMoveEvent as Mock).mockReturnValue(sentinelEvent);
 
           // Clear any prior calls from init
-          (dispatcher.queryTargets as jest.Mock).mockClear();
-          (dispatcher.sendAction as jest.Mock).mockClear();
-          (pluginAdapter.buildMoveEvent as jest.Mock).mockClear();
+          (dispatcher.queryTargets as Mock).mockClear();
+          (dispatcher.sendAction as Mock).mockClear();
+          (pluginAdapter.buildMoveEvent as Mock).mockClear();
 
           ctrl.confirmCard(sourceStackId, cardName);
 
@@ -578,7 +579,7 @@ describe('Move dispatch contains correct selected cards and target stack ID', ()
     }
 
     // The generation is the last one sent via queryTargets
-    const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+    const calls = (dispatcher.queryTargets as Mock).mock.calls;
     const generation = calls[calls.length - 1][2] as number;
 
     // Deliver valid targets for the current generation
@@ -594,15 +595,15 @@ describe('Move dispatch contains correct selected cards and target stack ID', ()
         (sourceStackId, cards, targetStackId) => {
           const { ctrl, dispatcher, pluginAdapter } = createController();
           const sentinelEvent = { type: 'test-move', payload: { id: Math.random() } };
-          (pluginAdapter.buildMoveEvent as jest.Mock).mockReturnValue(sentinelEvent);
+          (pluginAdapter.buildMoveEvent as Mock).mockReturnValue(sentinelEvent);
 
           driveToTargeting(ctrl, dispatcher, sourceStackId, cards, [targetStackId]);
 
           if (ctrl.phase() !== 'targeting') return; // target may not be registered; skip
 
           // Clear prior calls so we only see the commit call
-          (pluginAdapter.buildMoveEvent as jest.Mock).mockClear();
-          (dispatcher.sendAction as jest.Mock).mockClear();
+          (pluginAdapter.buildMoveEvent as Mock).mockClear();
+          (dispatcher.sendAction as Mock).mockClear();
 
           ctrl.commitToTarget(targetStackId);
 
@@ -626,19 +627,19 @@ describe('Move dispatch contains correct selected cards and target stack ID', ()
         (sourceStackId, cards, targetStackId) => {
           const { ctrl, dispatcher, pluginAdapter } = createController();
           const sentinelEvent = { type: 'multi-move', payload: { n: cards.length } };
-          (pluginAdapter.buildMoveEvent as jest.Mock).mockReturnValue(sentinelEvent);
+          (pluginAdapter.buildMoveEvent as Mock).mockReturnValue(sentinelEvent);
 
           driveToTargeting(ctrl, dispatcher, sourceStackId, cards, [targetStackId]);
 
           if (ctrl.phase() !== 'targeting') return;
 
-          (pluginAdapter.buildMoveEvent as jest.Mock).mockClear();
-          (dispatcher.sendAction as jest.Mock).mockClear();
+          (pluginAdapter.buildMoveEvent as Mock).mockClear();
+          (dispatcher.sendAction as Mock).mockClear();
 
           // Randomly choose click or drop
           ctrl.commitToTarget(targetStackId);
 
-          const buildCall = (pluginAdapter.buildMoveEvent as jest.Mock).mock.calls[0];
+          const buildCall = (pluginAdapter.buildMoveEvent as Mock).mock.calls[0];
           const [selectedCards, target] = buildCall;
 
           // Every originally selected card is present
@@ -665,7 +666,7 @@ describe('Live announcements for screen readers', () => {
     targets: string[],
   ): void {
     ctrl.selectCard('hand', '7c', 5);
-    const calls = (dispatcher.queryTargets as jest.Mock).mock.calls;
+    const calls = (dispatcher.queryTargets as Mock).mock.calls;
     const generation = calls[calls.length - 1][2] as number;
     ctrl.receiveValidTargets(generation, targets);
   }
@@ -813,7 +814,7 @@ describe('Drop resolution returns geometrically correct target', () => {
 
           // Drive to targeting phase
           ctrl.selectCard(sourceStackId, cardName, 5);
-          const calls = (mocks.dispatcher.queryTargets as jest.Mock).mock.calls;
+          const calls = (mocks.dispatcher.queryTargets as Mock).mock.calls;
           const generation = calls[calls.length - 1][2] as number;
           ctrl.receiveValidTargets(generation, validTargetIds);
 
@@ -862,7 +863,7 @@ describe('Drop resolution returns geometrically correct target', () => {
 
           // Drive to targeting phase
           ctrl.selectCard(sourceStackId, cardName, 5);
-          const calls = (mocks.dispatcher.queryTargets as jest.Mock).mock.calls;
+          const calls = (mocks.dispatcher.queryTargets as Mock).mock.calls;
           const generation = calls[calls.length - 1][2] as number;
           ctrl.receiveValidTargets(generation, validTargetIds);
 
@@ -894,7 +895,7 @@ describe('Drop resolution returns geometrically correct target', () => {
         (sourceStackId, cardName, defaultTargetId, dropPoint) => {
           const ctrl = new InteractionController();
           const mocks = createMocks();
-          (mocks.pluginAdapter.getDefaultTarget as jest.Mock).mockReturnValue(defaultTargetId);
+          (mocks.pluginAdapter.getDefaultTarget as Mock).mockReturnValue(defaultTargetId);
           ctrl.init(mocks.dispatcher, mocks.pluginAdapter);
 
           const stackRects = buildStackRects(STACK_IDS);
@@ -969,7 +970,7 @@ describe('Drop resolution returns geometrically correct target', () => {
 
           // Select '7c' and drive to targeting
           ctrl.selectCard(sourceStackId, '7c', 5);
-          const calls = (mocks.dispatcher.queryTargets as jest.Mock).mock.calls;
+          const calls = (mocks.dispatcher.queryTargets as Mock).mock.calls;
           const generation = calls[calls.length - 1][2] as number;
           ctrl.receiveValidTargets(generation, validTargetIds);
 
@@ -1026,10 +1027,10 @@ describe('IC dispatches via the most recently provided dispatcher after repeated
           ctrl.reset();
 
           // Configure the latest adapter to enable confirmCard shortcut
-          (latestAdapter.getDefaultTarget as jest.Mock).mockReturnValue('trick-pile');
+          (latestAdapter.getDefaultTarget as Mock).mockReturnValue('trick-pile');
           const sentinelEvent = { type: 'test-move', payload: { id: 42 } };
-          (latestAdapter.buildMoveEvent as jest.Mock).mockReturnValue(sentinelEvent);
-          (latestDispatcher.sendAction as jest.Mock).mockClear();
+          (latestAdapter.buildMoveEvent as Mock).mockReturnValue(sentinelEvent);
+          (latestDispatcher.sendAction as Mock).mockClear();
 
           // confirmCard with a default target dispatches immediately via the latest dispatcher
           ctrl.confirmCard('hand', '7c');
@@ -1075,12 +1076,12 @@ describe('IC dispatches via the most recently provided dispatcher after repeated
           // Reset and clear all mock call counts
           ctrl.reset();
           for (const d of allDispatchers) {
-            (d.sendAction as jest.Mock).mockClear();
+            (d.sendAction as Mock).mockClear();
           }
 
           // Configure latest adapter for a dispatch
-          (latestAdapter.getDefaultTarget as jest.Mock).mockReturnValue('trick-pile');
-          (latestAdapter.buildMoveEvent as jest.Mock).mockReturnValue({ type: 'move' });
+          (latestAdapter.getDefaultTarget as Mock).mockReturnValue('trick-pile');
+          (latestAdapter.buildMoveEvent as Mock).mockReturnValue({ type: 'move' });
 
           ctrl.confirmCard('hand', '7c');
 

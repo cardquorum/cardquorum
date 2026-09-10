@@ -1,6 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import * as fc from 'fast-check';
+import { type Mock } from 'vitest';
 import { WsConnectionService } from '../ws/ws-connection.service';
 import { CreateRoomDto, UpdateRoomDto } from './room.dto';
 import { RoomService } from './room.service';
@@ -30,15 +31,15 @@ describe('Description round-trip persistence', () => {
     ...overrides,
   });
 
-  let mockRepo: Record<string, jest.Mock>;
+  let mockRepo: Record<string, Mock>;
 
   beforeEach(() => {
     mockRepo = {
-      findById: jest.fn(),
-      findAll: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findById: vi.fn(),
+      findAll: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     };
 
     const connectionService = new WsConnectionService();
@@ -46,42 +47,42 @@ describe('Description round-trip persistence', () => {
     service = new RoomService(
       mockRepo as any,
       {
-        findInvitedRoomIds: jest.fn(),
-        isInvited: jest.fn(),
-        findByRoom: jest.fn(),
-        create: jest.fn(),
-        createMany: jest.fn(),
-        delete: jest.fn(),
+        findInvitedRoomIds: vi.fn(),
+        isInvited: vi.fn(),
+        findByRoom: vi.fn(),
+        create: vi.fn(),
+        createMany: vi.fn(),
+        delete: vi.fn(),
       } as any,
       {
-        findBannedRoomIds: jest.fn(),
-        isBanned: jest.fn(),
-        findByRoom: jest.fn(),
-        create: jest.fn(),
-        delete: jest.fn(),
+        findBannedRoomIds: vi.fn(),
+        isBanned: vi.fn(),
+        findByRoom: vi.fn(),
+        create: vi.fn(),
+        delete: vi.fn(),
       } as any,
       {
-        findByRoom: jest.fn().mockResolvedValue([]),
-        addMember: jest.fn(),
-        removeMember: jest.fn(),
-        replaceRoster: jest.fn(),
-        countMembers: jest.fn().mockResolvedValue(0),
-        isMember: jest.fn().mockResolvedValue(false),
-        getAssignedHues: jest.fn().mockResolvedValue([]),
-        setAssignedHue: jest.fn(),
-        updateLastVisitedAt: jest.fn(),
+        findByRoom: vi.fn().mockResolvedValue([]),
+        addMember: vi.fn(),
+        removeMember: vi.fn(),
+        replaceRoster: vi.fn(),
+        countMembers: vi.fn().mockResolvedValue(0),
+        isMember: vi.fn().mockResolvedValue(false),
+        getAssignedHues: vi.fn().mockResolvedValue([]),
+        setAssignedHue: vi.fn(),
+        updateLastVisitedAt: vi.fn(),
       } as any,
-      { findByRoomId: jest.fn().mockResolvedValue([]) } as any,
-      { findByRoomId: jest.fn().mockResolvedValue(null), upsert: jest.fn() } as any,
+      { findByRoomId: vi.fn().mockResolvedValue([]) } as any,
+      { findByRoomId: vi.fn().mockResolvedValue(null), upsert: vi.fn() } as any,
       connectionService,
-      { areFriends: jest.fn(), findFriendIds: jest.fn() } as any,
+      { areFriends: vi.fn(), findFriendIds: vi.fn() } as any,
       {
-        getBlockedIds: jest.fn().mockResolvedValue([]),
-        isBlocked: jest.fn().mockResolvedValue(false),
+        getBlockedIds: vi.fn().mockResolvedValue([]),
+        isBlocked: vi.fn().mockResolvedValue(false),
       } as any,
-      { assignHue: jest.fn().mockReturnValue(0) } as any,
-      { getColorPreference: jest.fn().mockResolvedValue(null) } as any,
-      { isGameActive: jest.fn().mockReturnValue(false) } as any,
+      { assignHue: vi.fn().mockReturnValue(0) } as any,
+      { getColorPreference: vi.fn().mockResolvedValue(null) } as any,
+      { isGameActive: vi.fn().mockReturnValue(false) } as any,
     );
   });
 

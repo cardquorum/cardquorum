@@ -172,9 +172,9 @@ describe('RoomGameTab — component rendering', () => {
   const mockGameService = {
     sessionId: sessionIdSignal,
     store: signal(null),
-    createGame: jest.fn(),
-    startGame: jest.fn(),
-    cancelGame: jest.fn(),
+    createGame: vi.fn(),
+    startGame: vi.fn(),
+    cancelGame: vi.fn(),
     error: signal(null),
   };
 
@@ -183,14 +183,14 @@ describe('RoomGameTab — component rendering', () => {
   };
 
   const mockWsService = {
-    on: jest.fn().mockReturnValue(() => {
+    on: vi.fn().mockReturnValue(() => {
       /* noop */
     }),
-    send: jest.fn(),
+    send: vi.fn(),
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     sessionIdSignal.set(null);
     currentRoomIdSignal.set(42);
 
@@ -248,9 +248,9 @@ describe('RoomGameTab — Start/Abort buttons', () => {
   const mockGameService = {
     sessionId: sessionIdSignal,
     store: signal(null),
-    createGame: jest.fn(),
-    startGame: jest.fn(),
-    cancelGame: jest.fn(),
+    createGame: vi.fn(),
+    startGame: vi.fn(),
+    cancelGame: vi.fn(),
     error: signal(null),
   };
 
@@ -259,14 +259,14 @@ describe('RoomGameTab — Start/Abort buttons', () => {
   };
 
   const mockWsService = {
-    on: jest.fn().mockReturnValue(() => {
+    on: vi.fn().mockReturnValue(() => {
       /* noop */
     }),
-    send: jest.fn(),
+    send: vi.fn(),
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     sessionIdSignal.set(null);
     currentRoomIdSignal.set(42);
 
@@ -394,9 +394,9 @@ describe('RoomGameTab — form locking during active session', () => {
   const mockGameService = {
     sessionId: sessionIdSignal,
     store: signal(null),
-    createGame: jest.fn(),
-    startGame: jest.fn(),
-    cancelGame: jest.fn(),
+    createGame: vi.fn(),
+    startGame: vi.fn(),
+    cancelGame: vi.fn(),
     error: signal(null),
   };
 
@@ -405,14 +405,14 @@ describe('RoomGameTab — form locking during active session', () => {
   };
 
   const mockWsService = {
-    on: jest.fn().mockReturnValue(() => {
+    on: vi.fn().mockReturnValue(() => {
       /* noop */
     }),
-    send: jest.fn(),
+    send: vi.fn(),
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     sessionIdSignal.set(null);
     currentRoomIdSignal.set(42);
 
@@ -537,9 +537,9 @@ describe('RoomGameTab — Autostart checkbox', () => {
   const mockGameService = {
     sessionId: sessionIdSignal,
     store: storeSignal,
-    createGame: jest.fn(),
-    startGame: jest.fn(),
-    cancelGame: jest.fn(),
+    createGame: vi.fn(),
+    startGame: vi.fn(),
+    cancelGame: vi.fn(),
     error: signal(null),
   };
 
@@ -548,14 +548,14 @@ describe('RoomGameTab — Autostart checkbox', () => {
   };
 
   const mockWsService = {
-    on: jest.fn().mockReturnValue(() => {
+    on: vi.fn().mockReturnValue(() => {
       /* noop */
     }),
-    send: jest.fn(),
+    send: vi.fn(),
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     sessionIdSignal.set(null);
     storeSignal.set(null);
     currentRoomIdSignal.set(42);
@@ -637,9 +637,9 @@ describe('RoomGameTab — settings persistence via WebSocket', () => {
   const mockGameService = {
     sessionId: sessionIdSignal,
     store: signal(null),
-    createGame: jest.fn(),
-    startGame: jest.fn(),
-    cancelGame: jest.fn(),
+    createGame: vi.fn(),
+    startGame: vi.fn(),
+    cancelGame: vi.fn(),
     error: signal(null),
   };
 
@@ -651,18 +651,18 @@ describe('RoomGameTab — settings persistence via WebSocket', () => {
   let wsHandlers: Record<string, ((data: unknown) => void)[]>;
 
   const mockWsService = {
-    on: jest.fn().mockImplementation((event: string, handler: (data: unknown) => void) => {
+    on: vi.fn().mockImplementation((event: string, handler: (data: unknown) => void) => {
       if (!wsHandlers[event]) wsHandlers[event] = [];
       wsHandlers[event].push(handler);
       return () => {
         wsHandlers[event] = wsHandlers[event].filter((h) => h !== handler);
       };
     }),
-    send: jest.fn(),
+    send: vi.fn(),
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wsHandlers = {};
     sessionIdSignal.set(null);
     currentRoomIdSignal.set(42);
@@ -850,9 +850,9 @@ describe('Game action button visibility', () => {
   const mockGame = {
     sessionId: sessionIdSig,
     store: signal(null),
-    createGame: jest.fn(),
-    startGame: jest.fn(),
-    cancelGame: jest.fn(),
+    createGame: vi.fn(),
+    startGame: vi.fn(),
+    cancelGame: vi.fn(),
     error: signal(null),
   };
 
@@ -861,12 +861,12 @@ describe('Game action button visibility', () => {
   };
 
   const mockWs = {
-    on: jest.fn().mockReturnValue(jest.fn()),
-    send: jest.fn(),
+    on: vi.fn().mockReturnValue(vi.fn()),
+    send: vi.fn(),
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     sessionIdSig.set(null);
     currentRoomIdSig.set(42);
 

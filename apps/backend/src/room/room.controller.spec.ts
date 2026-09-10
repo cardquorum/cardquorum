@@ -1,4 +1,5 @@
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { type Mocked } from 'vitest';
 import { type UserIdentity } from '@cardquorum/shared';
 import { REQUEST_USER_KEY } from '../auth/http-auth.guard';
 import { type GameService } from '../game/game.service';
@@ -7,7 +8,7 @@ import { type RoomService } from './room.service';
 
 describe('RoomController', () => {
   let controller: RoomController;
-  let roomService: jest.Mocked<
+  let roomService: Mocked<
     Pick<
       RoomService,
       | 'findById'
@@ -39,7 +40,7 @@ describe('RoomController', () => {
       | 'removeFromRoster'
     >
   >;
-  let gameService: jest.Mocked<Pick<GameService, 'forceCleanupRoom' | 'isGameActive'>>;
+  let gameService: Mocked<Pick<GameService, 'forceCleanupRoom' | 'isGameActive'>>;
 
   const alice: UserIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
   const bob: UserIdentity = { userId: 2, username: 'bob', displayName: 'Bob' };
@@ -66,46 +67,46 @@ describe('RoomController', () => {
 
   beforeEach(() => {
     roomService = {
-      findById: jest.fn(),
-      findAll: jest.fn(),
-      findAllForUser: jest.fn(),
-      canAccessRoom: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      getOnlineCount: jest.fn().mockReturnValue(0),
-      inviteUser: jest.fn().mockResolvedValue(undefined),
-      uninviteUser: jest.fn().mockResolvedValue(undefined),
-      banUser: jest.fn().mockResolvedValue(undefined),
-      unbanUser: jest.fn().mockResolvedValue(undefined),
-      getInvites: jest.fn().mockResolvedValue([]),
-      getBans: jest.fn().mockResolvedValue([]),
-      bulkInvite: jest.fn().mockResolvedValue(undefined),
-      kickUser: jest.fn().mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
-      getRoster: jest.fn().mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
-      reorderRoster: jest
+      findById: vi.fn(),
+      findAll: vi.fn(),
+      findAllForUser: vi.fn(),
+      canAccessRoom: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      getOnlineCount: vi.fn().mockReturnValue(0),
+      inviteUser: vi.fn().mockResolvedValue(undefined),
+      uninviteUser: vi.fn().mockResolvedValue(undefined),
+      banUser: vi.fn().mockResolvedValue(undefined),
+      unbanUser: vi.fn().mockResolvedValue(undefined),
+      getInvites: vi.fn().mockResolvedValue([]),
+      getBans: vi.fn().mockResolvedValue([]),
+      bulkInvite: vi.fn().mockResolvedValue(undefined),
+      kickUser: vi.fn().mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
+      getRoster: vi.fn().mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
+      reorderRoster: vi
         .fn()
         .mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
-      setRotationMode: jest
+      setRotationMode: vi
         .fn()
         .mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
-      countMembers: jest.fn().mockResolvedValue(0),
-      isMember: jest.fn().mockResolvedValue(false),
-      loadGameSettings: jest.fn().mockResolvedValue(nullGameSettings),
-      findMemberships: jest.fn().mockResolvedValue([]),
-      findDiscoverablePrivate: jest.fn().mockResolvedValue([]),
-      findDiscoverablePublic: jest
+      countMembers: vi.fn().mockResolvedValue(0),
+      isMember: vi.fn().mockResolvedValue(false),
+      loadGameSettings: vi.fn().mockResolvedValue(nullGameSettings),
+      findMemberships: vi.fn().mockResolvedValue([]),
+      findDiscoverablePrivate: vi.fn().mockResolvedValue([]),
+      findDiscoverablePublic: vi
         .fn()
         .mockResolvedValue({ data: [], total: 0, page: 1, pageSize: 20 }),
-      searchDiscoverable: jest.fn().mockResolvedValue([]),
-      removeFromRoster: jest
+      searchDiscoverable: vi.fn().mockResolvedValue([]),
+      removeFromRoster: vi
         .fn()
         .mockResolvedValue({ players: [], spectators: [], rotationMode: 'none' }),
     };
 
     gameService = {
-      forceCleanupRoom: jest.fn().mockResolvedValue(null),
-      isGameActive: jest.fn().mockReturnValue(false),
+      forceCleanupRoom: vi.fn().mockResolvedValue(null),
+      isGameActive: vi.fn().mockReturnValue(false),
     };
 
     controller = new RoomController(

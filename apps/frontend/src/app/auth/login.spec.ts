@@ -37,7 +37,7 @@ describe('Login', () => {
   it('should call login and navigate on success', () => {
     const fixture = TestBed.createComponent(Login);
     fixture.detectChanges();
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture.componentInstance['form'].setValue({ username: 'alice', password: 'pass' });
     fixture.componentInstance['onSubmit']();
@@ -52,7 +52,7 @@ describe('Login', () => {
     sessionStorage.setItem('cq_return_url', '/rooms/42');
     const fixture = TestBed.createComponent(Login);
     fixture.detectChanges();
-    const navigateByUrlSpy = jest.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    const navigateByUrlSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
     fixture.componentInstance['form'].setValue({ username: 'alice', password: 'pass' });
     fixture.componentInstance['onSubmit']();

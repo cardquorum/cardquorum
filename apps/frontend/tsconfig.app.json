@@ -1,6 +1,8 @@
 {
   "extends": ["../../tsconfig.base.json", "../../tsconfig.browser.json"],
-  "compilerOptions": { "outDir": "./out-tsc/app" },
+  "compilerOptions": {
+    "outDir": "./out-tsc/app"
+  },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
@@ -14,16 +16,16 @@
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "src/test-setup.ts",
-    "jest.config.ts",
-    "jest.config.cts"
-  ],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "src/test-setup.ts"],
   "references": [
-    { "path": "../../libs/shared/tsconfig.lib.json" },
-    { "path": "../../libs/engine/tsconfig.lib.json" },
-    { "path": "../../libs/games/sheepshead/tsconfig.lib.json" }
+    {
+      "path": "../../libs/shared/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/engine/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/games/sheepshead/tsconfig.lib.json"
+    }
   ]
 }

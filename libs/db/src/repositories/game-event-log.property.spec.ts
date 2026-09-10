@@ -66,11 +66,11 @@ describe('Room log query filtering and ordering', () => {
           // The repository applies: WHERE room_id = ? AND message IS NOT NULL
           // ORDER BY created_at DESC, LIMIT pageSize
           const db = {
-            select: jest.fn(() => ({
-              from: jest.fn(() => ({
-                where: jest.fn(() => ({
-                  orderBy: jest.fn(() => ({
-                    limit: jest.fn(() => Promise.resolve(expectedVisible.slice(0, 50))),
+            select: vi.fn(() => ({
+              from: vi.fn(() => ({
+                where: vi.fn(() => ({
+                  orderBy: vi.fn(() => ({
+                    limit: vi.fn(() => Promise.resolve(expectedVisible.slice(0, 50))),
                   })),
                 })),
               })),
@@ -108,11 +108,11 @@ describe('Room log query filtering and ordering', () => {
       fc.asyncProperty(fc.integer({ min: 1, max: 1000 }), async (roomId) => {
         // All events have null messages — the DB would return nothing
         const db = {
-          select: jest.fn(() => ({
-            from: jest.fn(() => ({
-              where: jest.fn(() => ({
-                orderBy: jest.fn(() => ({
-                  limit: jest.fn(() => Promise.resolve([])),
+          select: vi.fn(() => ({
+            from: vi.fn(() => ({
+              where: vi.fn(() => ({
+                orderBy: vi.fn(() => ({
+                  limit: vi.fn(() => Promise.resolve([])),
                 })),
               })),
             })),
@@ -178,11 +178,11 @@ describe('Cursor pagination completeness', () => {
             const page = filtered.slice(0, pageSize);
 
             return {
-              select: jest.fn(() => ({
-                from: jest.fn(() => ({
-                  where: jest.fn(() => ({
-                    orderBy: jest.fn(() => ({
-                      limit: jest.fn(() => Promise.resolve(page)),
+              select: vi.fn(() => ({
+                from: vi.fn(() => ({
+                  where: vi.fn(() => ({
+                    orderBy: vi.fn(() => ({
+                      limit: vi.fn(() => Promise.resolve(page)),
                     })),
                   })),
                 })),
@@ -263,11 +263,11 @@ describe('Cursor pagination completeness', () => {
           const pageSize = events.length + 10; // larger than total
 
           const db = {
-            select: jest.fn(() => ({
-              from: jest.fn(() => ({
-                where: jest.fn(() => ({
-                  orderBy: jest.fn(() => ({
-                    limit: jest.fn(() => Promise.resolve(visibleRows)),
+            select: vi.fn(() => ({
+              from: vi.fn(() => ({
+                where: vi.fn(() => ({
+                  orderBy: vi.fn(() => ({
+                    limit: vi.fn(() => Promise.resolve(visibleRows)),
                   })),
                 })),
               })),
@@ -306,8 +306,8 @@ describe('Participant insertion with correct seat indices', () => {
           let insertedValues: any[] = [];
 
           const db = {
-            insert: jest.fn(() => ({
-              values: jest.fn((vals: any[]) => {
+            insert: vi.fn(() => ({
+              values: vi.fn((vals: any[]) => {
                 insertedValues = vals;
                 return Promise.resolve();
               }),
@@ -358,8 +358,8 @@ describe('Participant insertion with correct seat indices', () => {
     await fc.assert(
       fc.asyncProperty(fc.integer({ min: 1, max: 10000 }), async (_sessionId) => {
         const db = {
-          insert: jest.fn(() => ({
-            values: jest.fn(() => Promise.resolve()),
+          insert: vi.fn(() => ({
+            values: vi.fn(() => Promise.resolve()),
           })),
         } as any;
 
@@ -388,8 +388,8 @@ describe('Participant insertion with correct seat indices', () => {
           let insertedValues: any[] = [];
 
           const db = {
-            insert: jest.fn(() => ({
-              values: jest.fn((vals: any[]) => {
+            insert: vi.fn(() => ({
+              values: vi.fn((vals: any[]) => {
                 insertedValues = vals;
                 return Promise.resolve();
               }),

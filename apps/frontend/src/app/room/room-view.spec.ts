@@ -39,23 +39,23 @@ describe('RoomView', () => {
     currentRoomId: signal(null),
     roomDeleted: signal<number | null>(null),
     joinError: signal<string | null>(null),
-    joinRoom: jest.fn(),
-    leaveRoom: jest.fn(),
+    joinRoom: vi.fn(),
+    leaveRoom: vi.fn(),
   };
 
   const mockChatService = {
     messages: signal([]),
-    clearMessages: jest.fn(),
-    sendMessage: jest.fn(),
+    clearMessages: vi.fn(),
+    sendMessage: vi.fn(),
   };
 
   const mockRoomService = {
-    getRoom: jest.fn().mockReturnValue(of(ROOM)),
-    getInvites: jest.fn().mockReturnValue(of([])),
-    getBans: jest.fn().mockReturnValue(of([])),
-    banUser: jest.fn().mockReturnValue(of({})),
-    uninviteUser: jest.fn().mockReturnValue(of({})),
-    unbanUser: jest.fn().mockReturnValue(of({})),
+    getRoom: vi.fn().mockReturnValue(of(ROOM)),
+    getInvites: vi.fn().mockReturnValue(of([])),
+    getBans: vi.fn().mockReturnValue(of([])),
+    banUser: vi.fn().mockReturnValue(of({})),
+    uninviteUser: vi.fn().mockReturnValue(of({})),
+    unbanUser: vi.fn().mockReturnValue(of({})),
   };
 
   const mockAuthService = {
@@ -67,7 +67,7 @@ describe('RoomView', () => {
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockRoomContext.roomDeleted.set(null);
     mockRoomContext.joinError.set(null);
 
@@ -135,7 +135,7 @@ describe('RoomView', () => {
   });
 
   it('redirects to /rooms when join error occurs (e.g. room full)', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     mockRoomContext.joinError.set('Room is full (limit: 4)');
     fixture.detectChanges();
@@ -152,23 +152,23 @@ describe('RoomView — invalid room', () => {
     currentRoomId: signal(null),
     roomDeleted: signal<number | null>(null),
     joinError: signal<string | null>(null),
-    joinRoom: jest.fn(),
-    leaveRoom: jest.fn(),
+    joinRoom: vi.fn(),
+    leaveRoom: vi.fn(),
   };
 
   const mockChatService = {
     messages: signal([]),
-    clearMessages: jest.fn(),
-    sendMessage: jest.fn(),
+    clearMessages: vi.fn(),
+    sendMessage: vi.fn(),
   };
 
   const mockRoomService = {
-    getRoom: jest.fn().mockReturnValue(throwError(() => new Error('Not found'))),
-    getInvites: jest.fn().mockReturnValue(of([])),
-    getBans: jest.fn().mockReturnValue(of([])),
-    banUser: jest.fn().mockReturnValue(of({})),
-    uninviteUser: jest.fn().mockReturnValue(of({})),
-    unbanUser: jest.fn().mockReturnValue(of({})),
+    getRoom: vi.fn().mockReturnValue(throwError(() => new Error('Not found'))),
+    getInvites: vi.fn().mockReturnValue(of([])),
+    getBans: vi.fn().mockReturnValue(of([])),
+    banUser: vi.fn().mockReturnValue(of({})),
+    uninviteUser: vi.fn().mockReturnValue(of({})),
+    unbanUser: vi.fn().mockReturnValue(of({})),
   };
 
   const mockAuthService = {
@@ -180,7 +180,7 @@ describe('RoomView — invalid room', () => {
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     await TestBed.configureTestingModule({
       imports: [RoomView],
@@ -203,7 +203,7 @@ describe('RoomView — invalid room', () => {
   });
 
   it('redirects to /rooms when getRoom fails', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(RoomView);
     fixture.detectChanges();
     expect(navigateSpy).toHaveBeenCalledWith(['/rooms']);

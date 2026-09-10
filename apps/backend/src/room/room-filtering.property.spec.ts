@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { type Mock } from 'vitest';
 import { WsConnectionService } from '../ws/ws-connection.service';
 import { RoomService } from './room.service';
 
@@ -46,68 +47,68 @@ function roomArb(id: number, ownerId: number): fc.Arbitrary<TestRoom> {
 }
 
 function buildService(overrides: {
-  roomRepo?: Partial<Record<string, jest.Mock>>;
-  rosterRepo?: Partial<Record<string, jest.Mock>>;
-  friendService?: Partial<Record<string, jest.Mock>>;
-  blockService?: Partial<Record<string, jest.Mock>>;
-  inviteRepo?: Partial<Record<string, jest.Mock>>;
-  banRepo?: Partial<Record<string, jest.Mock>>;
+  roomRepo?: Partial<Record<string, Mock>>;
+  rosterRepo?: Partial<Record<string, Mock>>;
+  friendService?: Partial<Record<string, Mock>>;
+  blockService?: Partial<Record<string, Mock>>;
+  inviteRepo?: Partial<Record<string, Mock>>;
+  banRepo?: Partial<Record<string, Mock>>;
 }): RoomService {
   const roomRepo = {
-    findById: jest.fn(),
-    findAll: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-    findMemberships: jest.fn(),
-    findDiscoverablePublic: jest.fn(),
-    findDiscoverablePrivate: jest.fn(),
-    searchDiscoverable: jest.fn(),
+    findById: vi.fn(),
+    findAll: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    findMemberships: vi.fn(),
+    findDiscoverablePublic: vi.fn(),
+    findDiscoverablePrivate: vi.fn(),
+    searchDiscoverable: vi.fn(),
     ...overrides.roomRepo,
   };
 
   const rosterRepo = {
-    findByRoom: jest.fn().mockResolvedValue([]),
-    addMember: jest.fn(),
-    removeMember: jest.fn(),
-    replaceRoster: jest.fn(),
-    countMembers: jest.fn().mockResolvedValue(0),
-    isMember: jest.fn().mockResolvedValue(false),
-    getAssignedHues: jest.fn().mockResolvedValue([]),
-    setAssignedHue: jest.fn(),
-    updateLastVisitedAt: jest.fn(),
-    findRosteredRoomIds: jest.fn().mockResolvedValue([]),
+    findByRoom: vi.fn().mockResolvedValue([]),
+    addMember: vi.fn(),
+    removeMember: vi.fn(),
+    replaceRoster: vi.fn(),
+    countMembers: vi.fn().mockResolvedValue(0),
+    isMember: vi.fn().mockResolvedValue(false),
+    getAssignedHues: vi.fn().mockResolvedValue([]),
+    setAssignedHue: vi.fn(),
+    updateLastVisitedAt: vi.fn(),
+    findRosteredRoomIds: vi.fn().mockResolvedValue([]),
     ...overrides.rosterRepo,
   };
 
   const inviteRepo = {
-    findInvitedRoomIds: jest.fn().mockResolvedValue([]),
-    isInvited: jest.fn(),
-    findByRoom: jest.fn(),
-    create: jest.fn(),
-    createMany: jest.fn(),
-    delete: jest.fn(),
+    findInvitedRoomIds: vi.fn().mockResolvedValue([]),
+    isInvited: vi.fn(),
+    findByRoom: vi.fn(),
+    create: vi.fn(),
+    createMany: vi.fn(),
+    delete: vi.fn(),
     ...overrides.inviteRepo,
   };
 
   const banRepo = {
-    findBannedRoomIds: jest.fn().mockResolvedValue([]),
-    isBanned: jest.fn(),
-    findByRoom: jest.fn(),
-    create: jest.fn(),
-    delete: jest.fn(),
+    findBannedRoomIds: vi.fn().mockResolvedValue([]),
+    isBanned: vi.fn(),
+    findByRoom: vi.fn(),
+    create: vi.fn(),
+    delete: vi.fn(),
     ...overrides.banRepo,
   };
 
   const friendService = {
-    areFriends: jest.fn(),
-    findFriendIds: jest.fn().mockResolvedValue([]),
+    areFriends: vi.fn(),
+    findFriendIds: vi.fn().mockResolvedValue([]),
     ...overrides.friendService,
   };
 
   const blockService = {
-    getBlockedIds: jest.fn().mockResolvedValue([]),
-    isBlocked: jest.fn().mockResolvedValue(false),
+    getBlockedIds: vi.fn().mockResolvedValue([]),
+    isBlocked: vi.fn().mockResolvedValue(false),
     ...overrides.blockService,
   };
 
@@ -116,14 +117,14 @@ function buildService(overrides: {
     inviteRepo as any,
     banRepo as any,
     rosterRepo as any,
-    { findByRoomId: jest.fn().mockResolvedValue([]) } as any,
-    { findByRoomId: jest.fn().mockResolvedValue(null), upsert: jest.fn() } as any,
+    { findByRoomId: vi.fn().mockResolvedValue([]) } as any,
+    { findByRoomId: vi.fn().mockResolvedValue(null), upsert: vi.fn() } as any,
     new WsConnectionService(),
     friendService as any,
     blockService as any,
-    { assignHue: jest.fn().mockReturnValue(0) } as any,
-    { getColorPreference: jest.fn().mockResolvedValue(null) } as any,
-    { isGameActive: jest.fn().mockReturnValue(false) } as any,
+    { assignHue: vi.fn().mockReturnValue(0) } as any,
+    { getColorPreference: vi.fn().mockResolvedValue(null) } as any,
+    { isGameActive: vi.fn().mockReturnValue(false) } as any,
   );
 }
 
@@ -178,11 +179,11 @@ describe('Memberships returns only rostered rooms in last-visited order', () => 
         // Mock the repository to return the expected rooms (simulating the DB query)
         const service = buildService({
           roomRepo: {
-            findMemberships: jest.fn().mockResolvedValue(expectedRooms),
+            findMemberships: vi.fn().mockResolvedValue(expectedRooms),
           },
           rosterRepo: {
-            countMembers: jest.fn().mockResolvedValue(0),
-            isMember: jest.fn().mockResolvedValue(false),
+            countMembers: vi.fn().mockResolvedValue(0),
+            isMember: vi.fn().mockResolvedValue(false),
           },
         });
 
@@ -286,24 +287,24 @@ describe('Discover private returns only authorized non-rostered private rooms', 
           // Mock the repository to return the expected filtered rooms
           const service = buildService({
             roomRepo: {
-              findDiscoverablePrivate: jest.fn().mockResolvedValue(expected),
+              findDiscoverablePrivate: vi.fn().mockResolvedValue(expected),
             },
             friendService: {
-              findFriendIds: jest.fn().mockResolvedValue(friendIds),
+              findFriendIds: vi.fn().mockResolvedValue(friendIds),
             },
             inviteRepo: {
-              findInvitedRoomIds: jest.fn().mockResolvedValue(invitedRoomIds),
+              findInvitedRoomIds: vi.fn().mockResolvedValue(invitedRoomIds),
             },
             banRepo: {
-              findBannedRoomIds: jest.fn().mockResolvedValue(bannedRoomIds),
+              findBannedRoomIds: vi.fn().mockResolvedValue(bannedRoomIds),
             },
             blockService: {
-              getBlockedIds: jest.fn().mockResolvedValue(blockedIds),
+              getBlockedIds: vi.fn().mockResolvedValue(blockedIds),
             },
             rosterRepo: {
-              findRosteredRoomIds: jest.fn().mockResolvedValue(rosteredRoomIds),
-              countMembers: jest.fn().mockResolvedValue(0),
-              isMember: jest.fn().mockResolvedValue(false),
+              findRosteredRoomIds: vi.fn().mockResolvedValue(rosteredRoomIds),
+              countMembers: vi.fn().mockResolvedValue(0),
+              isMember: vi.fn().mockResolvedValue(false),
             },
           });
 
@@ -394,21 +395,21 @@ describe('Discover public returns only non-rostered public rooms', () => {
 
         const service = buildService({
           roomRepo: {
-            findDiscoverablePublic: jest.fn().mockResolvedValue({
+            findDiscoverablePublic: vi.fn().mockResolvedValue({
               rooms: expected.slice(0, PAGE_SIZE),
               total: expected.length,
             }),
           },
           banRepo: {
-            findBannedRoomIds: jest.fn().mockResolvedValue(bannedRoomIds),
+            findBannedRoomIds: vi.fn().mockResolvedValue(bannedRoomIds),
           },
           blockService: {
-            getBlockedIds: jest.fn().mockResolvedValue(blockedIds),
+            getBlockedIds: vi.fn().mockResolvedValue(blockedIds),
           },
           rosterRepo: {
-            findRosteredRoomIds: jest.fn().mockResolvedValue(rosteredRoomIds),
-            countMembers: jest.fn().mockResolvedValue(0),
-            isMember: jest.fn().mockResolvedValue(false),
+            findRosteredRoomIds: vi.fn().mockResolvedValue(rosteredRoomIds),
+            countMembers: vi.fn().mockResolvedValue(0),
+            isMember: vi.fn().mockResolvedValue(false),
           },
         });
 
@@ -486,17 +487,17 @@ describe('Pagination preserves completeness', () => {
 
           const service = buildService({
             roomRepo: {
-              findDiscoverablePublic: jest.fn().mockResolvedValue({
+              findDiscoverablePublic: vi.fn().mockResolvedValue({
                 rooms: pageRooms,
                 total: totalRooms,
               }),
             },
-            banRepo: { findBannedRoomIds: jest.fn().mockResolvedValue([]) },
-            blockService: { getBlockedIds: jest.fn().mockResolvedValue([]) },
+            banRepo: { findBannedRoomIds: vi.fn().mockResolvedValue([]) },
+            blockService: { getBlockedIds: vi.fn().mockResolvedValue([]) },
             rosterRepo: {
-              findRosteredRoomIds: jest.fn().mockResolvedValue([]),
-              countMembers: jest.fn().mockResolvedValue(0),
-              isMember: jest.fn().mockResolvedValue(false),
+              findRosteredRoomIds: vi.fn().mockResolvedValue([]),
+              countMembers: vi.fn().mockResolvedValue(0),
+              isMember: vi.fn().mockResolvedValue(false),
             },
           });
 
@@ -580,20 +581,20 @@ describe('Search returns only name-matching rooms', () => {
 
         const service = buildService({
           roomRepo: {
-            searchDiscoverable: jest.fn().mockResolvedValue(expected),
+            searchDiscoverable: vi.fn().mockResolvedValue(expected),
           },
           friendService: {
-            findFriendIds: jest.fn().mockResolvedValue(friendIds),
+            findFriendIds: vi.fn().mockResolvedValue(friendIds),
           },
           inviteRepo: {
-            findInvitedRoomIds: jest.fn().mockResolvedValue(invitedRoomIds),
+            findInvitedRoomIds: vi.fn().mockResolvedValue(invitedRoomIds),
           },
-          banRepo: { findBannedRoomIds: jest.fn().mockResolvedValue([]) },
-          blockService: { getBlockedIds: jest.fn().mockResolvedValue([]) },
+          banRepo: { findBannedRoomIds: vi.fn().mockResolvedValue([]) },
+          blockService: { getBlockedIds: vi.fn().mockResolvedValue([]) },
           rosterRepo: {
-            findRosteredRoomIds: jest.fn().mockResolvedValue([]),
-            countMembers: jest.fn().mockResolvedValue(0),
-            isMember: jest.fn().mockResolvedValue(false),
+            findRosteredRoomIds: vi.fn().mockResolvedValue([]),
+            countMembers: vi.fn().mockResolvedValue(0),
+            isMember: vi.fn().mockResolvedValue(false),
           },
         });
 

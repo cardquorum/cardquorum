@@ -1,4 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { type Mock } from 'vitest';
 import {
   type GameParticipantRepository,
   type GameSessionRepository,
@@ -8,9 +9,9 @@ import { SummaryService } from './summary.service';
 
 describe('SummaryService', () => {
   let service: SummaryService;
-  let mockSessionRepo: { findById: jest.Mock };
-  let mockParticipantRepo: { findBySessionId: jest.Mock };
-  let mockUserRepo: { findById: jest.Mock };
+  let mockSessionRepo: { findById: Mock };
+  let mockParticipantRepo: { findBySessionId: Mock };
+  let mockUserRepo: { findById: Mock };
 
   const sessionId = 42;
   const userId = 10;
@@ -33,9 +34,9 @@ describe('SummaryService', () => {
   ];
 
   beforeEach(() => {
-    mockSessionRepo = { findById: jest.fn() };
-    mockParticipantRepo = { findBySessionId: jest.fn() };
-    mockUserRepo = { findById: jest.fn() };
+    mockSessionRepo = { findById: vi.fn() };
+    mockParticipantRepo = { findBySessionId: vi.fn() };
+    mockUserRepo = { findById: vi.fn() };
 
     service = new SummaryService(
       mockSessionRepo as unknown as GameSessionRepository,

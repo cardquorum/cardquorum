@@ -19,7 +19,7 @@ describe('Session status access control', () => {
 
   function buildService(sessionStatus: string, userId: number) {
     const mockSessionRepo = {
-      findById: jest.fn().mockResolvedValue({
+      findById: vi.fn().mockResolvedValue({
         id: 1,
         gameType: 'sheepshead',
         config: {},
@@ -30,7 +30,7 @@ describe('Session status access control', () => {
     } as unknown as GameSessionRepository;
 
     const mockParticipantRepo = {
-      findBySessionId: jest.fn().mockResolvedValue([
+      findBySessionId: vi.fn().mockResolvedValue([
         { userId, seatIndex: 0, sessionId: 1 },
         { userId: userId + 1, seatIndex: 1, sessionId: 1 },
         { userId: userId + 2, seatIndex: 2, sessionId: 1 },
@@ -38,7 +38,7 @@ describe('Session status access control', () => {
     } as unknown as GameParticipantRepository;
 
     const mockEventRepo = {
-      findBySessionId: jest.fn().mockResolvedValue([
+      findBySessionId: vi.fn().mockResolvedValue([
         {
           eventType: 'game_started',
           userId: null,
@@ -51,7 +51,7 @@ describe('Session status access control', () => {
     } as unknown as GameEventRepository;
 
     const mockUserRepo = {
-      findById: jest.fn().mockResolvedValue({
+      findById: vi.fn().mockResolvedValue({
         id: userId,
         username: `user_${userId}`,
         displayName: `User ${userId}`,
@@ -110,7 +110,7 @@ describe('Session status access control', () => {
 
   it('should reject with NotFoundException when session does not exist', () => {
     const mockSessionRepo = {
-      findById: jest.fn().mockResolvedValue(null),
+      findById: vi.fn().mockResolvedValue(null),
     } as unknown as GameSessionRepository;
 
     const mockParticipantRepo = {} as unknown as GameParticipantRepository;

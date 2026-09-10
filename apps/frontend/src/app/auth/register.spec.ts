@@ -34,7 +34,7 @@ describe('Register', () => {
   it('should call register and navigate on success', () => {
     const fixture = TestBed.createComponent(Register);
     fixture.detectChanges();
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture.componentInstance['form'].setValue({
       username: 'bobuser',

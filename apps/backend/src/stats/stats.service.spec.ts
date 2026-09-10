@@ -1,27 +1,28 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { type Mock } from 'vitest';
 import { StatsService } from './stats.service';
 
 describe('StatsService', () => {
   let service: StatsService;
   let mockPlayerStatsRepo: {
-    bulkInsert: jest.Mock;
-    aggregateByRoom: jest.Mock;
-    aggregateByUser: jest.Mock;
-    aggregateByUserGrouped: jest.Mock;
+    bulkInsert: Mock;
+    aggregateByRoom: Mock;
+    aggregateByUser: Mock;
+    aggregateByUserGrouped: Mock;
   };
   let mockRoomRosterRepo: {
-    isMember: jest.Mock;
-    findByRoom: jest.Mock;
+    isMember: Mock;
+    findByRoom: Mock;
   };
   let mockRoomRepo: {
-    findById: jest.Mock;
+    findById: Mock;
   };
 
   beforeEach(() => {
     mockPlayerStatsRepo = {
-      bulkInsert: jest.fn().mockResolvedValue(undefined),
-      aggregateByRoom: jest.fn().mockResolvedValue([]),
-      aggregateByUser: jest.fn().mockResolvedValue({
+      bulkInsert: vi.fn().mockResolvedValue(undefined),
+      aggregateByRoom: vi.fn().mockResolvedValue([]),
+      aggregateByUser: vi.fn().mockResolvedValue({
         userId: 1,
         displayName: null,
         username: '',
@@ -30,16 +31,16 @@ describe('StatsService', () => {
         score: 0,
         gamesPlayed: 0,
       }),
-      aggregateByUserGrouped: jest.fn().mockResolvedValue(new Map()),
+      aggregateByUserGrouped: vi.fn().mockResolvedValue(new Map()),
     };
 
     mockRoomRosterRepo = {
-      isMember: jest.fn().mockResolvedValue(true),
-      findByRoom: jest.fn().mockResolvedValue([]),
+      isMember: vi.fn().mockResolvedValue(true),
+      findByRoom: vi.fn().mockResolvedValue([]),
     };
 
     mockRoomRepo = {
-      findById: jest.fn().mockResolvedValue({ id: 1, name: 'Test Room' }),
+      findById: vi.fn().mockResolvedValue({ id: 1, name: 'Test Room' }),
     };
 
     service = new StatsService(

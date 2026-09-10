@@ -23,12 +23,12 @@ describe('AccountPage', () => {
   const profileSignal = signal<UserProfile | null>(null);
   const mockUserService = {
     profile: profileSignal.asReadonly(),
-    loadProfile: jest.fn(),
-    updateUsername: jest.fn(),
-    updateDisplayName: jest.fn(),
-    updateColorPreference: jest.fn(),
-    clearColorPreference: jest.fn(),
-    deleteAccount: jest.fn(),
+    loadProfile: vi.fn(),
+    updateUsername: vi.fn(),
+    updateDisplayName: vi.fn(),
+    updateColorPreference: vi.fn(),
+    clearColorPreference: vi.fn(),
+    deleteAccount: vi.fn(),
   };
 
   const userSignal = signal<any>(null);
@@ -38,9 +38,9 @@ describe('AccountPage', () => {
     user: userSignal.asReadonly(),
     strategies: strategiesSignal.asReadonly(),
     credentials: credentialsSignal.asReadonly(),
-    loadCredentials: jest.fn(),
-    linkBasicCredential: jest.fn(),
-    unlinkBasicCredential: jest.fn(),
+    loadCredentials: vi.fn(),
+    linkBasicCredential: vi.fn(),
+    unlinkBasicCredential: vi.fn(),
   };
 
   beforeEach(async () => {

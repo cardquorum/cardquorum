@@ -7,15 +7,15 @@ import { EventLogService, type EventBufferEntry } from './event-log.service';
 
 function createService(): EventLogService {
   const mockGameEventRepo = {
-    batchInsert: jest.fn().mockResolvedValue(undefined),
-    findByRoomId: jest.fn().mockResolvedValue([]),
-    findBySessionId: jest.fn().mockResolvedValue([]),
+    batchInsert: vi.fn().mockResolvedValue(undefined),
+    findByRoomId: vi.fn().mockResolvedValue([]),
+    findBySessionId: vi.fn().mockResolvedValue([]),
   } as any;
 
   const mockGameParticipantRepo = {
-    batchInsert: jest.fn().mockResolvedValue(undefined),
-    findByUserId: jest.fn().mockResolvedValue([]),
-    findBySessionId: jest.fn().mockResolvedValue([]),
+    batchInsert: vi.fn().mockResolvedValue(undefined),
+    findByUserId: vi.fn().mockResolvedValue([]),
+    findBySessionId: vi.fn().mockResolvedValue([]),
   } as any;
 
   return new EventLogService(mockGameEventRepo, mockGameParticipantRepo);

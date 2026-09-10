@@ -1,26 +1,40 @@
+import { TestBed } from '@angular/core/testing';
 import * as fc from 'fast-check';
+import type { GamePlugin } from '@cardquorum/engine';
 import type { ReplayEventDto, ReplayParticipantDto } from '@cardquorum/shared';
-import { ReplayEngineService } from './replay-engine.service';
+import { GAME_ENGINE_PLUGINS, ReplayEngineService } from './replay-engine.service';
 
-// Mock the sheepshead plugin import with a simple pass-through plugin
-jest.mock('@cardquorum/sheepshead', () => ({
-  SheepsheadPlugin: {
-    gameType: 'sheepshead',
-    validateConfig: () => true,
-    createInitialState: (_config: unknown, userIDs: number[]) => ({
-      phase: 'initial',
-      players: userIDs.map((id) => ({ userID: id })),
-      eventCount: 0,
-    }),
-    applyEvent: (_config: unknown, state: { eventCount: number }) => ({
-      state: { ...state, eventCount: state.eventCount + 1 },
-    }),
-    getPlayerView: (_config: unknown, state: unknown) => state,
-    getValidActions: () => [],
-    isGameOver: () => false,
-    buildStore: () => ({}),
-  },
-}));
+/**
+ * A pass-through plugin. These properties are about navigation positions, not
+ * game rules, so the engine only has to count events without rejecting them.
+ * The cast is needed because `validateConfig` is declared as a type predicate.
+ */
+const STUB_PLUGIN = {
+  gameType: 'sheepshead',
+  validateConfig: () => true,
+  createInitialState: (_config: unknown, userIDs: number[]) => ({
+    phase: 'initial',
+    players: userIDs.map((id) => ({ userID: id })),
+    eventCount: 0,
+  }),
+  applyEvent: (_config: unknown, state: { eventCount: number }) => ({
+    state: { ...state, eventCount: state.eventCount + 1 },
+  }),
+  getPlayerView: (_config: unknown, state: unknown) => state,
+  getValidActions: () => [],
+  isGameOver: () => false,
+  buildStore: () => ({}),
+} as unknown as GamePlugin;
+
+beforeEach(() => {
+  TestBed.configureTestingModule({
+    providers: [{ provide: GAME_ENGINE_PLUGINS, useValue: { sheepshead: STUB_PLUGIN } }],
+  });
+});
+
+afterEach(() => {
+  TestBed.resetTestingModule();
+});
 
 /** Generate a list of M non-synthetic replay events. */
 function makeEvents(count: number): ReplayEventDto[] {
@@ -41,7 +55,7 @@ const PARTICIPANTS: ReplayParticipantDto[] = [
 ];
 
 function initializeEngine(totalEvents: number): ReplayEngineService {
-  const engine = new ReplayEngineService();
+  const engine = TestBed.runInInjectionContext(() => new ReplayEngineService());
   const events = makeEvents(totalEvents);
   engine.initialize('sheepshead', {}, PARTICIPANTS, events, 1);
   return engine;

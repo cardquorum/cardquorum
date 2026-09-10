@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { type Mocked } from 'vitest';
 import {
   type PlayerStatsRepository,
   type RoomRepository,
@@ -11,16 +12,16 @@ import { StatsService } from './stats.service';
 // Mock setup
 // ---------------------------------------------------------------------------
 
-function createMockPlayerStatsRepo(): jest.Mocked<
+function createMockPlayerStatsRepo(): Mocked<
   Pick<
     PlayerStatsRepository,
     'bulkInsert' | 'aggregateByRoom' | 'aggregateByUser' | 'aggregateByUserGrouped'
   >
 > {
   return {
-    bulkInsert: jest.fn().mockResolvedValue(undefined),
-    aggregateByRoom: jest.fn().mockResolvedValue([]),
-    aggregateByUser: jest.fn().mockResolvedValue({
+    bulkInsert: vi.fn().mockResolvedValue(undefined),
+    aggregateByRoom: vi.fn().mockResolvedValue([]),
+    aggregateByUser: vi.fn().mockResolvedValue({
       userId: 0,
       displayName: null,
       username: '',
@@ -29,22 +30,20 @@ function createMockPlayerStatsRepo(): jest.Mocked<
       score: 0,
       gamesPlayed: 0,
     }),
-    aggregateByUserGrouped: jest.fn().mockResolvedValue(new Map()),
+    aggregateByUserGrouped: vi.fn().mockResolvedValue(new Map()),
   };
 }
 
-function createMockRoomRosterRepo(): jest.Mocked<
-  Pick<RoomRosterRepository, 'isMember' | 'findByRoom'>
-> {
+function createMockRoomRosterRepo(): Mocked<Pick<RoomRosterRepository, 'isMember' | 'findByRoom'>> {
   return {
-    isMember: jest.fn().mockResolvedValue(true),
-    findByRoom: jest.fn().mockResolvedValue([]),
+    isMember: vi.fn().mockResolvedValue(true),
+    findByRoom: vi.fn().mockResolvedValue([]),
   };
 }
 
-function createMockRoomRepo(): jest.Mocked<Pick<RoomRepository, 'findById'>> {
+function createMockRoomRepo(): Mocked<Pick<RoomRepository, 'findById'>> {
   return {
-    findById: jest.fn().mockResolvedValue({ id: 1 }),
+    findById: vi.fn().mockResolvedValue({ id: 1 }),
   };
 }
 

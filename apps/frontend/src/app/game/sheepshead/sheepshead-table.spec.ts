@@ -7,7 +7,7 @@ import { SheepsheadTable } from './sheepshead-table';
 // ── Mock factories ──
 
 function createMockStartNextGame() {
-  return { emit: jest.fn() } as any;
+  return { emit: vi.fn() } as any;
 }
 
 // ── State factories ──
@@ -295,7 +295,7 @@ describe('SheepsheadTable – corner actions', () => {
 
 describe('SheepsheadTable – action dispatching', () => {
   it('calls actionDispatcher when an action button is clicked', async () => {
-    const dispatcher = jest.fn();
+    const dispatcher = vi.fn();
     const { fixture } = await setup({
       state: DEAL_STATE,
       validActions: ['deal'],
@@ -342,7 +342,7 @@ describe('SheepsheadTable – end-of-game summary overlay', () => {
     const { fixture } = await setup({
       state: SCORE_STATE,
       validActions: [],
-      actionDispatcher: jest.fn(),
+      actionDispatcher: vi.fn(),
     });
     fixture.detectChanges();
 
@@ -362,7 +362,7 @@ describe('SheepsheadTable – end-of-game summary overlay', () => {
     const { fixture } = await setup({
       state: SCORE_STATE,
       validActions: [],
-      actionDispatcher: jest.fn(),
+      actionDispatcher: vi.fn(),
     });
     fixture.detectChanges();
 

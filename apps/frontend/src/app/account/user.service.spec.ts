@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { type Mock } from 'vitest';
 import { type UserProfile } from '@cardquorum/shared';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
@@ -18,16 +19,16 @@ describe('UserService', () => {
   let service: UserService;
   let http: HttpTestingController;
   let mockAuthService: {
-    updateUsername: jest.Mock;
-    updateDisplayName: jest.Mock;
-    clearLocalState: jest.Mock;
+    updateUsername: Mock;
+    updateDisplayName: Mock;
+    clearLocalState: Mock;
   };
 
   beforeEach(() => {
     mockAuthService = {
-      updateUsername: jest.fn(),
-      updateDisplayName: jest.fn(),
-      clearLocalState: jest.fn(),
+      updateUsername: vi.fn(),
+      updateDisplayName: vi.fn(),
+      clearLocalState: vi.fn(),
     };
 
     TestBed.configureTestingModule({

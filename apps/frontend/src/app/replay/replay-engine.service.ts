@@ -1,12 +1,22 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, InjectionToken, signal } from '@angular/core';
 import type { GamePlugin } from '@cardquorum/engine';
 import type { ReplayEventDto, ReplayParticipantDto } from '@cardquorum/shared';
 import { SheepsheadPlugin } from '@cardquorum/sheepshead';
 
-/** Registry of game engine plugins keyed by game type. */
-const GAME_ENGINE_PLUGINS: Record<string, GamePlugin> = {
-  sheepshead: SheepsheadPlugin,
-};
+/**
+ * Registry of game engine plugins keyed by game type.
+ *
+ * This is a DI token rather than a module const so tests can substitute a stub
+ * registry through TestBed. Mocking the '@cardquorum/sheepshead' module instead
+ * does not work under @angular/build:unit-test: the package resolves through
+ * tsconfig `paths` to libs/games/sheepshead/src, which is outside node_modules,
+ * so the builder bundles it into the spec entry point and leaves no module
+ * boundary for vi.mock to intercept.
+ */
+export const GAME_ENGINE_PLUGINS = new InjectionToken<Record<string, GamePlugin>>(
+  'GAME_ENGINE_PLUGINS',
+  { providedIn: 'root', factory: () => ({ sheepshead: SheepsheadPlugin }) },
+);
 
 /** Synthetic event types that are not processed by applyEvent. */
 const SYNTHETIC_EVENT_TYPES = new Set(['game_started', 'game_finished', 'game_cancelled']);
@@ -29,6 +39,7 @@ export class ReplayEngineService {
   readonly error = signal<{ eventIndex: number; message: string } | null>(null);
 
   private plugin: GamePlugin | null = null;
+  private readonly plugins = inject(GAME_ENGINE_PLUGINS);
   private config: unknown = null;
   private userIDs: number[] = [];
   private viewerUserId = 0;
@@ -45,7 +56,7 @@ export class ReplayEngineService {
     events: ReplayEventDto[],
     viewerUserId: number,
   ): void {
-    const plugin = GAME_ENGINE_PLUGINS[gameType];
+    const plugin = this.plugins[gameType];
     if (!plugin) {
       this.error.set({ eventIndex: -1, message: `Unknown game type: ${gameType}` });
       return;

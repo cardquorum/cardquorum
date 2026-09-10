@@ -1,10 +1,11 @@
 import { UnauthorizedException, type ExecutionContext } from '@nestjs/common';
+import { type Mocked } from 'vitest';
 import { HttpAuthGuard, REQUEST_SESSION_KEY, REQUEST_USER_KEY } from './http-auth.guard';
 import { type SessionService } from './session.service';
 
 describe('HttpAuthGuard', () => {
   let guard: HttpAuthGuard;
-  let sessionService: jest.Mocked<Pick<SessionService, 'validateSession'>>;
+  let sessionService: Mocked<Pick<SessionService, 'validateSession'>>;
 
   const createdAt = new Date();
   const aliceSession = {
@@ -34,7 +35,7 @@ describe('HttpAuthGuard', () => {
   };
 
   beforeEach(() => {
-    sessionService = { validateSession: jest.fn() };
+    sessionService = { validateSession: vi.fn() };
     guard = new HttpAuthGuard(sessionService as unknown as SessionService);
   });
 

@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import * as fc from 'fast-check';
 import type { ReplayEventDto, ReplayParticipantDto } from '@cardquorum/shared';
 import {
@@ -217,7 +218,7 @@ describe('Replay reconstruction correctness', () => {
           const viewerUserId = userIDs[viewerIdx];
 
           // --- Engine path: use ReplayEngineService ---
-          const engine = new ReplayEngineService();
+          const engine = TestBed.runInInjectionContext(() => new ReplayEngineService());
           engine.initialize('sheepshead', config, participants, replayEvents, viewerUserId);
           engine.goToPosition(targetPosition);
           const enginePlayerView = engine.playerView();

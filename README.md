@@ -73,7 +73,7 @@ pnpm e2e:all          # All browsers (Chromium, Firefox, WebKit)
 ### Scaffolding a New Game Plugin
 
 ```sh
-pnpm nx g @nx/js:lib --name=<game-name> --directory=libs/games/<game-name> --unitTestRunner=jest --bundler=none
+pnpm nx g @nx/js:lib --name=<game-name> --directory=libs/games/<game-name> --unitTestRunner=vitest --bundler=none
 ```
 
 ## Project Goals & AI Use

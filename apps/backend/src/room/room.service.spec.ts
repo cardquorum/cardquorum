@@ -1,5 +1,6 @@
 import { ConflictException, ForbiddenException } from '@nestjs/common';
 import * as fc from 'fast-check';
+import { type Mock } from 'vitest';
 import { type WebSocket } from 'ws';
 import { WS_EMIT, type UserIdentity } from '@cardquorum/shared';
 import { WsConnectionService } from '../ws/ws-connection.service';
@@ -9,98 +10,98 @@ describe('RoomService', () => {
   let service: RoomService;
   let connectionService: WsConnectionService;
   let mockRepo: {
-    findById: jest.Mock;
-    findAll: jest.Mock;
-    create: jest.Mock;
-    update: jest.Mock;
-    delete: jest.Mock;
+    findById: Mock;
+    findAll: Mock;
+    create: Mock;
+    update: Mock;
+    delete: Mock;
   };
-  let mockFriendService: { areFriends: jest.Mock; findFriendIds: jest.Mock };
-  let mockBlockService: { getBlockedIds: jest.Mock; isBlocked: jest.Mock };
+  let mockFriendService: { areFriends: Mock; findFriendIds: Mock };
+  let mockBlockService: { getBlockedIds: Mock; isBlocked: Mock };
   let mockInviteRepo: {
-    findInvitedRoomIds: jest.Mock;
-    isInvited: jest.Mock;
-    findByRoom: jest.Mock;
-    create: jest.Mock;
-    createMany: jest.Mock;
-    delete: jest.Mock;
+    findInvitedRoomIds: Mock;
+    isInvited: Mock;
+    findByRoom: Mock;
+    create: Mock;
+    createMany: Mock;
+    delete: Mock;
   };
   let mockBanRepo: {
-    findBannedRoomIds: jest.Mock;
-    isBanned: jest.Mock;
-    findByRoom: jest.Mock;
-    create: jest.Mock;
-    delete: jest.Mock;
+    findBannedRoomIds: Mock;
+    isBanned: Mock;
+    findByRoom: Mock;
+    create: Mock;
+    delete: Mock;
   };
   let mockRosterRepo: {
-    findByRoom: jest.Mock;
-    addMember: jest.Mock;
-    removeMember: jest.Mock;
-    replaceRoster: jest.Mock;
-    countMembers: jest.Mock;
-    isMember: jest.Mock;
-    getAssignedHues: jest.Mock;
-    setAssignedHue: jest.Mock;
+    findByRoom: Mock;
+    addMember: Mock;
+    removeMember: Mock;
+    replaceRoster: Mock;
+    countMembers: Mock;
+    isMember: Mock;
+    getAssignedHues: Mock;
+    setAssignedHue: Mock;
   };
-  let mockColorAssignment: { assignHue: jest.Mock };
-  let mockUserRepo: { getColorPreference: jest.Mock };
-  let mockGameService: { isGameActive: jest.Mock };
+  let mockColorAssignment: { assignHue: Mock };
+  let mockUserRepo: { getColorPreference: Mock };
+  let mockGameService: { isGameActive: Mock };
 
   const alice: UserIdentity = { userId: 1, username: 'alice', displayName: 'Alice' };
   const bob: UserIdentity = { userId: 2, username: 'bob', displayName: 'Bob' };
 
-  const createMockClient = () => ({ send: jest.fn(), close: jest.fn() }) as unknown as WebSocket;
+  const createMockClient = () => ({ send: vi.fn(), close: vi.fn() }) as unknown as WebSocket;
 
   beforeEach(() => {
     connectionService = new WsConnectionService();
 
     mockRepo = {
-      findById: jest.fn(),
-      findAll: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findById: vi.fn(),
+      findAll: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     };
 
-    mockFriendService = { areFriends: jest.fn(), findFriendIds: jest.fn() };
-    mockBlockService = { getBlockedIds: jest.fn(), isBlocked: jest.fn() };
+    mockFriendService = { areFriends: vi.fn(), findFriendIds: vi.fn() };
+    mockBlockService = { getBlockedIds: vi.fn(), isBlocked: vi.fn() };
     mockInviteRepo = {
-      findInvitedRoomIds: jest.fn().mockResolvedValue([]),
-      isInvited: jest.fn().mockResolvedValue(false),
-      findByRoom: jest.fn().mockResolvedValue([]),
-      create: jest.fn(),
-      createMany: jest.fn(),
-      delete: jest.fn(),
+      findInvitedRoomIds: vi.fn().mockResolvedValue([]),
+      isInvited: vi.fn().mockResolvedValue(false),
+      findByRoom: vi.fn().mockResolvedValue([]),
+      create: vi.fn(),
+      createMany: vi.fn(),
+      delete: vi.fn(),
     };
     mockBanRepo = {
-      findBannedRoomIds: jest.fn().mockResolvedValue([]),
-      isBanned: jest.fn().mockResolvedValue(false),
-      findByRoom: jest.fn().mockResolvedValue([]),
-      create: jest.fn(),
-      delete: jest.fn(),
+      findBannedRoomIds: vi.fn().mockResolvedValue([]),
+      isBanned: vi.fn().mockResolvedValue(false),
+      findByRoom: vi.fn().mockResolvedValue([]),
+      create: vi.fn(),
+      delete: vi.fn(),
     };
     mockRosterRepo = {
-      findByRoom: jest.fn().mockResolvedValue([]),
-      addMember: jest.fn(),
-      removeMember: jest.fn().mockResolvedValue(true),
-      replaceRoster: jest.fn(),
-      countMembers: jest.fn().mockResolvedValue(0),
-      isMember: jest.fn().mockResolvedValue(false),
-      getAssignedHues: jest.fn().mockResolvedValue([]),
-      setAssignedHue: jest.fn(),
+      findByRoom: vi.fn().mockResolvedValue([]),
+      addMember: vi.fn(),
+      removeMember: vi.fn().mockResolvedValue(true),
+      replaceRoster: vi.fn(),
+      countMembers: vi.fn().mockResolvedValue(0),
+      isMember: vi.fn().mockResolvedValue(false),
+      getAssignedHues: vi.fn().mockResolvedValue([]),
+      setAssignedHue: vi.fn(),
     };
 
-    mockColorAssignment = { assignHue: jest.fn().mockReturnValue(0) };
-    mockUserRepo = { getColorPreference: jest.fn().mockResolvedValue(null) };
-    mockGameService = { isGameActive: jest.fn().mockReturnValue(false) };
+    mockColorAssignment = { assignHue: vi.fn().mockReturnValue(0) };
+    mockUserRepo = { getColorPreference: vi.fn().mockResolvedValue(null) };
+    mockGameService = { isGameActive: vi.fn().mockReturnValue(false) };
 
     service = new RoomService(
       mockRepo as any,
       mockInviteRepo as any,
       mockBanRepo as any,
       mockRosterRepo as any,
-      { findByRoomId: jest.fn().mockResolvedValue([]) } as any,
-      { findByRoomId: jest.fn().mockResolvedValue(null), upsert: jest.fn() } as any,
+      { findByRoomId: vi.fn().mockResolvedValue([]) } as any,
+      { findByRoomId: vi.fn().mockResolvedValue(null), upsert: vi.fn() } as any,
       connectionService,
       mockFriendService as any,
       mockBlockService as any,
@@ -132,7 +133,7 @@ describe('RoomService', () => {
 
       // Both clients should receive ROOM_DELETED
       for (const client of [client1, client2]) {
-        const calls = (client.send as jest.Mock).mock.calls;
+        const calls = (client.send as Mock).mock.calls;
         expect(calls.length).toBeGreaterThanOrEqual(1);
         const parsed = JSON.parse(calls[0][0]);
         expect(parsed.event).toBe(WS_EMIT.ROOM_DELETED);
@@ -198,13 +199,13 @@ describe('RoomService', () => {
 
       expect(client1.send).not.toHaveBeenCalled();
       expect(client2.send).toHaveBeenCalledTimes(1);
-      const parsed = JSON.parse((client2.send as jest.Mock).mock.calls[0][0]);
+      const parsed = JSON.parse((client2.send as Mock).mock.calls[0][0]);
       expect(parsed.event).toBe('test:event');
     });
 
     it('should not throw if a client send fails', () => {
       const client1 = createMockClient();
-      (client1.send as jest.Mock).mockImplementation(() => {
+      (client1.send as Mock).mockImplementation(() => {
         throw new Error('connection closed');
       });
       connectionService.trackClient(client1, alice);
@@ -520,10 +521,10 @@ describe('RoomService', () => {
 
       await service.banUser(1, 10);
 
-      const calls = (client.send as jest.Mock).mock.calls;
+      const calls = (client.send as Mock).mock.calls;
       const kickMsg = calls.find((c: any) => JSON.parse(c[0]).event === WS_EMIT.MEMBER_KICKED);
       expect(kickMsg).toBeDefined();
-      expect(JSON.parse(kickMsg[0]).data).toEqual({ roomId: 1, userId: 10 });
+      expect(JSON.parse(kickMsg![0]).data).toEqual({ roomId: 1, userId: 10 });
     });
   });
 

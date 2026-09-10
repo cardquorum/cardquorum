@@ -166,7 +166,7 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should clear user, POST logout, and navigate to /login when no endSessionUrl', () => {
-      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       // Login first
       service.login({ username: 'test', password: 'pass' }).subscribe();
@@ -199,7 +199,7 @@ describe('AuthService', () => {
       // is processed by confirming the service does not navigate to /login in that case.
       // The actual window.location.href assignment is a one-liner in production code
       // and is exercised by e2e tests.
-      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       service.login({ username: 'test', password: 'pass' }).subscribe();
       httpTesting
@@ -225,7 +225,7 @@ describe('AuthService', () => {
 
   describe('logout re-entrancy guard', () => {
     it('should be a no-op when user is already null', () => {
-      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       // User is already null (not logged in)
       service.logout();
@@ -298,7 +298,7 @@ describe('AuthService', () => {
 
   describe('clearLocalState', () => {
     it('should clear user and disconnect without calling server', () => {
-      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       // Login first
       service.login({ username: 'test', password: 'pass' }).subscribe();
@@ -325,7 +325,7 @@ describe('AuthService', () => {
     });
 
     it('should be a no-op when user is already null', () => {
-      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       service.clearLocalState();
 

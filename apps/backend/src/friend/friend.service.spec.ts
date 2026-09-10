@@ -1,26 +1,27 @@
+import { type Mock } from 'vitest';
 import { FriendService } from './friend.service';
 
 describe('FriendService', () => {
   let service: FriendService;
   let mockFriendshipRepo: {
-    create: jest.Mock;
-    findById: jest.Mock;
-    findBetweenUsers: jest.Mock;
-    findFriends: jest.Mock;
-    deleteById: jest.Mock;
-    areFriends: jest.Mock;
-    findFriendIds: jest.Mock;
+    create: Mock;
+    findById: Mock;
+    findBetweenUsers: Mock;
+    findFriends: Mock;
+    deleteById: Mock;
+    areFriends: Mock;
+    findFriendIds: Mock;
   };
   let mockFriendshipRequestRepo: {
-    create: jest.Mock;
-    findById: jest.Mock;
-    findBetweenUsers: jest.Mock;
-    findIncomingRequests: jest.Mock;
-    findOutgoingRequests: jest.Mock;
-    deleteById: jest.Mock;
+    create: Mock;
+    findById: Mock;
+    findBetweenUsers: Mock;
+    findIncomingRequests: Mock;
+    findOutgoingRequests: Mock;
+    deleteById: Mock;
   };
   let mockUserRepo: {
-    findById: jest.Mock;
+    findById: Mock;
   };
 
   const now = new Date();
@@ -39,24 +40,24 @@ describe('FriendService', () => {
 
   beforeEach(() => {
     mockFriendshipRepo = {
-      create: jest.fn(),
-      findById: jest.fn(),
-      findBetweenUsers: jest.fn(),
-      findFriends: jest.fn(),
-      deleteById: jest.fn(),
-      areFriends: jest.fn(),
-      findFriendIds: jest.fn(),
+      create: vi.fn(),
+      findById: vi.fn(),
+      findBetweenUsers: vi.fn(),
+      findFriends: vi.fn(),
+      deleteById: vi.fn(),
+      areFriends: vi.fn(),
+      findFriendIds: vi.fn(),
     };
     mockFriendshipRequestRepo = {
-      create: jest.fn(),
-      findById: jest.fn(),
-      findBetweenUsers: jest.fn(),
-      findIncomingRequests: jest.fn(),
-      findOutgoingRequests: jest.fn(),
-      deleteById: jest.fn(),
+      create: vi.fn(),
+      findById: vi.fn(),
+      findBetweenUsers: vi.fn(),
+      findIncomingRequests: vi.fn(),
+      findOutgoingRequests: vi.fn(),
+      deleteById: vi.fn(),
     };
     mockUserRepo = {
-      findById: jest.fn(),
+      findById: vi.fn(),
     };
 
     service = new FriendService(

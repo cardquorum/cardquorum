@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { type Mock } from 'vitest';
 import { WS_EMIT, WS_EVENT, type GameLogBroadcast } from '@cardquorum/shared';
 import { RoomContextService } from '../room/room-context.service';
 import { WebSocketService } from '../websocket.service';
@@ -10,9 +11,9 @@ describe('GameLogService', () => {
   let handlers: Map<string, (data: unknown) => void>;
   let connectCallbacks: (() => void)[];
   let mockWs: {
-    on: jest.Mock;
-    send: jest.Mock;
-    onConnect: jest.Mock;
+    on: Mock;
+    send: Mock;
+    onConnect: Mock;
     connected: ReturnType<typeof signal<boolean>>;
   };
   let roomIdSignal: ReturnType<typeof signal<number | null>>;
@@ -23,14 +24,14 @@ describe('GameLogService', () => {
     connectCallbacks = [];
 
     mockWs = {
-      on: jest.fn((event: string, handler: (data: unknown) => void) => {
+      on: vi.fn((event: string, handler: (data: unknown) => void) => {
         handlers.set(event, handler);
-        return jest.fn();
+        return vi.fn();
       }),
-      send: jest.fn(),
-      onConnect: jest.fn((cb: () => void) => {
+      send: vi.fn(),
+      onConnect: vi.fn((cb: () => void) => {
         connectCallbacks.push(cb);
-        return jest.fn();
+        return vi.fn();
       }),
       connected: signal(false),
     };

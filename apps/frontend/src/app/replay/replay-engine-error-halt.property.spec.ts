@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import * as fc from 'fast-check';
 import type { ReplayEventDto, ReplayParticipantDto } from '@cardquorum/shared';
 import { legalPlays, SheepsheadPlugin } from '@cardquorum/sheepshead';
@@ -212,7 +213,7 @@ describe('Error halts replay at failing index', () => {
           };
 
           // Initialize the replay engine
-          const engine = new ReplayEngineService();
+          const engine = TestBed.runInInjectionContext(() => new ReplayEngineService());
           engine.initialize('sheepshead', config, participants, replayEvents, userIDs[0]);
 
           // Navigate to a position past K (try to go to end)
@@ -266,9 +267,9 @@ describe('Error halts replay at failing index', () => {
           };
 
           // Spy on the plugin's applyEvent to count calls
-          const applyEventSpy = jest.spyOn(SheepsheadPlugin, 'applyEvent');
+          const applyEventSpy = vi.spyOn(SheepsheadPlugin, 'applyEvent');
 
-          const engine = new ReplayEngineService();
+          const engine = TestBed.runInInjectionContext(() => new ReplayEngineService());
           engine.initialize('sheepshead', config, participants, replayEvents, userIDs[0]);
 
           applyEventSpy.mockClear();

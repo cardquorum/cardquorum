@@ -4,8 +4,9 @@
  *
  * Exercises: createSession → startSession → deal → pick → bury → play all tricks → score → game over
  */
+import { type Mock, type Mocked } from 'vitest';
 import { type GameSessionRepository } from '@cardquorum/db';
-import { type RoomManager } from '@cardquorum/engine';
+import { RoomManager } from '@cardquorum/engine';
 import { type RosterState } from '@cardquorum/shared';
 import { type RoomService } from '../room/room.service';
 import { type StatsService } from '../stats/stats.service';
@@ -14,16 +15,16 @@ import { GameService } from './game.service';
 
 describe('GameService integration (full Sheepshead game)', () => {
   let service: GameService;
-  let mockSessionRepo: jest.Mocked<
+  let mockSessionRepo: Mocked<
     Pick<GameSessionRepository, 'create' | 'updateStatusAndTimestamp' | 'updateStore'>
   >;
   let roomService: {
     manager: RoomManager;
-    getRoster: jest.Mock;
-    handlePostGame: jest.Mock;
-    toggleReady: jest.Mock;
-    broadcastToRoom: jest.Mock;
-    demoteToSpectator: jest.Mock;
+    getRoster: Mock;
+    handlePostGame: Mock;
+    toggleReady: Mock;
+    broadcastToRoom: Mock;
+    demoteToSpectator: Mock;
   };
 
   const userIDs = [1, 2, 3];
@@ -51,18 +52,17 @@ describe('GameService integration (full Sheepshead game)', () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     mockSessionRepo = {
-      create: jest.fn().mockResolvedValue({ id: 1 }),
-      updateStatusAndTimestamp: jest.fn().mockResolvedValue({}),
-      updateStore: jest.fn().mockResolvedValue({}),
+      create: vi.fn().mockResolvedValue({ id: 1 }),
+      updateStatusAndTimestamp: vi.fn().mockResolvedValue({}),
+      updateStore: vi.fn().mockResolvedValue({}),
     };
 
-    const { RoomManager: RM } = jest.requireActual('@cardquorum/engine');
     roomService = {
-      manager: new RM(),
-      getRoster: jest.fn().mockResolvedValue({
+      manager: new RoomManager(),
+      getRoster: vi.fn().mockResolvedValue({
         players: players.map((p, i) => ({
           userId: p.userId,
           username: p.username,
@@ -75,18 +75,18 @@ describe('GameService integration (full Sheepshead game)', () => {
         spectators: [],
         rotationMode: 'rotate-players' as const,
       } satisfies RosterState),
-      handlePostGame: jest.fn().mockResolvedValue({
+      handlePostGame: vi.fn().mockResolvedValue({
         players: [],
         spectators: [],
         rotationMode: 'rotate-players' as const,
       } satisfies RosterState),
-      toggleReady: jest.fn().mockResolvedValue({
+      toggleReady: vi.fn().mockResolvedValue({
         players: [],
         spectators: [],
         rotationMode: 'rotate-players' as const,
       } satisfies RosterState),
-      broadcastToRoom: jest.fn(),
-      demoteToSpectator: jest.fn().mockResolvedValue(undefined),
+      broadcastToRoom: vi.fn(),
+      demoteToSpectator: vi.fn().mockResolvedValue(undefined),
     };
 
     players.forEach((p, i) => {
@@ -97,7 +97,7 @@ describe('GameService integration (full Sheepshead game)', () => {
       mockSessionRepo as unknown as GameSessionRepository,
       roomService as unknown as RoomService,
       {
-        bufferEvent: jest.fn().mockImplementation((buffer, event, message, roomId, sessionId) => {
+        bufferEvent: vi.fn().mockImplementation((buffer, event, message, roomId, sessionId) => {
           buffer.push({
             roomId,
             sessionId,
@@ -109,21 +109,21 @@ describe('GameService integration (full Sheepshead game)', () => {
             createdAt: new Date(),
           });
         }),
-        flushBuffer: jest.fn().mockResolvedValue(undefined),
-        recordParticipants: jest.fn().mockResolvedValue(undefined),
-        getRoomLog: jest.fn().mockResolvedValue([]),
-        getCatchUpEntries: jest.fn().mockReturnValue([]),
+        flushBuffer: vi.fn().mockResolvedValue(undefined),
+        recordParticipants: vi.fn().mockResolvedValue(undefined),
+        getRoomLog: vi.fn().mockResolvedValue([]),
+        getCatchUpEntries: vi.fn().mockReturnValue([]),
       } as unknown as EventLogService,
       {
-        writeStats: jest.fn().mockResolvedValue(undefined),
+        writeStats: vi.fn().mockResolvedValue(undefined),
       } as unknown as StatsService,
-      { findByRoomId: jest.fn().mockResolvedValue(null) } as any,
+      { findByRoomId: vi.fn().mockResolvedValue(null) } as any,
     );
   });
 
   afterEach(() => {
     service.onModuleDestroy();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   function getView(
@@ -176,7 +176,7 @@ describe('GameService integration (full Sheepshead game)', () => {
     playerViews: Array<[number, { state: unknown; validActions: string[] }]>;
     store?: unknown;
   }> {
-    const broadcastFn = jest.fn();
+    const broadcastFn = vi.fn();
 
     // Deal
     let result = await service.applyAction(sessionId, getActiveFromService(sessionId), {
@@ -217,7 +217,7 @@ describe('GameService integration (full Sheepshead game)', () => {
 
       if (active === null) {
         // Pending state — advance timers to fire trick_advance
-        jest.advanceTimersByTime(2000);
+        vi.advanceTimersByTime(2000);
 
         // Get fresh views after trick_advance fired
         const views = getFreshViews(sessionId);
@@ -265,7 +265,7 @@ describe('GameService integration (full Sheepshead game)', () => {
     }
 
     // Advance timers to fire the chained game_scored scheduled event
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
 
     // game_scored triggers handleScore → isGameOver → broadcastFn with gameOver: true
     // Check if broadcastFn received the game-over result

@@ -36,7 +36,7 @@ describe('authInterceptor', () => {
   it('should redirect to login on 401 for non-auth URLs', () => {
     const auth = TestBed.inject(AuthService);
     const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     // Simulate a logged-in user
     auth.login({ username: 'test', password: 'pass' }).subscribe({
@@ -62,7 +62,7 @@ describe('authInterceptor', () => {
   it('should redirect to login on 401 for auth endpoints', () => {
     const auth = TestBed.inject(AuthService);
     const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     // Simulate a logged-in user
     auth.login({ username: 'test', password: 'pass' }).subscribe({
@@ -87,7 +87,7 @@ describe('authInterceptor', () => {
 
   it('should NOT logout on 401 for DELETE /api/users/me', () => {
     const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     http.delete('/api/users/me').subscribe({
       error: () => {

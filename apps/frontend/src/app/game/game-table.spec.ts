@@ -15,8 +15,8 @@ function createMockGameService(overrides: Partial<Record<string, unknown>> = {})
     colorMap: signal(overrides['colorMap'] ?? undefined),
     store: signal(overrides['store'] ?? null),
     validTargetsResponse: signal(overrides['validTargetsResponse'] ?? null),
-    queryTargets: jest.fn(),
-    sendAction: jest.fn(),
+    queryTargets: vi.fn(),
+    sendAction: vi.fn(),
   };
 }
 

@@ -5,22 +5,23 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { type Mock } from 'vitest';
 import { UserService } from './user.service';
 
-jest.mock('bcryptjs');
+vi.mock('bcryptjs');
 
 describe('UserService', () => {
   let service: UserService;
   let mockUserRepo: {
-    findById: jest.Mock;
-    updateUsername: jest.Mock;
-    updateDisplayName: jest.Mock;
-    updateColorPreference: jest.Mock;
-    searchByUsername: jest.Mock;
-    softDelete: jest.Mock;
+    findById: Mock;
+    updateUsername: Mock;
+    updateDisplayName: Mock;
+    updateColorPreference: Mock;
+    searchByUsername: Mock;
+    softDelete: Mock;
   };
-  let mockCredentialRepo: { findCredentialByUserId: jest.Mock };
-  let mockRoomRepo: { findIdsByOwner: jest.Mock };
+  let mockCredentialRepo: { findCredentialByUserId: Mock };
+  let mockRoomRepo: { findIdsByOwner: Mock };
 
   const now = new Date();
   const user = {
@@ -35,15 +36,15 @@ describe('UserService', () => {
 
   beforeEach(() => {
     mockUserRepo = {
-      findById: jest.fn(),
-      updateUsername: jest.fn(),
-      updateDisplayName: jest.fn(),
-      updateColorPreference: jest.fn(),
-      searchByUsername: jest.fn(),
-      softDelete: jest.fn().mockResolvedValue(undefined),
+      findById: vi.fn(),
+      updateUsername: vi.fn(),
+      updateDisplayName: vi.fn(),
+      updateColorPreference: vi.fn(),
+      searchByUsername: vi.fn(),
+      softDelete: vi.fn().mockResolvedValue(undefined),
     };
-    mockCredentialRepo = { findCredentialByUserId: jest.fn() };
-    mockRoomRepo = { findIdsByOwner: jest.fn() };
+    mockCredentialRepo = { findCredentialByUserId: vi.fn() };
+    mockRoomRepo = { findIdsByOwner: vi.fn() };
 
     service = new UserService(mockUserRepo as any, mockCredentialRepo as any, mockRoomRepo as any);
   });
@@ -146,7 +147,7 @@ describe('UserService', () => {
     beforeEach(() => {
       mockUserRepo.findById.mockResolvedValue(user);
       mockCredentialRepo.findCredentialByUserId.mockResolvedValue('hashed');
-      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+      (bcrypt.compare as Mock).mockResolvedValue(true);
       mockRoomRepo.findIdsByOwner.mockResolvedValue([]);
     });
 
@@ -163,7 +164,7 @@ describe('UserService', () => {
     });
 
     it('should throw on wrong password', async () => {
-      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+      (bcrypt.compare as Mock).mockResolvedValue(false);
       await expect(service.deleteAccount(1, 'basic', new Date(), 'wrong')).rejects.toThrow(
         UnauthorizedException,
       );

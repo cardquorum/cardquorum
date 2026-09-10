@@ -31,15 +31,12 @@ jobs:
         id: pnpm-store
         run: echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
-      - name: Cache pnpm store and Jest
+      - name: Cache pnpm store
         uses: actions/cache@v6
         with:
-          path: |
-            ${{ steps.pnpm-store.outputs.path }}
-            **/.jest-cache
-          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('jest.preset.js', '**/jest.config.cts') }}
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            deps-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
             deps-${{ runner.os }}-
 
       - name: Install dependencies

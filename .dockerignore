@@ -23,8 +23,8 @@ scripts
 .gitattributes
 .gitignore
 .DS_Store
-jest.config.ts
-jest.preset.js
+vitest.config.ts
+vitest.e2e.config.js
 eslint.config.mjs
 compose.dev.yml
 AGENTS.md

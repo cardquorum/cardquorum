@@ -84,12 +84,18 @@ Routes are defined in `apps/frontend/src/app/app.routes.ts`. Use lazy loading:
 
 ## Testing
 
-Tests use Jest (all projects). Run tests for a specific project:
+Tests use Vitest. The Node projects (`shared`, `engine`, `db`, `sheepshead`,
+`backend`) each have a `vitest.config.ts` that composes the shared preset in
+`vitest.node.ts` at the workspace root; Nx infers their `test` targets from
+those files via `@nx/vitest`. `frontend` uses Angular's own
+`@angular/build:unit-test` builder, which drives Vitest and compiles components
+itself.
 
 ```sh
 pnpm nx test engine
 pnpm nx test backend
-pnpm nx test shared
+pnpm nx test frontend --watch          # watch mode
+pnpm nx test backend -- src/auth       # a subset of files
 ```
 
-Backend tests mock infrastructure (Drizzle) and test business logic directly. The gateway spec instantiates the gateway class with mock dependencies rather than bootstrapping the full NestJS app.
+Backend tests mock infrastructure (Drizzle) and test business logic directly. The gateway specs instantiate the gateway class with mock dependencies rather than bootstrapping the full NestJS app.

@@ -5,11 +5,10 @@
   "implicitDependencies": ["backend"],
   "targets": {
     "e2e": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/backend-e2e"],
       "options": {
-        "jestConfig": "apps/backend-e2e/jest.config.cts",
-        "passWithNoTests": true
+        "configFile": "apps/backend-e2e/vitest.e2e.config.ts"
       },
       "dependsOn": ["backend:build", "backend:serve"]
     }

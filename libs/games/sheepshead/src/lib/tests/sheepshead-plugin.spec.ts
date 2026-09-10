@@ -1,5 +1,6 @@
 import { DECK } from '../constants';
 import { SheepsheadPlugin } from '../sheepshead-plugin';
+import { legalPlays } from '../tricks';
 import { type SheepsheadConfig, type SheepsheadState, type UserID } from '../types';
 
 /** Helper: call applyEvent and return just the state (unwraps ApplyEventResult). */
@@ -724,7 +725,6 @@ describe('SheepsheadPlugin', () => {
       expect(state.phase).toBe('play');
 
       // Play one full trick
-      const { legalPlays } = require('../tricks');
       for (let i = 0; i < userIDs.length; i++) {
         const active = state.activePlayer!;
         const cardToPlay = legalPlays(state, config, active).cards[0];
@@ -797,7 +797,6 @@ describe('SheepsheadPlugin', () => {
         const activePlayer = state.activePlayer;
 
         // Pick the first legal card
-        const { legalPlays } = require('../tricks');
         const cardToPlay = legalPlays(state, config, activePlayer).cards[0];
 
         state = apply(config, state, {
