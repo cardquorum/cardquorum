@@ -1,11 +1,8 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": ["../../tsconfig.base.json", "../../tsconfig.node.json"],
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "esModuleInterop": true,
     "types": ["jest", "node"]
   },
-  "include": ["jest.config.ts", "src/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }

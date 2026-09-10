@@ -1,26 +1,6 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "./out-tsc/app",
-    "paths": {
-      "@cardquorum/shared": ["../../libs/shared/src/index.ts"],
-      "@cardquorum/engine": ["../../libs/engine/src/index.ts"],
-      "@cardquorum/sheepshead": ["../../libs/games/sheepshead/src/index.ts"],
-      "@cardquorum/sheepshead/reporting": ["../../libs/games/sheepshead/src/reporting/index.ts"]
-    },
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "target": "es2022",
-    "moduleResolution": "bundler",
-    "emitDecoratorMetadata": false,
-    "module": "preserve",
-    "types": []
-  },
+  "extends": ["../../tsconfig.base.json", "../../tsconfig.browser.json"],
+  "compilerOptions": { "outDir": "./out-tsc/app" },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
@@ -35,11 +15,11 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": [
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "src/test-setup.ts",
     "jest.config.ts",
-    "jest.config.cts",
-    "src/test-setup.ts"
+    "jest.config.cts"
   ],
   "references": [
     { "path": "../../libs/shared/tsconfig.lib.json" },

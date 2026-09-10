@@ -1,19 +1,23 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "sourceMap": true,
-    "moduleResolution": "Node16",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "Node16",
-    "lib": ["es2020", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
+    /* Strictness — uniform across every project */
+    "strict": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Transpiler compatibility */
+    "isolatedModules": true,
+
+    /* Build orchestration */
     "composite": true,
+    "declaration": true,
     "declarationMap": true,
-    "customConditions": ["@cardquorum/source"]
+    "sourceMap": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", "tmp"]
 }

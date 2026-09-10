@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "types": [],
+    "verbatimModuleSyntax": true,
+    "importHelpers": true,
+    "customConditions": ["@cardquorum/source"],
+
+    /*
+     * Workspace libraries must be mapped here as well as through the
+     * `@cardquorum/source` export condition above.
+     *
+     * `customConditions` is a TypeScript-only mechanism — it steers `tsc` and
+     * therefore typecheck, but the Angular builder resolves modules itself and
+     * reads `paths`. Without these, the dev server resolves `@cardquorum/*`
+     * through the pnpm symlinks in node_modules and then fails on the
+     * extensionless relative imports inside those packages, because it does not
+     * apply TypeScript resolution to node_modules paths.
+     *
+     * The production build happens to succeed without them; `nx serve` does not.
+     * Paths are resolved relative to THIS file, so they are workspace-rooted.
+     */
+    "paths": {
+      "@cardquorum/shared": ["./libs/shared/src/index.ts"],
+      "@cardquorum/engine": ["./libs/engine/src/index.ts"],
+      "@cardquorum/sheepshead": ["./libs/games/sheepshead/src/index.ts"],
+      "@cardquorum/sheepshead/reporting": ["./libs/games/sheepshead/src/reporting/index.ts"]
+    }
+  }
+}

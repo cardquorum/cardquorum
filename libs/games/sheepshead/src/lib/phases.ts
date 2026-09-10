@@ -51,7 +51,13 @@ export function handleDeal(
 
   if (replayPayload) {
     // Replay mode: use provided cards directly
-    hands = state.players.map((p) => replayPayload.hands[p.userID]);
+    hands = state.players.map((p) => {
+      const hand = replayPayload.hands[p.userID];
+      if (!hand) {
+        throw new Error(`Replay payload is missing hand for player ${p.userID}`);
+      }
+      return hand;
+    });
     blind = replayPayload.blind;
   } else {
     const maxRetries = 100;

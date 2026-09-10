@@ -7,6 +7,7 @@
    2. Predetermined picker-partner variants should not show who the partner is until their card is revealed
    3. who took in bg (?)
    4. Unknown ace doesn't work: failed to select the 6 of spades.
+   5. OICD urls should not care about a trailing `/`
 
 ## Major Features
 
@@ -24,19 +25,12 @@
 2. Both extend and prune the test suite
 3. Thorough security and code quality review
 4. Wipe db migrations
-5. Protected branches
-6. Versioning
-7. Security Scanning
-   1. SAST: CodeQL
-   2. SCA + auto-remediation: Dependabot
-8. CI/CD pipelines
-   1. Run automated tests
-   2. Image deployment
-9. Actually robust documentation
+5. Versioning
+6. Actually robust documentation
    1. Zensical hosted on GH Pages (separate repo) - `docs.cardquorum.com`
    2. Three domains:
       1. User - getting started, in-depth game rules
       2. Admin - deployment options, env configuration, etc
       3. Developer - building from source, dev procedures, design decisions, etc
-10. 404 Page
-11. Copyright/TOS/Privacy Policy
+7. 404 Page
+8. Copyright/TOS/Privacy Policy

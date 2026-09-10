@@ -1,5 +1,5 @@
 import { handleDeal } from '../../phases';
-import { makeConfig, makeState } from '../test-helpers';
+import { card, makeConfig, makeState } from '../test-helpers';
 
 describe('handleDeal', () => {
   it('distributes cards to players and sets blind', () => {
@@ -145,5 +145,33 @@ describe('handleDeal', () => {
       expect(p.hand).toEqual(firstDeal.players.find((fp) => fp.userID === p.userID)!.hand);
     }
     expect(replayState.blind).toEqual(firstDeal.blind);
+  });
+});
+
+describe('deal replay with an incomplete payload', () => {
+  it('throws rather than dealing an undefined hand', () => {
+    const config = makeConfig();
+    const state = makeState();
+
+    // A hand for the first player only — as a truncated or malformed
+    // jsonb row would produce.
+    const incomplete = {
+      hands: { [state.players[0].userID]: [card('qc')] },
+      blind: [card('ad'), card('ah')],
+    };
+
+    expect(() => handleDeal(state, config, incomplete)).toThrow(/missing hand/i);
+  });
+
+  it('accepts a payload carrying a hand for every player', () => {
+    const config = makeConfig();
+    const state = makeState();
+
+    const complete = {
+      hands: Object.fromEntries(state.players.map((p) => [p.userID, [card('qc')]])),
+      blind: [card('ad'), card('ah')],
+    };
+
+    expect(() => handleDeal(state, config, complete)).not.toThrow();
   });
 });

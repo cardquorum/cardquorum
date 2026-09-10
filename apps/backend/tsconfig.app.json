@@ -1,21 +1,27 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": ["../../tsconfig.base.json", "../../tsconfig.node.json"],
   "compilerOptions": {
-    "noEmit": true,
-    "composite": false,
-    "declaration": false,
-    "declarationMap": false,
-    "sourceMap": false,
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "esModuleInterop": true,
-    "types": ["node"],
+    "outDir": "./out-tsc/app",
+
+    /*
+     * WEBPACK WORKAROUND — delete this with the webpack build.
+     *
+     * NxAppWebpackPlugin runs ts-loader in single-program mode, which ignores
+     * project references and pulls libs/<name>/src files into this compilation.
+     * composite:true then requires a rootDir that spans them, or TS5011 fires.
+     * tsc --build honours the references correctly and does not need this.
+     *
+     * Removing webpack (see docs/design/typescript-config.md, "Out of scope")
+     * removes the only reason this line exists.
+     */
+    "rootDir": "../..",
+
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "target": "es2021"
+    "importHelpers": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["jest.config.ts", "jest.config.cts", "src/**/*.spec.ts", "src/**/*.test.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "jest.config.ts", "jest.config.cts"],
   "references": [
     { "path": "../../libs/shared/tsconfig.lib.json" },
     { "path": "../../libs/engine/tsconfig.lib.json" },
