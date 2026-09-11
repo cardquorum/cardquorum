@@ -5,7 +5,7 @@ import {
   type GameSessionRepository,
   type UserRepository,
 } from '@cardquorum/db';
-import { ReplayService, type SessionListOptions } from './replay.service';
+import { ReplayService, type SessionListOptions } from './replay.service.js';
 
 describe('Session list filtering', () => {
   const TERMINAL_STATUSES = ['finished', 'abandoned', 'cancelled', 'aborted'] as const;

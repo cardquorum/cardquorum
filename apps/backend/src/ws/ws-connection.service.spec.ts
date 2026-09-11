@@ -1,5 +1,5 @@
 import { type WebSocket } from 'ws';
-import { MAX_CONNECTIONS_PER_USER, WsConnectionService } from './ws-connection.service';
+import { MAX_CONNECTIONS_PER_USER, WsConnectionService } from './ws-connection.service.js';
 
 describe('WsConnectionService', () => {
   let service: WsConnectionService;

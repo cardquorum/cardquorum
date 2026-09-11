@@ -1,6 +1,6 @@
-import { DECK } from '../../constants';
-import { handleBury, handleDeal, handlePick } from '../../phases';
-import { makeConfig, makeState, pickContinue } from '../test-helpers';
+import { DECK } from '../../constants.js';
+import { handleBury, handleDeal, handlePick } from '../../phases.js';
+import { makeConfig, makeState, pickContinue } from '../test-helpers.js';
 
 describe('handleBury', () => {
   it('removes buried cards from picker hand', () => {

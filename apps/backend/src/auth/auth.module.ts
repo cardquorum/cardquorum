@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CredentialRepository, SessionRepository, UserRepository } from '@cardquorum/db';
 import { type AuthStrategy } from '@cardquorum/shared';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { HttpAuthGuard } from './http-auth.guard';
-import { SessionService } from './session.service';
-import { WsAuthGuard } from './ws-auth.guard';
+import { AuthController } from './auth.controller.js';
+import { AuthService } from './auth.service.js';
+import { HttpAuthGuard } from './http-auth.guard.js';
+import { SessionService } from './session.service.js';
+import { WsAuthGuard } from './ws-auth.guard.js';
 
 @Module({
   providers: [

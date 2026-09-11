@@ -1,7 +1,7 @@
 import { type ApplyEventResult, type GamePlugin, type PlayerStatRow } from '@cardquorum/engine';
-import { formatCard } from './cards';
-import { SheepsheadConfigSchema } from './config';
-import { DECK } from './constants';
+import { formatCard } from './cards.js';
+import { SheepsheadConfigSchema } from './config.js';
+import { DECK } from './constants.js';
 import {
   handleBury,
   handleCall,
@@ -13,9 +13,9 @@ import {
   handleTrickAdvance,
   legalCallOptions,
   requiresHoleCard,
-} from './phases';
-import { scoreMultiplier } from './scoring';
-import { legalPlays } from './tricks';
+} from './phases.js';
+import { scoreMultiplier } from './scoring.js';
+import { legalPlays } from './tricks.js';
 import {
   type BlitzState,
   type Card,
@@ -27,7 +27,7 @@ import {
   type SheepsheadStore,
   type TrickState,
   type UserID,
-} from './types';
+} from './types.js';
 
 function validateConfig(config: unknown): config is SheepsheadConfig {
   return SheepsheadConfigSchema.safeParse(config).success;

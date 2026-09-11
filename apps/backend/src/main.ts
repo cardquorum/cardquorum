@@ -1,11 +1,12 @@
+import 'reflect-metadata';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { WsAdapter } from '@nestjs/platform-ws';
 import fastifyCookie from '@fastify/cookie';
 import { Logger } from 'nestjs-pino';
-import { AppModule } from './app/app.module';
-import { registerHelmet } from './helmet';
+import { AppModule } from './app/app.module.js';
+import { registerHelmet } from './helmet.js';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {

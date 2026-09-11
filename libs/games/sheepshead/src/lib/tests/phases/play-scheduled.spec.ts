@@ -1,11 +1,11 @@
 import * as fc from 'fast-check';
-import { sumPoints } from '../../cards';
-import { DECK } from '../../constants';
-import { handlePlayCard, handleTrickAdvance } from '../../phases';
-import { SheepsheadPlugin } from '../../sheepshead-plugin';
-import { legalPlays } from '../../tricks';
-import { type SheepsheadState, type TrickState } from '../../types';
-import { makeConfig } from '../test-helpers';
+import { sumPoints } from '../../cards.js';
+import { DECK } from '../../constants.js';
+import { handlePlayCard, handleTrickAdvance } from '../../phases.js';
+import { SheepsheadPlugin } from '../../sheepshead-plugin.js';
+import { legalPlays } from '../../tricks.js';
+import { type SheepsheadState, type TrickState } from '../../types.js';
+import { makeConfig } from '../test-helpers.js';
 
 /**
  * Build a 3-player play-phase state where each player has exactly 1 card,

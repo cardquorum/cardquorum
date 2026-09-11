@@ -1,5 +1,5 @@
 import postgres from 'postgres';
-import { getTestDatabaseUrl } from './env';
+import { getTestDatabaseUrl } from './env.js';
 
 let sql: ReturnType<typeof postgres> | null = null;
 

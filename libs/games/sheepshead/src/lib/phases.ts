@@ -1,9 +1,9 @@
-import { cardsEqual, isTrump, sumPoints } from './cards';
-import { DECK, FAIL_ACES, FAIL_TENS, TRUMP_ORDER } from './constants';
-import { createShuffledDeck, deal, hasNoAceFaceTrump } from './dealing';
-import { assignPartnerByRule, determinePartnerCalledAce } from './partners';
-import { gotSchwarzed, pickingTeamPoints, scoreMultiplier } from './scoring';
-import { evaluateTrick, legalPlays } from './tricks';
+import { cardsEqual, isTrump, sumPoints } from './cards.js';
+import { DECK, FAIL_ACES, FAIL_TENS, TRUMP_ORDER } from './constants.js';
+import { createShuffledDeck, deal, hasNoAceFaceTrump } from './dealing.js';
+import { assignPartnerByRule, determinePartnerCalledAce } from './partners.js';
+import { gotSchwarzed, pickingTeamPoints, scoreMultiplier } from './scoring.js';
+import { evaluateTrick, legalPlays } from './tricks.js';
 import {
   type BuryEvent,
   type CallAceEvent,
@@ -19,7 +19,7 @@ import {
   type SheepsheadState,
   type TrickState,
   type UserID,
-} from './types';
+} from './types.js';
 
 /**
  * Get the next player index in seat order (wraps around).

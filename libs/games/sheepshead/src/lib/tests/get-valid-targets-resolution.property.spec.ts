@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
-import { DECK } from '../constants';
-import { SheepsheadPlugin } from '../sheepshead-plugin';
-import { legalPlays } from '../tricks';
+import { DECK } from '../constants.js';
+import { SheepsheadPlugin } from '../sheepshead-plugin.js';
+import { legalPlays } from '../tricks.js';
 import {
   type Card,
   type GamePhase,
@@ -9,7 +9,7 @@ import {
   type SheepsheadConfig,
   type SheepsheadState,
   type TrickState,
-} from '../types';
+} from '../types.js';
 
 /** Build a config with sensible defaults. */
 function makeConfig(overrides: Partial<SheepsheadConfig> = {}): SheepsheadConfig {

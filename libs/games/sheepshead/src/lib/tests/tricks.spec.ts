@@ -1,6 +1,6 @@
-import { evaluateTrick, legalPlays } from '../tricks';
-import { type Card, type SheepsheadState, type TrickState } from '../types';
-import { card, makeConfig } from './test-helpers';
+import { evaluateTrick, legalPlays } from '../tricks.js';
+import { type Card, type SheepsheadState, type TrickState } from '../types.js';
+import { card, makeConfig } from './test-helpers.js';
 
 /** Build a minimal play-phase state for legalPlays tests. */
 function playState(

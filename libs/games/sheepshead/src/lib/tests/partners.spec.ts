@@ -4,9 +4,9 @@ import {
   determinePartnerByCard,
   determinePartnerCalledAce,
   determinePartnerJD,
-} from '../partners';
-import { type Card, type PlayerState, type SheepsheadState } from '../types';
-import { card } from './test-helpers';
+} from '../partners.js';
+import { type Card, type PlayerState, type SheepsheadState } from '../types.js';
+import { card } from './test-helpers.js';
 
 function makePlayer(userID: number, hand: Card[], role: PlayerState['role'] = null): PlayerState {
   return { userID, role, hand, tricksWon: 0, pointsWon: 0, cardsWon: [], scoreDelta: null };

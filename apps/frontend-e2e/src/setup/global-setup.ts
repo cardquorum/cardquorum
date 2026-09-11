@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import postgres from 'postgres';
-import { getAdminDatabaseUrl, getTestDatabaseUrl } from '../helpers/env';
+import { getAdminDatabaseUrl, getTestDatabaseUrl } from '../helpers/env.js';
 
 export default async function globalSetup(): Promise<void> {
   const testDatabaseUrl = getTestDatabaseUrl();

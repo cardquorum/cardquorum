@@ -1,5 +1,5 @@
 import { type Mock } from 'vitest';
-import { FriendService } from './friend.service';
+import { FriendService } from './friend.service.js';
 
 describe('FriendService', () => {
   let service: FriendService;

@@ -1,5 +1,5 @@
-import type { ColorAssignmentMap } from './color-types';
-import type { RosterState } from './room-types';
+import type { ColorAssignmentMap } from './color-types.js';
+import type { RosterState } from './room-types.js';
 
 export interface UserIdentity {
   userId: number;

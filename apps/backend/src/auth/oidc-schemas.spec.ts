@@ -1,4 +1,4 @@
-import { OidcDiscoverySchema, OidcTokenResponseSchema } from './oidc-schemas';
+import { OidcDiscoverySchema, OidcTokenResponseSchema } from './oidc-schemas.js';
 
 describe('OidcDiscoverySchema', () => {
   const valid = {

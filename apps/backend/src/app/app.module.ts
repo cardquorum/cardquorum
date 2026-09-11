@@ -4,50 +4,48 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
-import { AuthModule } from '../auth/auth.module';
-import { BlockModule } from '../block/block.module';
-import { ChatModule } from '../chat/chat.module';
-import { DrizzleModule } from '../drizzle/drizzle.module';
-import { FriendModule } from '../friend/friend.module';
-import { GameModule } from '../game/game.module';
-import { HealthModule } from '../health/health.module';
-import { ReplayModule } from '../replay/replay.module';
-import { ReportModule } from '../report/report.module';
-import { StatsModule } from '../stats/stats.module';
-import { SummaryModule } from '../summary/summary.module';
-import { UserModule } from '../user/user.module';
-import { WsModule } from '../ws/ws.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ConditionalThrottlerGuard } from './conditional-throttler.guard';
+import { AuthModule } from '../auth/auth.module.js';
+import { BlockModule } from '../block/block.module.js';
+import { ChatModule } from '../chat/chat.module.js';
+import { DrizzleModule } from '../drizzle/drizzle.module.js';
+import { FriendModule } from '../friend/friend.module.js';
+import { GameModule } from '../game/game.module.js';
+import { HealthModule } from '../health/health.module.js';
+import { ReplayModule } from '../replay/replay.module.js';
+import { ReportModule } from '../report/report.module.js';
+import { StatsModule } from '../stats/stats.module.js';
+import { SummaryModule } from '../summary/summary.module.js';
+import { UserModule } from '../user/user.module.js';
+import { WsModule } from '../ws/ws.module.js';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { ConditionalThrottlerGuard } from './conditional-throttler.guard.js';
 
 const staticPath = join(process.cwd(), 'public');
 
-function getServeStaticImports() {
-  if (!existsSync(staticPath)) return [];
-  // Dynamic require — only loads @nestjs/serve-static (and its @fastify/static
-  // peer) when the public/ directory exists (i.e. inside the Docker image).
-  // This avoids side-effects from the import during local development.
-  const { ServeStaticModule } = require('@nestjs/serve-static');
-  return [
-    ServeStaticModule.forRoot({
-      rootPath: staticPath,
-      exclude: ['/api/(.*)'],
-      serveStaticOptions: {
-        // With Fastify, fallthrough must be true so that non-file routes
-        // fall back to serving index.html (SPA client-side routing support).
-        // Without this, reloading a page like /rooms/5 returns 404.
-        fallthrough: true,
-      },
-    }),
-  ];
-}
+// Loaded only when public/ exists (i.e. inside the Docker image), to avoid
+// side-effects from the import during local development. Top-level await is
+// what lets this stay conditional now that require() is gone.
+const serveStaticImports = existsSync(staticPath)
+  ? [
+      (await import('@nestjs/serve-static')).ServeStaticModule.forRoot({
+        rootPath: staticPath,
+        exclude: ['/api/(.*)'],
+        serveStaticOptions: {
+          // With Fastify, fallthrough must be true so that non-file routes
+          // fall back to serving index.html (SPA client-side routing support).
+          // Without this, reloading a page like /rooms/5 returns 404.
+          fallthrough: true,
+        },
+      }),
+    ]
+  : [];
 
 @Module({
   imports: [
-    ...getServeStaticImports(),
+    ...serveStaticImports,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({

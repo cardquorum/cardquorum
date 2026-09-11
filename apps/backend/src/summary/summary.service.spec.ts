@@ -5,7 +5,7 @@ import {
   type GameSessionRepository,
   type UserRepository,
 } from '@cardquorum/db';
-import { SummaryService } from './summary.service';
+import { SummaryService } from './summary.service.js';
 
 describe('SummaryService', () => {
   let service: SummaryService;

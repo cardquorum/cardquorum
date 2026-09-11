@@ -9,8 +9,8 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { rooms } from './rooms';
-import { users } from './users';
+import { rooms } from './rooms.js';
+import { users } from './users.js';
 
 export const roomRosters = pgTable(
   'room_rosters',

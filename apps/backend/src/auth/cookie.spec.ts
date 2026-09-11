@@ -1,4 +1,4 @@
-import { buildClearOidcStateCookie, buildOidcStateCookie, parseOidcStateCookie } from './cookie';
+import { buildClearOidcStateCookie, buildOidcStateCookie, parseOidcStateCookie } from './cookie.js';
 
 describe('OIDC state cookie helpers', () => {
   describe('buildOidcStateCookie', () => {

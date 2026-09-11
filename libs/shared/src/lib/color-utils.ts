@@ -1,4 +1,4 @@
-import { PALETTE_HUES } from './color-types';
+import { PALETTE_HUES } from './color-types.js';
 
 /**
  * Compute the circular hue distance between two hue values.

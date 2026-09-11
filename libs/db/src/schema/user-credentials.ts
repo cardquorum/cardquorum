@@ -1,5 +1,5 @@
 import { integer, pgTable, serial, timestamp, unique, varchar } from 'drizzle-orm/pg-core';
-import { users } from './users';
+import { users } from './users.js';
 
 export const userCredentials = pgTable(
   'user_credentials',

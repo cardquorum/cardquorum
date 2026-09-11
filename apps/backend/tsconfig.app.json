@@ -3,18 +3,7 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
 
-    /*
-     * WEBPACK WORKAROUND — delete this with the webpack build.
-     *
-     * NxAppWebpackPlugin runs ts-loader in single-program mode, which ignores
-     * project references and pulls libs/<name>/src files into this compilation.
-     * composite:true then requires a rootDir that spans them, or TS5011 fires.
-     * tsc --build honours the references correctly and does not need this.
-     *
-     * Removing webpack (see docs/design/typescript-config.md, "Out of scope")
-     * removes the only reason this line exists.
-     */
-    "rootDir": "../..",
+    "rootDir": "src",
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

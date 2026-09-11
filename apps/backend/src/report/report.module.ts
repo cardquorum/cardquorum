@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SheepsheadReportRepository } from '@cardquorum/sheepshead/reporting';
-import { AuthModule } from '../auth/auth.module';
-import { DRIZZLE } from '../drizzle/drizzle.module';
-import { ReportController } from './report.controller';
-import { ReportService } from './report.service';
+import { AuthModule } from '../auth/auth.module.js';
+import { DRIZZLE } from '../drizzle/drizzle.module.js';
+import { ReportController } from './report.controller.js';
+import { ReportService } from './report.service.js';
 
 @Module({
   imports: [AuthModule],

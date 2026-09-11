@@ -2,10 +2,10 @@ import { type Mocked } from 'vitest';
 import { type WebSocket } from 'ws';
 import { RoomManager } from '@cardquorum/engine';
 import { WS_EMIT, type UserIdentity } from '@cardquorum/shared';
-import { type RoomService } from '../room/room.service';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { ChatGateway } from './chat.gateway';
-import { type ChatService } from './chat.service';
+import { type RoomService } from '../room/room.service.js';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { ChatGateway } from './chat.gateway.js';
+import { type ChatService } from './chat.service.js';
 
 describe('ChatGateway', () => {
   let gateway: ChatGateway;

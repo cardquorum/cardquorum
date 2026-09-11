@@ -1,6 +1,6 @@
 import { type Mocked } from 'vitest';
 import { type SessionRepository } from '@cardquorum/db';
-import { SessionService } from './session.service';
+import { SessionService } from './session.service.js';
 
 describe('SessionService', () => {
   let service: SessionService;

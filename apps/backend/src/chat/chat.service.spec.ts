@@ -1,6 +1,6 @@
 import { type Mocked } from 'vitest';
 import { type MessageRepository } from '@cardquorum/db';
-import { ChatService } from './chat.service';
+import { ChatService } from './chat.service.js';
 
 describe('ChatService', () => {
   let service: ChatService;

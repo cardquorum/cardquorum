@@ -1,4 +1,4 @@
-export * from './lib/types';
+export * from './lib/types.js';
 export {
   SheepsheadConfigSchema,
   NoPickSchema,
@@ -7,7 +7,7 @@ export {
   CONFIG_PRESETS,
   FIELD_REGISTRY,
   SheepsheadConfigPlugin,
-} from './lib/config';
+} from './lib/config.js';
 export {
   SUITS,
   RANKS,
@@ -17,7 +17,7 @@ export {
   FAIL_RANK_ORDER,
   SUIT_SYMBOLS,
   RANK_ABBREVIATIONS,
-} from './lib/constants';
+} from './lib/constants.js';
 export {
   isTrump,
   sumPoints,
@@ -25,17 +25,17 @@ export {
   cardsEqual,
   formatCard,
   calledCardSuitLabel,
-} from './lib/cards';
-export { createShuffledDeck, deal, hasNoAceFaceTrump } from './lib/dealing';
-export { evaluateTrick, legalPlays } from './lib/tricks';
-export { pickingTeamPoints, gotSchneidered, gotSchwarzed, scoreMultiplier } from './lib/scoring';
+} from './lib/cards.js';
+export { createShuffledDeck, deal, hasNoAceFaceTrump } from './lib/dealing.js';
+export { evaluateTrick, legalPlays } from './lib/tricks.js';
+export { pickingTeamPoints, gotSchneidered, gotSchwarzed, scoreMultiplier } from './lib/scoring.js';
 export {
   determinePartnerJD,
   determinePartnerCalledAce,
   determinePartnerByCard,
   assignCardPairPartners,
   assignPartnerByRule,
-} from './lib/partners';
+} from './lib/partners.js';
 export {
   handleDeal,
   handlePick,
@@ -46,5 +46,5 @@ export {
   handleScore,
   legalCallOptions,
   requiresHoleCard,
-} from './lib/phases';
-export { SheepsheadPlugin } from './lib/sheepshead-plugin';
+} from './lib/phases.js';
+export { SheepsheadPlugin } from './lib/sheepshead-plugin.js';

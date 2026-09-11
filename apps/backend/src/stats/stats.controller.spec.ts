@@ -1,9 +1,9 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { type Mocked } from 'vitest';
 import { type UserIdentity } from '@cardquorum/shared';
-import { REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { StatsController } from './stats.controller';
-import { type StatsService } from './stats.service';
+import { REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { StatsController } from './stats.controller.js';
+import { type StatsService } from './stats.service.js';
 
 describe('StatsController', () => {
   let controller: StatsController;

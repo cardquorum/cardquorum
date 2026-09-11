@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { type FastifyRequest } from 'fastify';
 import { type SessionIdentity } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { ReportService } from './report.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { ReportService } from './report.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('reports')

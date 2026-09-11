@@ -19,19 +19,19 @@ import {
   type UserProfile,
   type UserSearchResult,
 } from '@cardquorum/shared';
-import { buildClearSessionCookie } from '../auth/cookie';
-import { HttpAuthGuard, REQUEST_SESSION_KEY, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { BlockService } from '../block/block.service';
-import { RoomService } from '../room/room.service';
-import { WsConnectionService } from '../ws/ws-connection.service';
+import { buildClearSessionCookie } from '../auth/cookie.js';
+import { HttpAuthGuard, REQUEST_SESSION_KEY, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { BlockService } from '../block/block.service.js';
+import { RoomService } from '../room/room.service.js';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
 import {
   type DeleteAccountDto,
   type SearchUsersDto,
   type UpdateColorPreferenceDto,
   type UpdateDisplayNameDto,
   type UpdateUsernameDto,
-} from './user.dto';
-import { UserService } from './user.service';
+} from './user.dto.js';
+import { UserService } from './user.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('users')

@@ -1,4 +1,4 @@
-import { killPort, waitForPortOpen } from '@nx/node/utils';
+import { killPort, waitForPortOpen } from '@nx/node/utils.js';
 
 const host = process.env['HOST'] ?? 'localhost';
 const port = process.env['PORT'] ? Number(process.env['PORT']) : 3000;

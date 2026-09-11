@@ -3,10 +3,10 @@ import {
   FIELD_REGISTRY,
   SheepsheadConfigPlugin,
   SheepsheadConfigSchema,
-} from '../config';
-import { DECK, FAIL_RANK_ORDER, TOTAL_POINTS, TRUMP_ORDER } from '../constants';
-import { SheepsheadPlugin } from '../sheepshead-plugin';
-import { configFromPreset } from './test-helpers';
+} from '../config.js';
+import { DECK, FAIL_RANK_ORDER, TOTAL_POINTS, TRUMP_ORDER } from '../constants.js';
+import { SheepsheadPlugin } from '../sheepshead-plugin.js';
+import { configFromPreset } from './test-helpers.js';
 
 describe('constants', () => {
   it('DECK has 32 cards', () => {

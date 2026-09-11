@@ -1,5 +1,5 @@
 import { boolean, integer, jsonb, pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { rooms } from './rooms';
+import { rooms } from './rooms.js';
 
 export const roomGameSettings = pgTable('room_game_settings', {
   id: serial('id').primaryKey(),

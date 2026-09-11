@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import { blocks, users } from '../schema';
-import { type DbInstance } from '../types';
+import { blocks, users } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 export class BlockRepository {
   constructor(private readonly db: DbInstance) {}

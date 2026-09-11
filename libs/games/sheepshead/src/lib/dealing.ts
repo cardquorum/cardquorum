@@ -1,6 +1,6 @@
-import { isTrump } from './cards';
-import { DECK } from './constants';
-import { type Card, type CardName, type SheepsheadConfig } from './types';
+import { isTrump } from './cards.js';
+import { DECK } from './constants.js';
+import { type Card, type CardName, type SheepsheadConfig } from './types.js';
 
 /** Returns a new shuffled copy of the deck, optionally removing specified cards. */
 export function createShuffledDeck(cardsRemoved?: CardName[]): Card[] {

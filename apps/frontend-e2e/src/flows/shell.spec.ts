@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { authenticatedContext } from '../helpers/auth';
+import { authenticatedContext } from '../helpers/auth.js';
 
 /**
  * Navigate to /memberships and wait for the shell header to be ready.

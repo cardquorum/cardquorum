@@ -2,17 +2,15 @@ import { BadRequestException, ConflictException, UnauthorizedException } from '@
 import { type ConfigService } from '@nestjs/config';
 import { type Mock } from 'vitest';
 import { type StrategiesResponse } from '@cardquorum/shared';
-import { AuthController } from './auth.controller';
-import { type AuthService } from './auth.service';
-import { REQUEST_USER_KEY } from './http-auth.guard';
-import { type SessionService } from './session.service';
+import { AuthController } from './auth.controller.js';
+import { type AuthService } from './auth.service.js';
+import { REQUEST_USER_KEY } from './http-auth.guard.js';
+import { type SessionService } from './session.service.js';
 
-// `jose` is ESM-only and loaded through the jose-loader seam; mock the seam.
-vi.mock('./jose-loader', () => ({
-  loadJose: vi.fn(async () => ({
-    createRemoteJWKSet: vi.fn().mockReturnValue(vi.fn()),
-    jwtVerify: vi.fn(),
-  })),
+// `jose` is imported statically by AuthService; mock the package.
+vi.mock('jose', () => ({
+  createRemoteJWKSet: vi.fn(() => vi.fn()),
+  jwtVerify: vi.fn(),
 }));
 
 describe('AuthController', () => {

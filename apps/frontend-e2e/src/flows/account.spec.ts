@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { authenticatedContext } from '../helpers/auth';
+import { authenticatedContext } from '../helpers/auth.js';
 
 test.describe('Account Flows', () => {
   test('user edits username and sees the updated value after saving', async ({

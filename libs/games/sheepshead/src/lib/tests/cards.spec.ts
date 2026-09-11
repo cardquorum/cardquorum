@@ -1,7 +1,7 @@
-import { cardPower, cardsEqual, isTrump, sumPoints } from '../cards';
-import { DECK, FAIL_RANK_ORDER, TRUMP_ORDER } from '../constants';
-import { type TrickState } from '../types';
-import { card } from './test-helpers';
+import { cardPower, cardsEqual, isTrump, sumPoints } from '../cards.js';
+import { DECK, FAIL_RANK_ORDER, TRUMP_ORDER } from '../constants.js';
+import { type TrickState } from '../types.js';
+import { card } from './test-helpers.js';
 
 describe('isTrump', () => {
   it('queens are trump', () => {

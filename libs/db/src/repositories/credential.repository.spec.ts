@@ -1,4 +1,4 @@
-import { CredentialRepository } from './credential.repository';
+import { CredentialRepository } from './credential.repository.js';
 
 function createMockDb() {
   return {

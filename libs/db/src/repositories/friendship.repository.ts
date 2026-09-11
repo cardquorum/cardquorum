@@ -1,6 +1,6 @@
 import { and, eq, or } from 'drizzle-orm';
-import { friendships, users } from '../schema';
-import { type DbInstance } from '../types';
+import { friendships, users } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 export class FriendshipRepository {
   constructor(private readonly db: DbInstance) {}

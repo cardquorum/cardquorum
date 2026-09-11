@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { DECK } from '../constants';
-import { SheepsheadPlugin } from '../sheepshead-plugin';
+import { DECK } from '../constants.js';
+import { SheepsheadPlugin } from '../sheepshead-plugin.js';
 import {
   type Card,
   type PlayerRole,
@@ -11,7 +11,7 @@ import {
   type TrickPlay,
   type TrickState,
   type UserID,
-} from '../types';
+} from '../types.js';
 
 /** Arbitrary card from the standard 32-card Sheepshead deck. */
 function arbCard(): fc.Arbitrary<Card> {

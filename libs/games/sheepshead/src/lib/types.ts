@@ -1,5 +1,5 @@
 import type { ScheduledEvent } from '@cardquorum/engine';
-import type { NoPick } from './config';
+import type { NoPick } from './config.js';
 
 export type { FieldMode, ConfigFieldDef, SelectFieldDef } from '@cardquorum/engine';
 export type {
@@ -9,7 +9,7 @@ export type {
   PartnerRule,
   SheepsheadFieldKey,
   ConfigPreset,
-} from './config';
+} from './config.js';
 
 /**
  * The unique identifier for a player (userID).

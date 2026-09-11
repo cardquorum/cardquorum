@@ -1,11 +1,11 @@
-import { type CONFIG_PRESETS } from '../config';
-import { DECK } from '../constants';
+import { type CONFIG_PRESETS } from '../config.js';
+import { DECK } from '../constants.js';
 import {
   type Card,
   type PickPhaseResult,
   type SheepsheadConfig,
   type SheepsheadState,
-} from '../types';
+} from '../types.js';
 
 /** Look up a card by short name (e.g. 'ac', 'qc'). Throws if not found. */
 export function card(name: string): Card {

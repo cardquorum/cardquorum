@@ -1,6 +1,6 @@
-import { gotSchneidered, gotSchwarzed, pickingTeamPoints, scoreMultiplier } from '../scoring';
-import { type SheepsheadState, type TrickState } from '../types';
-import { card, makeConfig } from './test-helpers';
+import { gotSchneidered, gotSchwarzed, pickingTeamPoints, scoreMultiplier } from '../scoring.js';
+import { type SheepsheadState, type TrickState } from '../types.js';
+import { card, makeConfig } from './test-helpers.js';
 
 function makeState(overrides: Partial<SheepsheadState> = {}): SheepsheadState {
   return {

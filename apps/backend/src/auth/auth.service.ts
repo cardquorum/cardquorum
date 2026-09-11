@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import type { createRemoteJWKSet } from 'jose';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { CredentialRepository, UserRepository } from '@cardquorum/db';
 import {
   isValidUsername,
@@ -16,9 +16,8 @@ import {
   type RegisterRequest,
   type SessionIdentity,
 } from '@cardquorum/shared';
-import { loadJose, type JoseModule } from './jose-loader';
-import { OidcDiscoverySchema, OidcTokenResponseSchema } from './oidc-schemas';
-import { SessionService } from './session.service';
+import { OidcDiscoverySchema, OidcTokenResponseSchema } from './oidc-schemas.js';
+import { SessionService } from './session.service.js';
 
 export interface AuthResult {
   sessionId: string;
@@ -56,7 +55,6 @@ export class AuthService {
   private tokenEndpoint?: string;
   private endSessionEndpoint?: string;
   private jwks?: ReturnType<typeof createRemoteJWKSet>;
-  private joseModule?: JoseModule;
   private oidcIssuerFromDiscovery?: string;
 
   constructor(
@@ -104,8 +102,7 @@ export class AuthService {
     this.authorizationEndpoint = discovery.authorization_endpoint;
     this.tokenEndpoint = discovery.token_endpoint;
     this.endSessionEndpoint = discovery.end_session_endpoint;
-    this.joseModule = await loadJose();
-    this.jwks = this.joseModule.createRemoteJWKSet(new URL(discovery.jwks_uri));
+    this.jwks = createRemoteJWKSet(new URL(discovery.jwks_uri));
     this.logger.log(`OIDC discovery complete: authorize=${this.authorizationEndpoint}`);
   }
 
@@ -341,7 +338,7 @@ export class AuthService {
   async backchannelLogout(logoutToken: string): Promise<void> {
     this.requireStrategy('oidc');
 
-    const { payload } = await this.joseModule!.jwtVerify(logoutToken, this.jwks!, {
+    const { payload } = await jwtVerify(logoutToken, this.jwks!, {
       issuer: this.oidcIssuerFromDiscovery ?? this.oidcIssuer,
       audience: this.oidcClientId,
       maxTokenAge: '2m',
@@ -412,7 +409,7 @@ export class AuthService {
   }
 
   private async verifyIdToken(idToken: string, nonce: string): Promise<OidcIdentity> {
-    const { payload } = await this.joseModule!.jwtVerify(idToken, this.jwks!, {
+    const { payload } = await jwtVerify(idToken, this.jwks!, {
       issuer: this.oidcIssuerFromDiscovery ?? this.oidcIssuer,
       audience: this.oidcClientId,
       maxTokenAge: '5m',

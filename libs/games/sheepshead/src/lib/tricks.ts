@@ -1,5 +1,5 @@
-import { cardPower, cardsEqual, isTrump } from './cards';
-import { DECK, FAIL_TENS, TRUMP_ORDER } from './constants';
+import { cardPower, cardsEqual, isTrump } from './cards.js';
+import { DECK, FAIL_TENS, TRUMP_ORDER } from './constants.js';
 import {
   type CalledCard,
   type Card,
@@ -9,7 +9,7 @@ import {
   type Suit,
   type TrickState,
   type UserID,
-} from './types';
+} from './types.js';
 
 export interface LegalPlaysResult {
   cards: Card[];

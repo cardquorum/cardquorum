@@ -1,7 +1,7 @@
 import { Controller, Get, Module } from '@nestjs/common';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
-import { registerHelmet } from './helmet';
+import { registerHelmet } from './helmet.js';
 
 @Controller('test')
 class TestController {

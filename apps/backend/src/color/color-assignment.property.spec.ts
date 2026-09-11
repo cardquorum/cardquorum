@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
 import { circularHueDistance, minimumDistanceThreshold } from '@cardquorum/shared';
-import { ColorAssignmentService } from './color-assignment.service';
+import { ColorAssignmentService } from './color-assignment.service.js';
 
 describe('ColorAssignmentService', () => {
   const service = new ColorAssignmentService();

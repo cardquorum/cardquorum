@@ -6,7 +6,7 @@ import {
   type GameSessionRepository,
   type UserRepository,
 } from '@cardquorum/db';
-import { ReplayService } from './replay.service';
+import { ReplayService } from './replay.service.js';
 
 describe('Session status access control', () => {
   const TERMINAL_STATUSES = ['finished', 'abandoned', 'cancelled', 'aborted'] as const;

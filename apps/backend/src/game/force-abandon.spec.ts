@@ -2,10 +2,10 @@ import { type Mock, type Mocked } from 'vitest';
 import { type GameSessionRepository } from '@cardquorum/db';
 import { RoomManager } from '@cardquorum/engine';
 import { type RosterState } from '@cardquorum/shared';
-import { type RoomService } from '../room/room.service';
-import { type StatsService } from '../stats/stats.service';
-import { type EventLogService } from './event-log.service';
-import { GameService } from './game.service';
+import { type RoomService } from '../room/room.service.js';
+import { type StatsService } from '../stats/stats.service.js';
+import { type EventLogService } from './event-log.service.js';
+import { GameService } from './game.service.js';
 
 describe('Force-abandon flow', () => {
   let service: GameService;

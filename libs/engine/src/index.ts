@@ -1,5 +1,5 @@
-export { RoomManager } from './lib/room-manager';
-export type { RoomState } from './lib/room-manager';
+export { RoomManager } from './lib/room-manager.js';
+export type { RoomState } from './lib/room-manager.js';
 export {
   addMember,
   removeMember,
@@ -11,7 +11,7 @@ export {
   demotePlayer,
   demoteNotReadyPlayers,
   validateReorder,
-} from './lib/roster-logic';
+} from './lib/roster-logic.js';
 export type {
   GamePlugin,
   GameEventBase,
@@ -19,7 +19,7 @@ export type {
   WithScheduledEvents,
   ApplyEventResult,
   PlayerStatRow,
-} from './lib/game-plugin';
+} from './lib/game-plugin.js';
 export type {
   FieldMode,
   ConfigFieldDef,
@@ -28,4 +28,4 @@ export type {
   FieldRegistry,
   GenericConfigPreset,
   GameConfigPlugin,
-} from './lib/game-config-types';
+} from './lib/game-config-types.js';

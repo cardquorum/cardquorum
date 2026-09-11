@@ -7,11 +7,11 @@ import {
 } from '@nestjs/websockets';
 import { type WebSocket } from 'ws';
 import { WS_EMIT, WS_EVENT } from '@cardquorum/shared';
-import { RoomService } from '../room/room.service';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { WsValidationPipe } from '../ws/ws-validation.pipe';
-import { SendMessageDto } from './chat.dto';
-import { ChatService } from './chat.service';
+import { RoomService } from '../room/room.service.js';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { WsValidationPipe } from '../ws/ws-validation.pipe.js';
+import { SendMessageDto } from './chat.dto.js';
+import { ChatService } from './chat.service.js';
 
 @UsePipes(WsValidationPipe)
 @WebSocketGateway({ path: '/ws' })

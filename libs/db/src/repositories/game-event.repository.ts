@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, isNotNull, lt } from 'drizzle-orm';
-import { gameEvents, type GameEvent, type NewGameEvent } from '../schema';
-import { type DbInstance } from '../types';
+import { gameEvents, type GameEvent, type NewGameEvent } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 const DEFAULT_PAGE_SIZE = 50;
 

@@ -11,7 +11,7 @@ import {
   rotateSeatV2,
   toggleReady,
   validateReorder,
-} from './roster-logic';
+} from './roster-logic.js';
 
 // ---------------------------------------------------------------------------
 // Arbitraries (generators)

@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { PALETTE_HUES } from './color-types';
-import { circularHueDistance, isValidPaletteHue, minimumDistanceThreshold } from './color-utils';
+import { PALETTE_HUES } from './color-types.js';
+import { circularHueDistance, isValidPaletteHue, minimumDistanceThreshold } from './color-utils.js';
 
 describe('Palette hue validation', () => {
   it('isValidPaletteHue returns true iff the integer is a multiple of 20 in [0, 340]', () => {

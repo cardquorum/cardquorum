@@ -7,10 +7,10 @@ import {
 } from '@nestjs/websockets';
 import { type WebSocket } from 'ws';
 import { WS_EMIT, WS_EVENT, type ColorAssignmentMap } from '@cardquorum/shared';
-import { RoomService } from '../room/room.service';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { WsValidationPipe } from '../ws/ws-validation.pipe';
-import { EventLogService } from './event-log.service';
+import { RoomService } from '../room/room.service.js';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { WsValidationPipe } from '../ws/ws-validation.pipe.js';
+import { EventLogService } from './event-log.service.js';
 import {
   type GameAbandonDto,
   type GameActionDto,
@@ -21,8 +21,8 @@ import {
   type GameQueryTargetsDto,
   type GameRejoinDto,
   type GameStartDto,
-} from './game.dto';
-import { GameService } from './game.service';
+} from './game.dto.js';
+import { GameService } from './game.service.js';
 
 @UsePipes(WsValidationPipe)
 @WebSocketGateway({ path: '/ws' })

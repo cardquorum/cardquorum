@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { join } from 'path';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
@@ -14,7 +15,7 @@ async function runMigrations() {
   const db = drizzle(client);
 
   console.log('Running database migrations...');
-  await migrate(db, { migrationsFolder: join(__dirname, 'migrations') });
+  await migrate(db, { migrationsFolder: join(import.meta.dirname, 'migrations') });
   console.log('Migrations complete.');
 
   await client.end();

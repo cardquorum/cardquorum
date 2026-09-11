@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { authenticatedContext } from '../helpers/auth';
+import { authenticatedContext } from '../helpers/auth.js';
 
 test.describe('Room Flows', () => {
   test('authenticated user creates a room with a description and sees the room name in the header', async ({

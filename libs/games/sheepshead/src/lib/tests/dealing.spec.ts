@@ -1,6 +1,6 @@
-import { DECK } from '../constants';
-import { createShuffledDeck, deal, hasNoAceFaceTrump } from '../dealing';
-import { card } from './test-helpers';
+import { DECK } from '../constants.js';
+import { createShuffledDeck, deal, hasNoAceFaceTrump } from '../dealing.js';
+import { card } from './test-helpers.js';
 
 describe('createShuffledDeck', () => {
   it('returns 32 cards', () => {

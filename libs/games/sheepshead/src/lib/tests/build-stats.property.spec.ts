@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
-import { SheepsheadPlugin } from '../sheepshead-plugin';
-import { type PlayerRole, type SheepsheadConfig, type SheepsheadState } from '../types';
-import { makeConfig } from './test-helpers';
+import { SheepsheadPlugin } from '../sheepshead-plugin.js';
+import { type PlayerRole, type SheepsheadConfig, type SheepsheadState } from '../types.js';
+import { makeConfig } from './test-helpers.js';
 
 /**
  * Validates: Requirements 8.4, 8.5

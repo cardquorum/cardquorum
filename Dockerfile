@@ -19,19 +19,18 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm nx build frontend --configuration=production
-RUN pnpm nx build backend
+RUN pnpm nx run backend:prune
 
 # --- Stage 3: Production runtime ---
 FROM node:26-alpine AS runtime
 RUN npm install -g pnpm@12
 WORKDIR /app
 
-# Copy the built backend (includes generated package.json with prod deps)
+# Copy the built backend (includes generated package.json with prod deps,
+# pruned pnpm-lock.yaml, and workspace_modules/)
 COPY --from=builder /app/dist/apps/backend ./
 # Copy the built frontend SPA
 COPY --from=builder /app/dist/apps/frontend/browser ./public
-# Copy the full lockfile for deterministic installs
-COPY --from=builder /app/pnpm-lock.yaml ./
 # Copy the entrypoint script
 COPY apps/backend/docker-entrypoint.sh ./
 

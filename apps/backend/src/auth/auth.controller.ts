@@ -28,17 +28,17 @@ import {
   type LoginDto,
   type PasswordDto,
   type RegisterDto,
-} from './auth.dto';
-import { AuthService } from './auth.service';
+} from './auth.dto.js';
+import { AuthService } from './auth.service.js';
 import {
   buildClearOidcStateCookie,
   buildClearSessionCookie,
   buildOidcStateCookie,
   buildSessionCookie,
   parseOidcStateCookie,
-} from './cookie';
-import { HttpAuthGuard, REQUEST_USER_KEY } from './http-auth.guard';
-import { SessionService } from './session.service';
+} from './cookie.js';
+import { HttpAuthGuard, REQUEST_USER_KEY } from './http-auth.guard.js';
+import { SessionService } from './session.service.js';
 
 @Controller('auth')
 export class AuthController {

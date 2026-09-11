@@ -26,16 +26,16 @@ import {
   type RosterState,
   type UserIdentity,
 } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { GameService } from '../game/game.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { GameService } from '../game/game.service.js';
 import {
   CreateRoomDto,
   RoomUserDto,
   ToggleRotateDto,
   UpdateRoomDto,
   UpdateRosterDto,
-} from './room.dto';
-import { RoomService } from './room.service';
+} from './room.dto.js';
+import { RoomService } from './room.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('rooms')

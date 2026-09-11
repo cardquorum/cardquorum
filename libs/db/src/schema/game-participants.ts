@@ -1,7 +1,7 @@
 import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
 import { index, integer, pgTable, serial, smallint, uniqueIndex } from 'drizzle-orm/pg-core';
-import { gameSessions } from './game-sessions';
-import { users } from './users';
+import { gameSessions } from './game-sessions.js';
+import { users } from './users.js';
 
 export const gameParticipants = pgTable(
   'game_participants',

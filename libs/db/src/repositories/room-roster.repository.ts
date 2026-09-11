@@ -1,6 +1,6 @@
 import { and, asc, count, eq, sql } from 'drizzle-orm';
-import { roomRosters, rooms, users } from '../schema';
-import { type DbInstance } from '../types';
+import { roomRosters, rooms, users } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 export type RosterSection = 'players' | 'spectators';
 

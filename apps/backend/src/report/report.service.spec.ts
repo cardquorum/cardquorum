@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { type Mocked } from 'vitest';
 import { type SheepsheadReportRepository } from '@cardquorum/sheepshead/reporting';
-import { ReportService } from './report.service';
+import { ReportService } from './report.service.js';
 
 describe('ReportService', () => {
   let service: ReportService;

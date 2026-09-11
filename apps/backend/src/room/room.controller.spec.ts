@@ -1,10 +1,10 @@
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { type Mocked } from 'vitest';
 import { type UserIdentity } from '@cardquorum/shared';
-import { REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { type GameService } from '../game/game.service';
-import { RoomController } from './room.controller';
-import { type RoomService } from './room.service';
+import { REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { type GameService } from '../game/game.service.js';
+import { RoomController } from './room.controller.js';
+import { type RoomService } from './room.service.js';
 
 describe('RoomController', () => {
   let controller: RoomController;

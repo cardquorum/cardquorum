@@ -5,6 +5,7 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "types": ["node"],
-    "customConditions": ["@cardquorum/source"]
+    "customConditions": ["@cardquorum/source"],
+    "verbatimModuleSyntax": true
   }
 }

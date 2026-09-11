@@ -1,4 +1,4 @@
-import { type Card, type CardName, type Rank, type Suit } from './types';
+import { type Card, type CardName, type Rank, type Suit } from './types.js';
 
 export const TOTAL_POINTS = 120;
 

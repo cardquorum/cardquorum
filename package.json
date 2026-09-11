@@ -8,7 +8,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "validate": "prettier --check '**/*.{ts,html,css,json,md}' && pnpm nx run-many -t lint test build typecheck",
+    "validate": "prettier --check '**/*.{ts,html,css,json,md}' && pnpm nx run-many -t lint test build typecheck && node scripts/check-di-metadata.mjs",
     "format": "prettier --write '**/*.{ts,html,css,json,md}'",
     "serve": "pnpm nx serve frontend",
     "drizzle-generate": "pnpm drizzle-kit generate --config ./libs/db/drizzle.config.ts",
@@ -94,7 +94,6 @@
     "@nx/playwright": "22.7.9",
     "@nx/vitest": "22.7.9",
     "@nx/web": "22.7.9",
-    "@nx/webpack": "22.7.9",
     "@nx/workspace": "22.7.9",
     "@playwright/test": "^1.63.0",
     "@schematics/angular": "22.1.7",
@@ -106,7 +105,6 @@
     "@typescript-eslint/utils": "^8.70.0",
     "@vitest/coverage-v8": "4.1.11",
     "angular-eslint": "^22.5.0",
-    "copy-webpack-plugin": "^14.0.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
@@ -123,7 +121,6 @@
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.70.0",
     "vite": "8.1.5",
-    "vitest": "4.1.11",
-    "webpack-cli": "^5.1.4"
+    "vitest": "4.1.11"
   }
 }

@@ -1,5 +1,5 @@
 import * as fc from 'fast-check';
-import { resolveCancellationStatus } from './game-status';
+import { resolveCancellationStatus } from './game-status.js';
 
 describe('Session cancellation status mapping', () => {
   const statusArb = fc.constantFrom('waiting' as const, 'active' as const);

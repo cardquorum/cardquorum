@@ -1,5 +1,5 @@
-import { handleDeal, handlePick } from '../../phases';
-import { makeConfig, makeState, pickContinue } from '../test-helpers';
+import { handleDeal, handlePick } from '../../phases.js';
+import { makeConfig, makeState, pickContinue } from '../test-helpers.js';
 
 describe('handlePick', () => {
   it('pick: sets player as picker and adds blind to hand', () => {

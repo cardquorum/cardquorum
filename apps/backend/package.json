@@ -1,9 +1,38 @@
 {
   "name": "@cardquorum/backend",
-  "devDependencies": {
+  "type": "module",
+  "dependencies": {
     "@cardquorum/shared": "workspace:*",
     "@cardquorum/engine": "workspace:*",
     "@cardquorum/db": "workspace:*",
-    "@cardquorum/sheepshead": "workspace:*"
+    "@cardquorum/sheepshead": "workspace:*",
+    "@fastify/cookie": "^11.1.2",
+    "@fastify/helmet": "^13.1.1",
+    "@fastify/static": "^9.3.0",
+    "@nestjs/common": "^11.2.3",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.2.3",
+    "@nestjs/platform-fastify": "^11.2.3",
+    "@nestjs/platform-ws": "^11.2.3",
+    "@nestjs/serve-static": "^5.0.5",
+    "@nestjs/terminus": "^11.1.1",
+    "@nestjs/throttler": "^6.5.0",
+    "@nestjs/websockets": "^11.2.3",
+    "bcryptjs": "^3.0.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "drizzle-orm": "^0.45.2",
+    "fastify": "^5.12.3",
+    "joi": "^18.2.8",
+    "jose": "^6.2.12",
+    "nestjs-pino": "^4.6.1",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "postgres": "^3.4.9",
+    "reflect-metadata": "^0.1.14",
+    "rxjs": "~7.8.2",
+    "tslib": "^2.8.1",
+    "ws": "^8.21.3",
+    "zod": "^4.5.4"
   }
 }

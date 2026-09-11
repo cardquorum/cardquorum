@@ -1,4 +1,4 @@
-import { type UserIdentity } from './ws-types';
+import { type UserIdentity } from './ws-types.js';
 
 export type AuthStrategy = 'basic' | 'oidc';
 

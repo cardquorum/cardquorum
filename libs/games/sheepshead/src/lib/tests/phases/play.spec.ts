@@ -1,6 +1,6 @@
-import { handlePlayCard, handleTrickAdvance } from '../../phases';
-import { type SheepsheadState } from '../../types';
-import { card, makeConfig } from '../test-helpers';
+import { handlePlayCard, handleTrickAdvance } from '../../phases.js';
+import { type SheepsheadState } from '../../types.js';
+import { card, makeConfig } from '../test-helpers.js';
 
 /** Helper: set up a game at the play phase with known hands. */
 function setupPlayPhase() {

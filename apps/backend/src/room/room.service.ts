@@ -36,11 +36,11 @@ import {
   type RosterState,
   type RotationMode,
 } from '@cardquorum/shared';
-import { BlockService } from '../block/block.service';
-import { ColorAssignmentService } from '../color/color-assignment.service';
-import { FriendService } from '../friend/friend.service';
-import { GameService } from '../game/game.service';
-import { WsConnectionService } from '../ws/ws-connection.service';
+import { BlockService } from '../block/block.service.js';
+import { ColorAssignmentService } from '../color/color-assignment.service.js';
+import { FriendService } from '../friend/friend.service.js';
+import { GameService } from '../game/game.service.js';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
 
 /** Hard cap: maximum number of players allowed in a single room. */
 const MAX_PLAYERS = 16;
@@ -51,6 +51,10 @@ const MAX_ROOM_MEMBERS = 128;
 export class RoomService {
   private readonly logger = new Logger(RoomService.name);
   readonly manager = new RoomManager();
+
+  // Declared separately so emitDecoratorMetadata sees Object (not GameService),
+  // avoiding the ESM temporal dead zone in the circular game ↔ room import.
+  private readonly gameService!: GameService;
 
   constructor(
     private readonly rooms: RoomRepository,
@@ -65,8 +69,10 @@ export class RoomService {
     private readonly colorAssignment: ColorAssignmentService,
     private readonly userRepo: UserRepository,
     @Inject(forwardRef(() => GameService))
-    private readonly gameService: GameService,
-  ) {}
+    gameService: object,
+  ) {
+    this.gameService = gameService as GameService;
+  }
 
   async findById(roomId: number) {
     return this.rooms.findById(roomId);

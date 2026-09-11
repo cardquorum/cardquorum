@@ -1,4 +1,4 @@
-export { WS_EVENT, WS_EMIT } from './lib/ws-events';
+export { WS_EVENT, WS_EMIT } from './lib/ws-events.js';
 export type {
   UserIdentity,
   JoinRoomPayload,
@@ -25,7 +25,7 @@ export type {
   LeaveRosterPayload,
   RosterReorderPayload,
   RosterToggleRotatePayload,
-} from './lib/ws-types';
+} from './lib/ws-types.js';
 export type {
   Room,
   RoomVisibility,
@@ -52,7 +52,7 @@ export type {
   GameSettingsUpdatePayload,
   GameSettingsUpdatedPayload,
   GameSettingsLoadedPayload,
-} from './lib/room-types';
+} from './lib/room-types.js';
 export type {
   AuthMethod,
   AuthStrategy,
@@ -64,23 +64,23 @@ export type {
   StrategiesResponse,
   UnlinkBasicCredentialRequest,
   ChangePasswordRequest,
-} from './lib/auth-types';
-export type { GameType, GameSessionStatus } from './lib/game-types';
+} from './lib/auth-types.js';
+export type { GameType, GameSessionStatus } from './lib/game-types.js';
 export type {
   UserProfile,
   UserSearchResult,
   UpdateUsernameRequest,
   UpdateDisplayNameRequest,
   DeleteAccountRequest,
-} from './lib/user-types';
-export type { FriendshipResponse } from './lib/friend-types';
-export type { FriendRequestBody, FriendRequestResponse } from './lib/friend-request-types';
-export type { BlockedUserResponse, BlockUserRequest } from './lib/block-types';
+} from './lib/user-types.js';
+export type { FriendshipResponse } from './lib/friend-types.js';
+export type { FriendRequestBody, FriendRequestResponse } from './lib/friend-request-types.js';
+export type { BlockedUserResponse, BlockUserRequest } from './lib/block-types.js';
 export type {
   GameLogBroadcast,
   EventBufferEntry,
   GameLogHistoryPayload,
-} from './lib/game-log-types';
+} from './lib/game-log-types.js';
 export type {
   CardAsset,
   SeatInfo,
@@ -91,7 +91,7 @@ export type {
   SeatBadge,
   BadgeColor,
   BadgePosition,
-} from './lib/game-table-types';
+} from './lib/game-table-types.js';
 export {
   USERNAME_MIN,
   USERNAME_MAX,
@@ -100,16 +100,16 @@ export {
   PASSWORD_MIN,
   PASSWORD_MAX,
   isValidUsername,
-} from './lib/validation';
+} from './lib/validation.js';
 
-export { PALETTE_HUES } from './lib/color-types';
-export type { ColorAssignmentMap } from './lib/color-types';
+export { PALETTE_HUES } from './lib/color-types.js';
+export type { ColorAssignmentMap } from './lib/color-types.js';
 export {
   circularHueDistance,
   minimumDistanceThreshold,
   isValidPaletteHue,
   hueToHsl,
-} from './lib/color-utils';
+} from './lib/color-utils.js';
 
 export type {
   ReplayEventDto,
@@ -117,9 +117,9 @@ export type {
   ReplayDataResponse,
   ReplaySessionSummary,
   ReplaySessionListResponse,
-} from './lib/replay-types';
+} from './lib/replay-types.js';
 
-export type { SummaryParticipantDto, SummaryDataResponse } from './lib/summary-types';
+export type { SummaryParticipantDto, SummaryDataResponse } from './lib/summary-types.js';
 
 export type {
   PlayerStatRow,
@@ -127,7 +127,7 @@ export type {
   RoomStatsResponse,
   PlayerStatsResponse,
   StatsQueryParams,
-} from './lib/stats-types';
+} from './lib/stats-types.js';
 
 export type {
   ReportDescriptor,
@@ -138,4 +138,4 @@ export type {
   AverageStat,
   ScoreTrajectoryPoint,
   SheepsheadReportPayload,
-} from './lib/report-types';
+} from './lib/report-types.js';

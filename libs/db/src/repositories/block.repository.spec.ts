@@ -1,4 +1,4 @@
-import { BlockRepository } from './block.repository';
+import { BlockRepository } from './block.repository.js';
 
 function createMockDb() {
   return {

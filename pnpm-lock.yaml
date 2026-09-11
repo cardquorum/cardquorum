@@ -320,9 +320,6 @@ importers:
       '@nx/web':
         specifier: 22.7.9
         version: 22.7.9(1c3420f273e5da2baa8c231e1a70253a)
-      '@nx/webpack':
-        specifier: 22.7.9
-        version: 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@rspack/core@1.6.8(@swc/helpers@0.5.23))(@swc-node/register@1.11.1(@swc/core@1.15.47(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.15.47(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.28))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.2)(lightningcss@1.33.0)(nx@22.7.9(@swc-node/register@1.11.1(@swc/core@1.15.47(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.15.47(@swc/helpers@0.5.23)))(supports-color@8.1.1)(svgo@4.1.0)(typescript@6.0.3)(webpack-cli@5.1.4)
       '@nx/workspace':
         specifier: 22.7.9
         version: 22.7.9(@swc-node/register@1.11.1(@swc/core@1.15.47(@swc/helpers@0.5.23))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.15.47(@swc/helpers@0.5.23))
@@ -356,9 +353,6 @@ importers:
       angular-eslint:
         specifier: ^22.5.0
         version: 22.5.0(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript-eslint@8.70.0(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3))(typescript@6.0.3)
-      copy-webpack-plugin:
-        specifier: ^14.0.0
-        version: 14.0.0(webpack@5.110.3)
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
@@ -410,12 +404,9 @@ importers:
       vitest:
         specifier: 4.1.11
         version: 4.1.11(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(less@4.5.1)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0))
-      webpack-cli:
-        specifier: ^5.1.4
-        version: 5.1.4(webpack-dev-server@5.2.6)(webpack@5.110.3)
 
   apps/backend:
-    devDependencies:
+    dependencies:
       '@cardquorum/db':
         specifier: workspace:*
         version: link:../../libs/db
@@ -428,6 +419,90 @@ importers:
       '@cardquorum/sheepshead':
         specifier: workspace:*
         version: link:../../libs/games/sheepshead
+      '@fastify/cookie':
+        specifier: ^11.1.2
+        version: 11.1.2
+      '@fastify/helmet':
+        specifier: ^13.1.1
+        version: 13.1.1
+      '@fastify/static':
+        specifier: ^9.3.0
+        version: 9.3.0
+      '@nestjs/common':
+        specifier: ^11.2.3
+        version: 11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1)
+      '@nestjs/config':
+        specifier: ^4.0.4
+        version: 4.0.4(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: ^11.2.3
+        version: 11.2.3(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/websockets@11.2.3)(reflect-metadata@0.1.14)(rxjs@7.8.2)
+      '@nestjs/platform-fastify':
+        specifier: ^11.2.3
+        version: 11.2.3(@fastify/static@9.3.0)(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.3)
+      '@nestjs/platform-ws':
+        specifier: ^11.2.3
+        version: 11.2.3(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/websockets@11.2.3)(rxjs@7.8.2)
+      '@nestjs/serve-static':
+        specifier: ^5.0.5
+        version: 5.0.5(@fastify/static@9.3.0)(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.3)(express@5.2.1(supports-color@8.1.1))(fastify@5.12.3)
+      '@nestjs/terminus':
+        specifier: ^11.1.1
+        version: 11.1.1(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.3)(reflect-metadata@0.1.14)(rxjs@7.8.2)
+      '@nestjs/throttler':
+        specifier: ^6.5.0
+        version: 6.5.0(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.3)(reflect-metadata@0.1.14)
+      '@nestjs/websockets':
+        specifier: ^11.2.3
+        version: 11.2.3(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.2.3)(reflect-metadata@0.1.14)(rxjs@7.8.2)
+      bcryptjs:
+        specifier: ^3.0.3
+        version: 3.0.3
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.15.1
+        version: 0.15.1
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(postgres@3.4.9)
+      fastify:
+        specifier: ^5.12.3
+        version: 5.12.3
+      joi:
+        specifier: ^18.2.8
+        version: 18.2.8
+      jose:
+        specifier: ^6.2.12
+        version: 6.2.12
+      nestjs-pino:
+        specifier: ^4.6.1
+        version: 4.6.1(@nestjs/common@11.2.3(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(pino-http@11.0.0)(pino@10.3.1)(rxjs@7.8.2)
+      pino:
+        specifier: ^10.3.1
+        version: 10.3.1
+      pino-http:
+        specifier: ^11.0.0
+        version: 11.0.0
+      postgres:
+        specifier: ^3.4.9
+        version: 3.4.9
+      reflect-metadata:
+        specifier: ^0.1.14
+        version: 0.1.14
+      rxjs:
+        specifier: ~7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+      ws:
+        specifier: ^8.21.3
+        version: 8.21.3
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
 
   apps/frontend:
     devDependencies:
@@ -442,19 +517,25 @@ importers:
         version: link:../../libs/games/sheepshead
 
   libs/db:
-    devDependencies:
+    dependencies:
       '@cardquorum/shared':
         specifier: workspace:*
         version: link:../shared
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(postgres@3.4.9)
 
   libs/engine:
-    devDependencies:
+    dependencies:
       '@cardquorum/shared':
         specifier: workspace:*
         version: link:../shared
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
 
   libs/games/sheepshead:
-    devDependencies:
+    dependencies:
       '@cardquorum/db':
         specifier: workspace:*
         version: link:../../db
@@ -464,8 +545,18 @@ importers:
       '@cardquorum/shared':
         specifier: workspace:*
         version: link:../../shared
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(postgres@3.4.9)
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
 
-  libs/shared: {}
+  libs/shared:
+    devDependencies:
+      '@angular/core':
+        specifier: 22.1.5
+        version: 22.1.5(@angular/compiler@22.1.5)(rxjs@7.8.2)
 
 packages:
 
@@ -10328,7 +10419,8 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@discoveryjs/json-ext@0.5.7': {}
+  '@discoveryjs/json-ext@0.5.7':
+    optional: true
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -13437,11 +13529,13 @@ snapshots:
     dependencies:
       webpack: 5.110.3(@swc/core@1.15.47(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@5.2.6)(webpack@5.110.3)
+    optional: true
 
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.110.3)':
     dependencies:
       webpack: 5.110.3(@swc/core@1.15.47(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@5.2.6)(webpack@5.110.3)
+    optional: true
 
   '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@5.2.6)(webpack@5.110.3)':
     dependencies:
@@ -13449,6 +13543,7 @@ snapshots:
       webpack-cli: 5.1.4(webpack-dev-server@5.2.6)(webpack@5.110.3)
     optionalDependencies:
       webpack-dev-server: 5.2.6(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(webpack-cli@5.1.4)(webpack@5.110.3)
+    optional: true
 
   '@xtuc/ieee754@1.2.0': {}
 
@@ -14066,7 +14161,8 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  commander@10.0.1: {}
+  commander@10.0.1:
+    optional: true
 
   commander@11.1.0: {}
 
@@ -14470,7 +14566,8 @@ snapshots:
 
   env-paths@2.2.1: {}
 
-  envinfo@7.21.0: {}
+  envinfo@7.21.0:
+    optional: true
 
   environment@1.1.0: {}
 
@@ -14844,7 +14941,8 @@ snapshots:
     dependencies:
       fast-string-width: 3.0.2
 
-  fastest-levenshtein@1.0.16: {}
+  fastest-levenshtein@1.0.16:
+    optional: true
 
   fastify-plugin@5.1.0: {}
 
@@ -15328,6 +15426,7 @@ snapshots:
     dependencies:
       pkg-dir: 4.2.0
       resolve-cwd: 3.0.0
+    optional: true
 
   import-meta-resolve@4.2.0: {}
 
@@ -15335,7 +15434,8 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  interpret@3.1.1: {}
+  interpret@3.1.1:
+    optional: true
 
   ip-address@10.7.0: {}
 
@@ -16783,6 +16883,7 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
+    optional: true
 
   pkg-dir@7.0.0:
     dependencies:
@@ -17141,6 +17242,7 @@ snapshots:
   rechoir@0.8.0:
     dependencies:
       resolve: 1.22.12
+    optional: true
 
   reflect-metadata@0.1.14: {}
 
@@ -17176,6 +17278,7 @@ snapshots:
   resolve-cwd@3.0.0:
     dependencies:
       resolve-from: 5.0.0
+    optional: true
 
   resolve-from@4.0.0: {}
 
@@ -18176,6 +18279,7 @@ snapshots:
       webpack-merge: 5.10.0
     optionalDependencies:
       webpack-dev-server: 5.2.6(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(webpack-cli@5.1.4)(webpack@5.110.3)
+    optional: true
 
   webpack-dev-middleware@7.4.6(webpack@5.110.3):
     dependencies:

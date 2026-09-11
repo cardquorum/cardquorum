@@ -1,5 +1,5 @@
 import { type SessionIdentity } from '@cardquorum/shared';
-import { REQUEST_SESSION_KEY, REQUEST_USER_KEY } from './auth/http-auth.guard';
+import { REQUEST_SESSION_KEY, REQUEST_USER_KEY } from './auth/http-auth.guard.js';
 
 declare module 'fastify' {
   interface FastifyRequest {

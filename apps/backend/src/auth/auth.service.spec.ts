@@ -1,30 +1,26 @@
 import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import { type Mocked } from 'vitest';
+import { jwtVerify } from 'jose';
+import { type Mock, type Mocked } from 'vitest';
 import { type CredentialRepository, type UserRepository } from '@cardquorum/db';
-import { AuthService } from './auth.service';
-import { type SessionService } from './session.service';
+import { AuthService } from './auth.service.js';
+import { type SessionService } from './session.service.js';
 
-/**
- * `jose` is loaded through the jose-loader seam (it is ESM-only). Mocking the
- * seam rather than the package keeps the production code on a plain dynamic
- * import — mocking 'jose' directly does not work, because TypeScript preserves
- * `import()` under nodenext and a real dynamic import bypasses the module
- * registry. See docs/design/typescript-config.md.
- *
- * `vi.hoisted` is what replaces Jest's `mock`-name-prefix convention: it runs
- * before the hoisted `vi.mock` call, so the factory can close over the result.
+/*
+ * `jose` is imported statically, so mocking the package works directly.
+ * `createRemoteJWKSet` must return a function: AuthService stores its result
+ * and later passes it to `jwtVerify` as the key resolver.
  */
-const { mockJose } = vi.hoisted(() => ({
-  mockJose: {
-    createRemoteJWKSet: vi.fn(() => vi.fn()),
-    jwtVerify: vi.fn(),
-  },
+vi.mock('jose', () => ({
+  createRemoteJWKSet: vi.fn(() => vi.fn()),
+  jwtVerify: vi.fn(),
 }));
 
-vi.mock('./jose-loader', () => ({
-  loadJose: vi.fn(async () => mockJose),
-}));
+// Retained for the many `const jose = mockJose;` call sites below, which set
+// return values on the mocked `jwtVerify` before invoking `AuthService`. Cast
+// to the loose `Mock` type (rather than `vi.mocked`) because the test payloads
+// below are partial `JWTVerifyResult` shapes, not full ones.
+const mockJose = { jwtVerify: jwtVerify as unknown as Mock };
 
 describe('AuthService', () => {
   let service: AuthService;

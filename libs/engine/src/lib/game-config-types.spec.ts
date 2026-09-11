@@ -1,4 +1,4 @@
-import type { FieldMetadata, FieldRegistry, GenericConfigPreset } from './game-config-types';
+import type { FieldMetadata, FieldRegistry, GenericConfigPreset } from './game-config-types.js';
 
 const VALID_RENDER_TYPES: FieldMetadata['renderType'][] = [
   'boolean',

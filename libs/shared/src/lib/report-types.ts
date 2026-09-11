@@ -1,4 +1,4 @@
-import type { Type } from '@angular/core' with { 'resolution-mode': 'import' };
+import type { Type } from '@angular/core';
 
 /** Describes a single report offered by a game plugin. */
 export interface ReportDescriptor {

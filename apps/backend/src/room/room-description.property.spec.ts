@@ -2,9 +2,9 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import * as fc from 'fast-check';
 import { type Mock } from 'vitest';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { CreateRoomDto, UpdateRoomDto } from './room.dto';
-import { RoomService } from './room.service';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { CreateRoomDto, UpdateRoomDto } from './room.dto.js';
+import { RoomService } from './room.service.js';
 
 /**
  * For any valid room description (null, empty string, or string up to 256 characters

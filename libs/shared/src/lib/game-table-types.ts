@@ -1,4 +1,4 @@
-import type { Type } from '@angular/core' with { 'resolution-mode': 'import' };
+import type { Type } from '@angular/core';
 
 /**
  * Types for the game table UI layer.

@@ -1,5 +1,5 @@
 import type { APIRequestContext, Browser, BrowserContext, Page } from '@playwright/test';
-import { getBaseUrl } from './env';
+import { getBaseUrl } from './env.js';
 
 export interface TestUser {
   username: string;

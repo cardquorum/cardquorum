@@ -1,7 +1,7 @@
 import { UnauthorizedException, type ExecutionContext } from '@nestjs/common';
 import { type Mocked } from 'vitest';
-import { HttpAuthGuard, REQUEST_SESSION_KEY, REQUEST_USER_KEY } from './http-auth.guard';
-import { type SessionService } from './session.service';
+import { HttpAuthGuard, REQUEST_SESSION_KEY, REQUEST_USER_KEY } from './http-auth.guard.js';
+import { type SessionService } from './session.service.js';
 
 describe('HttpAuthGuard', () => {
   let guard: HttpAuthGuard;

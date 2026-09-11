@@ -6,8 +6,8 @@ import {
   type StatsQueryParams,
   type UserIdentity,
 } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { StatsService } from './stats.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { StatsService } from './stats.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('stats')

@@ -1,6 +1,6 @@
-import { handleScore } from '../../phases';
-import { type SheepsheadState } from '../../types';
-import { card, makeConfig, makeNoPickScoreState } from '../test-helpers';
+import { handleScore } from '../../phases.js';
+import { type SheepsheadState } from '../../types.js';
+import { card, makeConfig, makeNoPickScoreState } from '../test-helpers.js';
 
 describe('handleScore', () => {
   it('calculates score deltas for all players', () => {

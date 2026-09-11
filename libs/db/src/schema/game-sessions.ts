@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { index, integer, jsonb, pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { rooms } from './rooms';
+import { rooms } from './rooms.js';
 
 export const gameSessions = pgTable(
   'game_sessions',

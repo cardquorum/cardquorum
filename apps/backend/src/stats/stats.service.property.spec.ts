@@ -6,7 +6,7 @@ import {
   type RoomRosterRepository,
 } from '@cardquorum/db';
 import { type PlayerStatRow } from '@cardquorum/shared';
-import { StatsService } from './stats.service';
+import { StatsService } from './stats.service.js';
 
 // ---------------------------------------------------------------------------
 // Mock setup

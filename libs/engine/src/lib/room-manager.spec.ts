@@ -1,5 +1,5 @@
 import { type UserIdentity } from '@cardquorum/shared';
-import { RoomManager } from './room-manager';
+import { RoomManager } from './room-manager.js';
 
 describe('RoomManager', () => {
   let manager: RoomManager;

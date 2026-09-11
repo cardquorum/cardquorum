@@ -1,6 +1,6 @@
 import { and, count, desc, eq, gte, inArray, sql, type SQL } from 'drizzle-orm';
-import { playerStats, roomRosters, users, type NewPlayerStat } from '../schema';
-import { type DbInstance } from '../types';
+import { playerStats, roomRosters, users, type NewPlayerStat } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 export interface AggregatedPlayerStats {
   userId: number;

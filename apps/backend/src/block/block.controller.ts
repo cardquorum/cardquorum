@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { type FastifyRequest } from 'fastify';
 import { type BlockedUserResponse, type UserIdentity } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { BlockUserDto } from './block.dto';
-import { BlockService } from './block.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { BlockUserDto } from './block.dto.js';
+import { BlockService } from './block.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('blocks')

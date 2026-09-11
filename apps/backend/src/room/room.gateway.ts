@@ -7,9 +7,9 @@ import {
 } from '@nestjs/websockets';
 import { type WebSocket } from 'ws';
 import { WS_EMIT, WS_EVENT } from '@cardquorum/shared';
-import { GameService } from '../game/game.service';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { WsValidationPipe } from '../ws/ws-validation.pipe';
+import { GameService } from '../game/game.service.js';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { WsValidationPipe } from '../ws/ws-validation.pipe.js';
 import {
   type GameSettingsLoadDto,
   type GameSettingsUpdateDto,
@@ -20,20 +20,26 @@ import {
   type RosterSetRotationModeDto,
   type RosterToggleReadyDto,
   type RosterToggleRotateDto,
-} from './room.dto';
-import { RoomService } from './room.service';
+} from './room.dto.js';
+import { RoomService } from './room.service.js';
 
 @UsePipes(WsValidationPipe)
 @WebSocketGateway({ path: '/ws' })
 export class RoomGateway implements OnModuleInit {
   private readonly logger = new Logger(RoomGateway.name);
 
+  // Declared separately so emitDecoratorMetadata sees Object (not GameService),
+  // avoiding the ESM temporal dead zone in the circular game ↔ room import.
+  private readonly gameService!: GameService;
+
   constructor(
     private readonly connectionService: WsConnectionService,
     private readonly roomService: RoomService,
     @Inject(forwardRef(() => GameService))
-    private readonly gameService: GameService,
-  ) {}
+    gameService: object,
+  ) {
+    this.gameService = gameService as GameService;
+  }
 
   onModuleInit() {
     this.connectionService.onDisconnect((tracked) => {

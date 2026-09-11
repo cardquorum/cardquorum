@@ -1,5 +1,5 @@
 import { type Mock } from 'vitest';
-import { BlockService } from './block.service';
+import { BlockService } from './block.service.js';
 
 describe('BlockService', () => {
   let service: BlockService;

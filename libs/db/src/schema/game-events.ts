@@ -10,8 +10,8 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { gameSessions } from './game-sessions';
-import { rooms } from './rooms';
+import { gameSessions } from './game-sessions.js';
+import { rooms } from './rooms.js';
 
 export const gameEvents = pgTable(
   'game_events',

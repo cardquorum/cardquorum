@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import { roomBans, users } from '../schema';
-import { type DbInstance } from '../types';
+import { roomBans, users } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 export class RoomBanRepository {
   constructor(private readonly db: DbInstance) {}

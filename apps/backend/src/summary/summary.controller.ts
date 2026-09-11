@@ -1,8 +1,8 @@
 import { Controller, Get, Param, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
 import { type FastifyRequest } from 'fastify';
 import { type SummaryDataResponse, type UserIdentity } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { SummaryService } from './summary.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { SummaryService } from './summary.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('summary')

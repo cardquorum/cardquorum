@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { type Mock } from 'vitest';
-import { UserService } from './user.service';
+import { UserService } from './user.service.js';
 
 vi.mock('bcryptjs');
 

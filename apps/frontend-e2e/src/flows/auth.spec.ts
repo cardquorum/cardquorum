@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { generateTestUser, registerUser } from '../helpers/auth';
+import { generateTestUser, registerUser } from '../helpers/auth.js';
 
 test.describe('Auth Flow', () => {
   test('register with valid credentials redirects to memberships', async ({ page }) => {

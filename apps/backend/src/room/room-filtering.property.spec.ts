@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
 import { type Mock } from 'vitest';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { RoomService } from './room.service';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { RoomService } from './room.service.js';
 
 type RoomVisibility = 'public' | 'friends-only' | 'invite-only';
 

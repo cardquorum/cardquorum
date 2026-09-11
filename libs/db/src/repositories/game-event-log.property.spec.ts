@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
-import { type GameEvent } from '../schema';
-import { GameEventRepository } from './game-event.repository';
-import { GameParticipantRepository } from './game-participant.repository';
+import { type GameEvent } from '../schema/index.js';
+import { GameEventRepository } from './game-event.repository.js';
+import { GameParticipantRepository } from './game-participant.repository.js';
 
 // ---------------------------------------------------------------------------
 // Helpers

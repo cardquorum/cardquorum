@@ -3,10 +3,10 @@ import { GameSessionRepository, RoomGameSettingsRepository } from '@cardquorum/d
 import { type GamePlugin, type WithScheduledEvents } from '@cardquorum/engine';
 import { WS_EMIT, type ColorAssignmentMap } from '@cardquorum/shared';
 import { SheepsheadPlugin } from '@cardquorum/sheepshead';
-import { RoomService } from '../room/room.service';
-import { StatsService } from '../stats/stats.service';
-import { EventLogService, type EventBufferEntry } from './event-log.service';
-import { resolveCancellationStatus } from './game-status';
+import { RoomService } from '../room/room.service.js';
+import { StatsService } from '../stats/stats.service.js';
+import { EventLogService, type EventBufferEntry } from './event-log.service.js';
+import { resolveCancellationStatus } from './game-status.js';
 
 type BroadcastFn = (result: {
   gameOver: boolean;
@@ -54,14 +54,19 @@ export class GameService implements OnModuleDestroy {
 
   private sweepTimer: ReturnType<typeof setInterval> | null = null;
 
+  // Declared separately so emitDecoratorMetadata sees Object (not RoomService),
+  // avoiding the ESM temporal dead zone in the circular game ↔ room import.
+  private readonly roomService!: RoomService;
+
   constructor(
     private readonly sessionRepo: GameSessionRepository,
     @Inject(forwardRef(() => RoomService))
-    private readonly roomService: RoomService,
+    roomService: object,
     private readonly eventLogService: EventLogService,
     private readonly statsService: StatsService,
     private readonly roomGameSettingsRepo: RoomGameSettingsRepository,
   ) {
+    this.roomService = roomService as RoomService;
     this.sweepTimer = setInterval(() => this.sweepAbandoned(), SWEEP_INTERVAL_MS);
   }
 

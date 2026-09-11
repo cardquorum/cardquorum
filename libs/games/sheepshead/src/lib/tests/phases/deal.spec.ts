@@ -1,5 +1,5 @@
-import { handleDeal } from '../../phases';
-import { card, makeConfig, makeState } from '../test-helpers';
+import { handleDeal } from '../../phases.js';
+import { card, makeConfig, makeState } from '../test-helpers.js';
 
 describe('handleDeal', () => {
   it('distributes cards to players and sets blind', () => {

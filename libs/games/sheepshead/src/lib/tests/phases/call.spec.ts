@@ -1,7 +1,7 @@
-import { isTrump } from '../../cards';
-import { handleBury, handleCall, handleDeal, handlePick, legalCallOptions } from '../../phases';
-import { type Card, type SheepsheadState } from '../../types';
-import { card, makeConfig, makeState, pickContinue } from '../test-helpers';
+import { isTrump } from '../../cards.js';
+import { handleBury, handleCall, handleDeal, handlePick, legalCallOptions } from '../../phases.js';
+import { type Card, type SheepsheadState } from '../../types.js';
+import { card, makeConfig, makeState, pickContinue } from '../test-helpers.js';
 
 describe('handleCall', () => {
   it('sets calledCard and assigns roles', () => {

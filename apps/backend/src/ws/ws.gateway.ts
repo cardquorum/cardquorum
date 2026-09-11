@@ -8,8 +8,8 @@ import {
 } from '@nestjs/websockets';
 import { type Server, type WebSocket } from 'ws';
 import { WS_EMIT } from '@cardquorum/shared';
-import { WsAuthGuard } from '../auth/ws-auth.guard';
-import { WsConnectionService } from './ws-connection.service';
+import { WsAuthGuard } from '../auth/ws-auth.guard.js';
+import { WsConnectionService } from './ws-connection.service.js';
 
 @WebSocketGateway({ path: '/ws' })
 export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -24,7 +24,19 @@ export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: WebSocket, request: IncomingMessage) {
-    const identity = await this.wsAuthGuard.authenticate(request);
+    // `authenticate` hits the database to validate the session cookie. An error
+    // there must not escape this lifecycle hook: Nest does not catch it, so it
+    // surfaces as an unhandled rejection instead of a closed socket, and a
+    // transient database fault takes out connection handling entirely.
+    let identity: Awaited<ReturnType<WsAuthGuard['authenticate']>>;
+    try {
+      identity = await this.wsAuthGuard.authenticate(request);
+    } catch (err) {
+      this.logger.error(`WS connection rejected: session lookup failed: ${err}`);
+      client.close(1011, 'Internal error');
+      return;
+    }
+
     if (!identity) {
       this.logger.warn('WS connection rejected: invalid or missing token');
       client.close(4001, 'Unauthorized');

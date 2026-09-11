@@ -5,9 +5,9 @@ import {
   type ReplaySessionListResponse,
   type UserIdentity,
 } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { GetSessionsQueryDto } from './replay.dto';
-import { ReplayService, type SessionListOptions } from './replay.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { GetSessionsQueryDto } from './replay.dto.js';
+import { ReplayService, type SessionListOptions } from './replay.service.js';
 
 const TERMINAL_STATUSES = ['finished', 'abandoned', 'cancelled', 'aborted'];
 

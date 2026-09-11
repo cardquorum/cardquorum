@@ -1,10 +1,10 @@
-import { PALETTE_HUES } from './color-types';
+import { PALETTE_HUES } from './color-types.js';
 import {
   circularHueDistance,
   hueToHsl,
   isValidPaletteHue,
   minimumDistanceThreshold,
-} from './color-utils';
+} from './color-utils.js';
 
 describe('circularHueDistance', () => {
   it('returns 0 for identical hues', () => {

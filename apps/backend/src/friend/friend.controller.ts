@@ -16,10 +16,10 @@ import {
   type FriendshipResponse,
   type UserIdentity,
 } from '@cardquorum/shared';
-import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard';
-import { BlockService } from '../block/block.service';
-import { FriendRequestDto } from './friend.dto';
-import { FriendService } from './friend.service';
+import { HttpAuthGuard, REQUEST_USER_KEY } from '../auth/http-auth.guard.js';
+import { BlockService } from '../block/block.service.js';
+import { FriendRequestDto } from './friend.dto.js';
+import { FriendService } from './friend.service.js';
 
 @UseGuards(HttpAuthGuard)
 @Controller('friends')

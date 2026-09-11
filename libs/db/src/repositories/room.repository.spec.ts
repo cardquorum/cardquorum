@@ -1,4 +1,4 @@
-import { RoomRepository } from './room.repository';
+import { RoomRepository } from './room.repository.js';
 
 function createMockDb() {
   return {

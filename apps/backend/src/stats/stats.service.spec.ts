@@ -1,6 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { type Mock } from 'vitest';
-import { StatsService } from './stats.service';
+import { StatsService } from './stats.service.js';
 
 describe('StatsService', () => {
   let service: StatsService;

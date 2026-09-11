@@ -1,1 +1,1 @@
-export { SheepsheadReportRepository } from './sheepshead-report.repository';
+export { SheepsheadReportRepository } from './sheepshead-report.repository.js';

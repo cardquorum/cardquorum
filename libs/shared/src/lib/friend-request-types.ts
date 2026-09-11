@@ -1,4 +1,4 @@
-import { type UserSearchResult } from './user-types';
+import { type UserSearchResult } from './user-types.js';
 
 export interface FriendRequestBody {
   userId: number;

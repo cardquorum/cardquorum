@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { and, eq, isNull } from 'drizzle-orm';
-import { userCredentials, users } from '../schema';
-import { type DbInstance } from '../types';
+import { userCredentials, users } from '../schema/index.js';
+import { type DbInstance } from '../types.js';
 
 export class CredentialRepository {
   constructor(private readonly db: DbInstance) {}

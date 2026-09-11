@@ -1,4 +1,4 @@
-import { MessageRepository } from './message.repository';
+import { MessageRepository } from './message.repository.js';
 
 function createMockDb() {
   return {

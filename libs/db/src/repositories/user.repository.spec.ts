@@ -1,4 +1,4 @@
-import { UserRepository } from './user.repository';
+import { UserRepository } from './user.repository.js';
 
 function createMockDb() {
   return {

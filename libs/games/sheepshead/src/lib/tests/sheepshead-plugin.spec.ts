@@ -1,7 +1,7 @@
-import { DECK } from '../constants';
-import { SheepsheadPlugin } from '../sheepshead-plugin';
-import { legalPlays } from '../tricks';
-import { type SheepsheadConfig, type SheepsheadState, type UserID } from '../types';
+import { DECK } from '../constants.js';
+import { SheepsheadPlugin } from '../sheepshead-plugin.js';
+import { legalPlays } from '../tricks.js';
+import { type SheepsheadConfig, type SheepsheadState, type UserID } from '../types.js';
 
 /** Helper: call applyEvent and return just the state (unwraps ApplyEventResult). */
 function apply(

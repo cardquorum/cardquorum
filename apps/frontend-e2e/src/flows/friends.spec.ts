@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { authenticatedContext, generateTestUser, registerUser } from '../helpers/auth';
+import { authenticatedContext, generateTestUser, registerUser } from '../helpers/auth.js';
 
 /**
  * Navigate to the friends page and wait for it to be ready.

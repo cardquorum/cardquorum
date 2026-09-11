@@ -6,16 +6,20 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/js:tsc",
+      "outputs": ["{workspaceRoot}/dist/apps/backend"],
+      "dependsOn": ["^build"],
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
-        "cwd": "apps/backend"
-      },
-      "configurations": {
-        "development": {
-          "args": ["--node-env=development"]
-        }
+        "main": "apps/backend/src/main.ts",
+        "tsConfig": "apps/backend/tsconfig.app.json",
+        "outputPath": "dist/apps/backend",
+        "rootDir": "apps/backend/src",
+        "generatePackageJson": true,
+        "clean": true,
+        "assets": [
+          { "input": "apps/backend/src/assets", "glob": "**/*", "output": "assets" },
+          { "input": "libs/db/migrations", "glob": "**/*", "output": "migrations" }
+        ]
       }
     },
     "prune-lockfile": {
@@ -46,19 +50,10 @@
     "serve": {
       "continuous": true,
       "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "backend:build",
         "runBuildTargetDependencies": false
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "backend:build:development"
-        },
-        "production": {
-          "buildTarget": "backend:build:production"
-        }
       }
     }
   }

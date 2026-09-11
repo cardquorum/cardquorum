@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { checkAccessibility, formatViolations } from '../helpers/a11y';
-import { authenticatedContext } from '../helpers/auth';
+import { checkAccessibility, formatViolations } from '../helpers/a11y.js';
+import { authenticatedContext } from '../helpers/auth.js';
 
 test.describe('Accessibility Sweep', () => {
   test('login page passes accessibility checks', async ({ page }) => {

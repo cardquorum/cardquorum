@@ -1,4 +1,4 @@
-import { FriendshipRepository } from './friendship.repository';
+import { FriendshipRepository } from './friendship.repository.js';
 
 function createMockDb() {
   return {

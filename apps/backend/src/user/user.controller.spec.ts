@@ -1,8 +1,8 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { type Mock } from 'vitest';
 import { type SessionIdentity } from '@cardquorum/shared';
-import { REQUEST_SESSION_KEY } from '../auth/http-auth.guard';
-import { UserController } from './user.controller';
+import { REQUEST_SESSION_KEY } from '../auth/http-auth.guard.js';
+import { UserController } from './user.controller.js';
 
 const REQUEST_USER_KEY = 'user';
 

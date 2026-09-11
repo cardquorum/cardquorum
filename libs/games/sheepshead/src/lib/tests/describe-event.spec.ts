@@ -1,6 +1,6 @@
-import { SheepsheadPlugin } from '../sheepshead-plugin';
-import { type SheepsheadState } from '../types';
-import { card, makeState } from './test-helpers';
+import { SheepsheadPlugin } from '../sheepshead-plugin.js';
+import { type SheepsheadState } from '../types.js';
+import { card, makeState } from './test-helpers.js';
 
 const describeEvent = SheepsheadPlugin.describeEvent!;
 

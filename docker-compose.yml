@@ -1,13 +1,13 @@
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: cardquorum
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       POSTGRES_DB: cardquorum
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata-prod:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U cardquorum"]
       interval: 10s
@@ -18,15 +18,19 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "${PORT:-3000}:3000"
+      - 3000:3000
     environment:
-      DATABASE_URL: postgresql://cardquorum:${POSTGRES_PASSWORD:-changeme}@db:5432/cardquorum
-      AUTH_STRATEGIES: ${AUTH_STRATEGIES:-basic}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
-      NODE_ENV: production
+      - DATABASE_URL=postgresql://cardquorum:${POSTGRES_PASSWORD:-changeme}@db:5432/cardquorum
+      - NODE_ENV
+      - AUTH_STRATEGIES
+      - LOG_LEVEL
+      - OIDC_ISSUER
+      - OIDC_CLIENT_ID
+      - OIDC_CLIENT_SECRET
+      - OIDC_REDIRECT_URI
     depends_on:
       db:
         condition: service_healthy
 
 volumes:
-  pgdata:
+  pgdata-prod:

@@ -3,8 +3,8 @@ import * as fc from 'fast-check';
 import { type Mock } from 'vitest';
 import { type WebSocket } from 'ws';
 import { WS_EMIT, type UserIdentity } from '@cardquorum/shared';
-import { WsConnectionService } from '../ws/ws-connection.service';
-import { RoomService } from './room.service';
+import { WsConnectionService } from '../ws/ws-connection.service.js';
+import { RoomService } from './room.service.js';
 
 describe('RoomService', () => {
   let service: RoomService;

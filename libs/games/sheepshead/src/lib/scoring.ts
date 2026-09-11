@@ -1,6 +1,6 @@
-import { sumPoints } from './cards';
-import { TOTAL_POINTS } from './constants';
-import { type SheepsheadConfig, type SheepsheadState, type UserID } from './types';
+import { sumPoints } from './cards.js';
+import { TOTAL_POINTS } from './constants.js';
+import { type SheepsheadConfig, type SheepsheadState, type UserID } from './types.js';
 
 /**
  * Calculate the points captured by the picking team (picker + partner/s).

@@ -11,7 +11,7 @@ import type {
   GameConfigPlugin,
   SelectFieldDef,
 } from '@cardquorum/engine';
-import type { CardName } from './types';
+import type { CardName } from './types.js';
 
 // ---------------------------------------------------------------------------
 // Zod schemas (config validation)
