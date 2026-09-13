@@ -287,6 +287,38 @@ Its history is the reason it took two moves to get there. It started browser-onl
 
 Division of labor: **tsc for type correctness, ESLint for code hygiene.**
 
+### `isolatedDeclarations` is not enabled
+
+It was enabled briefly in September 2026 and removed. Worth recording why, because the name reads like a strictness flag and it is not one.
+
+`isolatedDeclarations` checks nothing. It **restricts what you may write** so that a declaration emitter can produce a `.d.ts` from each file alone, without consulting a type checker — the prerequisite for emitting declarations with a non-tsc tool such as swc or oxc. It is a build-tooling capability, not a correctness feature.
+
+Nothing here emits declarations with anything but `tsc`, and `emitDecoratorMetadata` ties the backend to tsc's emit regardless. The cost was 114 violations:
+
+| Project                 | Violations | Shape                                                    |
+| ----------------------- | ---------- | -------------------------------------------------------- |
+| `libs/engine`           | 0          | —                                                        |
+| `libs/shared`           | 1          | a `RegExp` literal                                       |
+| `libs/games/sheepshead` | 4          | zod schemas                                              |
+| `libs/db`               | 75         | 16 Drizzle `pgTable` consts, 59 repository methods       |
+| `apps/backend`          | 34         | Nest gateway handlers and service methods                |
+| `apps/frontend`         | n/a        | `TS5069` — the Angular builder disables declaration emit |
+
+The distribution is the argument: the flag is free where code is plain TypeScript and expensive exactly where it is built on inference-heavy schema builders. Annotating a `pgTable` const means transcribing by hand a deeply parameterized generic that Drizzle exists to infer — at best reproducing it exactly, at worst narrowing it wrong and degrading query inference everywhere downstream.
+
+Nor would repository annotations state a contract that is not already stated. Drizzle row types are local intermediates that die at the controller, which maps them field-by-field into the `@cardquorum/shared` response types — and those are already explicit, at the layer the frontend actually imports:
+
+```ts
+async create(…): Promise<RoomResponse> {
+  const row = await this.roomService.create(…);
+  return { id: row.id, name: row.name /* … */ };
+}
+```
+
+Same division of labor as the section above. If what you want is explicit return types on public methods, `@typescript-eslint/explicit-module-boundary-types` gives you per-directory scoping, a severity level, and an escape hatch; `isolatedDeclarations` gives you one workspace-wide switch.
+
+**If it is ever reinstated** — adopting swc or oxc for library declaration emit would be the reason — `libs/shared` and `libs/engine` are nearly free today, but both already import zod and sit one exported schema away from the wall `sheepshead` hit.
+
 ### Deferred strictness flags
 
 Measured against the real codebase:
@@ -402,4 +434,20 @@ Sequenced as separate projects:
 ```bash
 pnpm validate
 rm -rf .angular/cache && pnpm serve   # cold cache — a warm one hides resolution errors
+```
+
+### A warm `.tsbuildinfo` hides compiler-option changes
+
+`tsc --build` skips projects it considers up to date and **replays their stored diagnostics** instead of re-checking them. A change to an option in an _extended_ preset does not reliably invalidate that state, so the flag you just set may not be applied to anything.
+
+This cuts both ways: `pnpm validate` can pass locally while a clean CI checkout fails, and it can keep reporting errors you have already fixed. It is not hypothetical — `isolatedDeclarations` was enabled workspace-wide and left 114 unfixed violations across five projects while `pnpm validate` passed on every developer machine. The same warm-cache trap as `.angular/cache` above, one layer down.
+
+After changing anything in a preset, force a real re-check:
+
+```bash
+pnpm exec tsc --build libs/db/tsconfig.lib.json --force   # one project
+
+# everything, cold — what CI actually sees
+find . -name '*.tsbuildinfo' -not -path '*/node_modules/*' -delete
+pnpm nx run-many -t build typecheck --skip-nx-cache
 ```

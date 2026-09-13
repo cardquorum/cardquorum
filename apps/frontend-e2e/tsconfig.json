@@ -3,9 +3,13 @@
   "compilerOptions": {
     "outDir": "./out-tsc",
     "allowJs": true,
-    "isolatedDeclarations": false,
     "sourceMap": false
   },
   "include": ["**/*.ts", "**/*.js"],
-  "exclude": ["out-tsc"]
+  "exclude": ["out-tsc"],
+  "references": [
+    {
+      "path": "../../libs/db"
+    }
+  ]
 }

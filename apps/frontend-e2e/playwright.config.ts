@@ -2,9 +2,11 @@ import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
 import { dbConfig } from '@cardquorum/db';
-import { getBaseUrl } from './src/helpers/env.js';
 
-const baseURL = getBaseUrl();
+// Read directly rather than importing src/helpers/env.ts: Nx's project-graph
+// plugin loads this config through @swc-node/register, which resolves relative
+// specifiers literally and cannot map './...js' back to the '.ts' source.
+const baseURL = process.env['E2E_BASE_URL'] || 'http://localhost:4200';
 
 // Pass individual POSTGRES_* vars so the backend connects to the test database.
 // POSTGRES_DB is overridden; all other vars come from the current environment
