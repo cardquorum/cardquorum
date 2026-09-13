@@ -27,12 +27,16 @@ The frontend's `serve` target depends on `backend:serve`, so `pnpm nx serve fron
 
 Required variables (validated at backend startup via Joi):
 
-| Variable       | Required | Default       | Description                            |
-| -------------- | -------- | ------------- | -------------------------------------- |
-| `DATABASE_URL` | Yes      | —             | Postgres connection string             |
-| `LOG_LEVEL`    | No       | `info`        | `debug`, `info`, `warn`, or `error`    |
-| `PORT`         | No       | `3000`        | Backend listen port                    |
-| `NODE_ENV`     | No       | `development` | `development`, `production`, or `test` |
+| Variable            | Required | Default       | Description                            |
+| ------------------- | -------- | ------------- | -------------------------------------- |
+| `POSTGRES_PASSWORD` | Yes      | —             | Postgres password                      |
+| `POSTGRES_HOST`     | No       | `localhost`   | Postgres host                          |
+| `POSTGRES_PORT`     | No       | `5432`        | Postgres port                          |
+| `POSTGRES_USER`     | No       | `cardquorum`  | Postgres user                          |
+| `POSTGRES_DB`       | No       | `cardquorum`  | Postgres database name                 |
+| `LOG_LEVEL`         | No       | `info`        | `debug`, `info`, `warn`, or `error`    |
+| `PORT`              | No       | `3000`        | Backend listen port                    |
+| `NODE_ENV`          | No       | `development` | `development`, `production`, or `test` |
 
 ## Pre-commit Hooks
 

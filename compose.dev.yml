@@ -1,15 +1,16 @@
 services:
-  postgres:
+  db:
     image: postgres:18-alpine
-    container_name: cardquorum-postgres
+    container_name: cardquorum-db
     ports:
-      - '5432:5432'
+      - 5432:5432
     environment:
-      POSTGRES_USER: cardquorum
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: cardquorum
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     volumes:
-      - pgdata-dev:/var/lib/postgresql
+      - cq-data-dev:/var/lib/postgresql
+    restart: unless-stopped
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U cardquorum']
       interval: 5s
@@ -17,4 +18,4 @@ services:
       retries: 5
 
 volumes:
-  pgdata-dev:
+  cq-data-dev:

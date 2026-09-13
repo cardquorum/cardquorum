@@ -49,7 +49,11 @@ const serveStaticImports = existsSync(staticPath)
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        DATABASE_URL: Joi.string().uri().required(),
+        POSTGRES_HOST: Joi.string().default('localhost'),
+        POSTGRES_PORT: Joi.number().default(5432),
+        POSTGRES_USER: Joi.string().default('cardquorum'),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().default('cardquorum'),
         LOG_LEVEL: Joi.string().valid('debug', 'info', 'warn', 'error').default('info'),
         PORT: Joi.number().default(3000),
         NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),

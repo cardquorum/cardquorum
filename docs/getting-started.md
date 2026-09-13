@@ -24,7 +24,7 @@
    The defaults work with the Docker dev containers out of the box:
 
    ```env
-   DATABASE_URL=postgresql://cardquorum:cardquorum@localhost:5432/cardquorum
+   POSTGRES_PASSWORD=password
    AUTH_STRATEGIES=basic
    LOG_LEVEL=debug
    ```

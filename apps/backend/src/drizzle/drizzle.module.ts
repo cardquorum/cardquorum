@@ -1,8 +1,8 @@
 import { Global, Module, type OnApplicationShutdown } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@cardquorum/db';
+import { buildDatabaseUrl } from '@cardquorum/db';
 import {
   BlockRepository,
   CredentialRepository,
@@ -22,16 +22,15 @@ import {
   UserRepository,
 } from '@cardquorum/db';
 
-export const DRIZZLE = Symbol('DRIZZLE');
+export const DRIZZLE: unique symbol = Symbol('DRIZZLE');
 
 @Global()
 @Module({
   providers: [
     {
       provide: DRIZZLE,
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        const client = postgres(config.getOrThrow<string>('DATABASE_URL'));
+      useFactory: () => {
+        const client = postgres(buildDatabaseUrl());
         return drizzle(client, { schema });
       },
     },
@@ -137,7 +136,7 @@ export const DRIZZLE = Symbol('DRIZZLE');
   ],
 })
 export class DrizzleModule implements OnApplicationShutdown {
-  async onApplicationShutdown() {
+  async onApplicationShutdown(): Promise<void> {
     // postgres.js handles cleanup automatically
   }
 }

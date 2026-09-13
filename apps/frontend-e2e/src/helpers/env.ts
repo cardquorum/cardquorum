@@ -2,22 +2,17 @@
  * Shared environment helpers for e2e tests.
  * Single source of truth for database URLs and base URL.
  */
+import { buildDatabaseUrl, dbConfig } from '@cardquorum/db';
 
 export function getTestDatabaseUrl(): string {
   if (process.env['E2E_DATABASE_URL']) {
     return process.env['E2E_DATABASE_URL'];
   }
-  const base = process.env['DATABASE_URL'];
-  if (base) {
-    return base.replace(/\/[^/]+$/, '/cardquorum_test');
-  }
-  return 'postgresql://cardquorum:password@localhost:5432/cardquorum_test';
+  return buildDatabaseUrl({ name: `${dbConfig.name}_test` });
 }
 
 export function getAdminDatabaseUrl(): string {
-  return (
-    process.env['DATABASE_URL'] || 'postgresql://cardquorum:password@localhost:5432/cardquorum'
-  );
+  return buildDatabaseUrl();
 }
 
 export function getBaseUrl(): string {

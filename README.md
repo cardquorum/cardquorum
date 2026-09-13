@@ -12,7 +12,7 @@ Requires [Docker](https://www.docker.com/) and [Docker Compose](https://docs.doc
 git clone https://github.com/reednel/cardquorum.git
 cd cardquorum
 cp .env.template .env  # edit with real values
-docker compose up --build -d
+docker compose up -d
 ```
 
 The app will be available at `http://localhost:3000`. Database migrations run automatically on startup.

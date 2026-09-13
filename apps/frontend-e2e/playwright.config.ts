@@ -1,14 +1,21 @@
 import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
+import { dbConfig } from '@cardquorum/db';
+import { getBaseUrl } from './src/helpers/env.js';
 
-const baseURL = process.env['E2E_BASE_URL'] || 'http://localhost:4200';
+const baseURL = getBaseUrl();
 
-const testDatabaseUrl =
-  process.env['E2E_DATABASE_URL'] ||
-  (process.env['DATABASE_URL']
-    ? process.env['DATABASE_URL'].replace(/\/[^/]+$/, '/cardquorum_test')
-    : 'postgresql://cardquorum:password@localhost:5432/cardquorum_test');
+// Pass individual POSTGRES_* vars so the backend connects to the test database.
+// POSTGRES_DB is overridden; all other vars come from the current environment
+// (or their defaults in dbConfig).
+const testDbEnv = [
+  `POSTGRES_HOST=${dbConfig.host}`,
+  `POSTGRES_PORT=${dbConfig.port}`,
+  `POSTGRES_USER=${dbConfig.user}`,
+  `POSTGRES_PASSWORD=${dbConfig.password ?? ''}`,
+  `POSTGRES_DB=${dbConfig.name}_test`,
+].join(' ');
 
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
@@ -21,7 +28,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: `DATABASE_URL=${testDatabaseUrl} AUTH_STRATEGIES=basic NODE_ENV=test pnpm exec nx run frontend:serve`,
+    command: `${testDbEnv} AUTH_STRATEGIES=basic NODE_ENV=test pnpm exec nx run frontend:serve`,
     url: 'http://localhost:4200',
     reuseExistingServer: true,
     cwd: workspaceRoot,

@@ -3,7 +3,7 @@ import helmet from '@fastify/helmet';
 
 export async function registerHelmet(
   app: NestFastifyApplication,
-  nodeEnv = process.env['NODE_ENV'] ?? 'development',
+  nodeEnv: string = process.env['NODE_ENV'] ?? 'development',
 ): Promise<void> {
   const isDev = nodeEnv !== 'production';
 
