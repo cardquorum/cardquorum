@@ -16,6 +16,7 @@
 
     /* Build orchestration */
     "composite": true,
+    "isolatedDeclarations": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
