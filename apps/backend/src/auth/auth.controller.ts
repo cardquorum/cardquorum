@@ -23,6 +23,7 @@ import {
   type SessionIdentity,
   type StrategiesResponse,
 } from '@cardquorum/shared';
+import { UpdateUsernameDto } from '../user/user.dto.js';
 import {
   type ChangePasswordDto,
   type LoginDto,
@@ -83,7 +84,7 @@ export class AuthController {
   @UseGuards(HttpAuthGuard)
   @Patch('oidc/register')
   async oidcRegister(
-    @Body() dto: { username: string },
+    @Body() dto: UpdateUsernameDto,
     @Req() request: FastifyRequest,
   ): Promise<SessionIdentity> {
     const user = request[REQUEST_USER_KEY];
