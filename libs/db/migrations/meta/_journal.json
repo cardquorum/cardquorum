@@ -5,85 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1774741810905,
-      "tag": "0000_slippery_flatman",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1774839684766,
-      "tag": "0001_steady_deathbird",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1775320708516,
-      "tag": "0002_lethal_quasimodo",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1775343759170,
-      "tag": "0003_sour_freak",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1776011205132,
-      "tag": "0004_first_bruce_banner",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1776028060685,
-      "tag": "0005_watery_starjammers",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1777000000000,
-      "tag": "0006_roster_overhaul",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1778114970645,
-      "tag": "0007_round_stardust",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1779028792752,
-      "tag": "0008_vengeful_mongu",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1779546959058,
-      "tag": "0009_motionless_praxagora",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1779677597261,
-      "tag": "0010_add_variant_column",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1788638133021,
-      "tag": "0011_add_oidc_sid_to_sessions",
+      "when": 1789270940361,
+      "tag": "0000_init",
       "breakpoints": true
     }
   ]
