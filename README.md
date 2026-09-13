@@ -27,8 +27,9 @@ Requires [Node.js](https://nodejs.org/) (v20+), [pnpm](https://pnpm.io/), and [D
 
 ```sh
 pnpm install
-docker compose -f compose.dev.yml up -d # starts Postgres
 cp .env.template .env                   # then fill in values
+docker compose -f compose.dev.yml up -d # starts Postgres
+pnpm drizzle-migrate                    # creates the schema
 ```
 
 ### Quick Commands

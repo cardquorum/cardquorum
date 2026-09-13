@@ -11,15 +11,15 @@ import { GameService } from '../game/game.service.js';
 import { WsConnectionService } from '../ws/ws-connection.service.js';
 import { WsValidationPipe } from '../ws/ws-validation.pipe.js';
 import {
-  type GameSettingsLoadDto,
-  type GameSettingsUpdateDto,
-  type JoinRoomDto,
-  type LeaveRoomDto,
-  type LeaveRosterDto,
-  type RosterReorderDto,
-  type RosterSetRotationModeDto,
-  type RosterToggleReadyDto,
-  type RosterToggleRotateDto,
+  GameSettingsLoadDto,
+  GameSettingsUpdateDto,
+  JoinRoomDto,
+  LeaveRoomDto,
+  LeaveRosterDto,
+  RosterReorderDto,
+  RosterSetRotationModeDto,
+  RosterToggleReadyDto,
+  RosterToggleRotateDto,
 } from './room.dto.js';
 import { RoomService } from './room.service.js';
 

@@ -24,12 +24,7 @@ import {
   type StrategiesResponse,
 } from '@cardquorum/shared';
 import { UpdateUsernameDto } from '../user/user.dto.js';
-import {
-  type ChangePasswordDto,
-  type LoginDto,
-  type PasswordDto,
-  type RegisterDto,
-} from './auth.dto.js';
+import { ChangePasswordDto, LoginDto, PasswordDto, RegisterDto } from './auth.dto.js';
 import { AuthService } from './auth.service.js';
 import {
   buildClearOidcStateCookie,

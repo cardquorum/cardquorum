@@ -12,15 +12,15 @@ import { WsConnectionService } from '../ws/ws-connection.service.js';
 import { WsValidationPipe } from '../ws/ws-validation.pipe.js';
 import { EventLogService } from './event-log.service.js';
 import {
-  type GameAbandonDto,
-  type GameActionDto,
-  type GameCancelDto,
-  type GameCreateDto,
-  type GameForceAbandonDto,
-  type GameLogHistoryDto,
-  type GameQueryTargetsDto,
-  type GameRejoinDto,
-  type GameStartDto,
+  GameAbandonDto,
+  GameActionDto,
+  GameCancelDto,
+  GameCreateDto,
+  GameForceAbandonDto,
+  GameLogHistoryDto,
+  GameQueryTargetsDto,
+  GameRejoinDto,
+  GameStartDto,
 } from './game.dto.js';
 import { GameService } from './game.service.js';
 

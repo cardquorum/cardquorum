@@ -25,11 +25,11 @@ import { BlockService } from '../block/block.service.js';
 import { RoomService } from '../room/room.service.js';
 import { WsConnectionService } from '../ws/ws-connection.service.js';
 import {
-  type DeleteAccountDto,
-  type SearchUsersDto,
-  type UpdateColorPreferenceDto,
-  type UpdateDisplayNameDto,
-  type UpdateUsernameDto,
+  DeleteAccountDto,
+  SearchUsersDto,
+  UpdateColorPreferenceDto,
+  UpdateDisplayNameDto,
+  UpdateUsernameDto,
 } from './user.dto.js';
 import { UserService } from './user.service.js';
 

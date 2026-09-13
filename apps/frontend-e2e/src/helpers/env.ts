@@ -2,13 +2,13 @@
  * Shared environment helpers for e2e tests.
  * Single source of truth for database URLs and base URL.
  */
-import { buildDatabaseUrl, dbConfig } from '@cardquorum/db';
+import { buildDatabaseUrl, requireDbName } from '@cardquorum/db';
 
 export function getTestDatabaseUrl(): string {
   if (process.env['E2E_DATABASE_URL']) {
     return process.env['E2E_DATABASE_URL'];
   }
-  return buildDatabaseUrl({ name: `${dbConfig.name}_test` });
+  return buildDatabaseUrl({ name: `${requireDbName()}_test` });
 }
 
 export function getAdminDatabaseUrl(): string {

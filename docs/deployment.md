@@ -37,16 +37,16 @@ The app will be available at `http://localhost:3000`.
 
 All configuration is done through environment variables. See `.env.template` for the full list.
 
-| Variable            | Required | Default      | Description                           |
-| ------------------- | -------- | ------------ | ------------------------------------- |
-| `POSTGRES_PASSWORD` | Yes      | —            | Postgres password                     |
-| `POSTGRES_HOST`     | No       | `localhost`  | Postgres host                         |
-| `POSTGRES_PORT`     | No       | `5432`       | Postgres port                         |
-| `POSTGRES_USER`     | No       | `cardquorum` | Postgres user                         |
-| `POSTGRES_DB`       | No       | `cardquorum` | Postgres database name                |
-| `AUTH_STRATEGIES`   | No       | `basic`      | Comma-separated list: `basic`, `oidc` |
-| `LOG_LEVEL`         | No       | `info`       | `debug`, `info`, `warn`, `error`      |
-| `PORT`              | No       | `3000`       | Port the app listens on               |
+| Variable            | Required | Default     | Description                           |
+| ------------------- | -------- | ----------- | ------------------------------------- |
+| `POSTGRES_PASSWORD` | Yes      | —           | Postgres password                     |
+| `POSTGRES_HOST`     | No       | `localhost` | Postgres host                         |
+| `POSTGRES_PORT`     | No       | `5432`      | Postgres port                         |
+| `POSTGRES_USER`     | Yes      | —           | Postgres user                         |
+| `POSTGRES_DB`       | Yes      | —           | Postgres database name                |
+| `AUTH_STRATEGIES`   | No       | `basic`     | Comma-separated list: `basic`, `oidc` |
+| `LOG_LEVEL`         | No       | `info`      | `debug`, `info`, `warn`, `error`      |
+| `PORT`              | No       | `3000`      | Port the app listens on               |
 
 When using `docker-compose.yml`, `POSTGRES_HOST` is automatically overridden to point at the internal `db` service — you only need to set `POSTGRES_PASSWORD` in your `.env`.
 

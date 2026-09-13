@@ -80,7 +80,7 @@ Current tables:
 
 ## Drizzle Kit Config
 
-Located at `libs/db/drizzle.config.ts` (run from repo root). Reads `POSTGRES_PASSWORD` (and optionally `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER`, `POSTGRES_DB`) from the environment via the shared `buildDatabaseUrl()` helper in `libs/db/src/config.ts`.
+Located at `libs/db/drizzle.config.ts` (run from repo root). Reads `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB` (all required, no defaults) plus the optional `POSTGRES_HOST` and `POSTGRES_PORT` from the environment via the shared `buildDatabaseUrl()` helper in `libs/db/src/config.ts`.
 
 ```ts
 schema: './libs/db/src/schema/*.ts';

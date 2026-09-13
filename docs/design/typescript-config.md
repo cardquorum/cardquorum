@@ -277,7 +277,14 @@ It means "emit imports exactly as written," which is valid and desirable under b
 
 Its history is the reason it took two moves to get there. It started browser-only because CommonJS source **cannot** honour it — measured at 615 `TS1295` errors against the pre-ESM backend. The ESM migration made it viable on Node, at which point it was copied into the Node preset, leaving an identical value in both platform presets: exactly the duplication this document's opening rule forbids. It then moved to the base. Worth remembering as a pattern — an option that is _temporarily_ impossible on one platform can masquerade as platform-varying long after the obstacle is gone.
 
-> **DI hazard — permanent, not migration-only:** `verbatimModuleSyntax` erases `import type`, which prevents `emitDecoratorMetadata` from seeing the type. Any Nest constructor parameter whose type arrives via `import type` will have its DI metadata silently degraded to `[Function]`. Those imports must remain value imports.
+> **Decorator-metadata hazard — permanent, not migration-only:** `verbatimModuleSyntax` erases `import type`, which prevents `emitDecoratorMetadata` from seeing the type. Any Nest parameter whose type arrives via `import type` has its metadata silently degraded to `[Function]`, with no compile error. Those imports must remain value imports. **Two** distinct failures ride on this:
+>
+> 1. **Constructor parameters — dependency injection.** Nest resolves dependencies from constructor paramtypes; an erased entry crashes at startup with "can't resolve dependencies of …".
+> 2. **`@Body()` / `@MessageBody()` / `@Query()` / `@Param()` — request validation.** These hand their paramtype to `ValidationPipe` as the metatype. Erased, the pipe validates against `Function`, which has no decorated properties, so under `whitelist: true, forbidNonWhitelisted: true` it rejects **every** submitted field with `property <name> should not exist` — and the DTO's own rules never run. This one is nastier than the DI case: the app boots clean and every request with a body fails.
+>
+> The second was a real outage. Extracting inline DTOs into `*.dto.ts` files and importing them as `type` broke registration, login, password change, account deletion, user search and every room and game WebSocket message at once.
+>
+> `scripts/check-di-metadata.mjs` guards both, and runs as the last step of `pnpm validate`. It checks constructor paramtypes at every position, and method paramtypes **only** at indices bound to one of those four decorators — a method parameter typed as an interface erases legitimately and nothing reads it (`@ConnectedSocket() client: WebSocket` is the common case, since `ws` exports types only), so flagging those would bury the real defects in noise.
 >
 > `@typescript-eslint/consistent-type-imports` is **not** applied to the backend for this reason. The exclusion is deliberate: NestJS uses class-as-token DI, and the rule would demand exactly the `import type` that erases the metadata.
 

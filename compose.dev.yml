@@ -12,7 +12,7 @@ services:
       - cq-data-dev:/var/lib/postgresql
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U cardquorum']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 5s
       timeout: 3s
       retries: 5
