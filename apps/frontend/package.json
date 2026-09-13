@@ -1,5 +1,6 @@
 {
   "name": "@cardquorum/frontend",
+  "type": "module",
   "devDependencies": {
     "@cardquorum/shared": "workspace:*",
     "@cardquorum/engine": "workspace:*",

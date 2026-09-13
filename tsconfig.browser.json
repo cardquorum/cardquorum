@@ -5,22 +5,18 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "types": [],
-    "verbatimModuleSyntax": true,
-    "importHelpers": true,
-    "customConditions": ["@cardquorum/source"],
 
     /*
-     * Workspace libraries must be mapped here as well as through the
-     * `@cardquorum/source` export condition above.
+     * Workspace libraries must be mapped here so the Angular builder resolves
+     * them to source. The Angular builder resolves modules itself rather than
+     * through TypeScript's resolver, so `customConditions` has no effect here.
      *
-     * `customConditions` is a TypeScript-only mechanism — it steers `tsc` and
-     * therefore typecheck, but the Angular builder resolves modules itself and
-     * reads `paths`. Without these, the dev server resolves `@cardquorum/*`
-     * through the pnpm symlinks in node_modules and then fails on the
-     * extensionless relative imports inside those packages, because it does not
-     * apply TypeScript resolution to node_modules paths.
+     * TODO: verify paths is still required with a cold-cache `nx serve` test.
+     * The original justification was that the dev server would fail on
+     * extensionless relative imports inside the dist outputs. Those imports now
+     * carry explicit .js extensions, so paths may no longer be needed — but
+     * that has not been confirmed under a live serve.
      *
-     * The production build happens to succeed without them; `nx serve` does not.
      * Paths are resolved relative to THIS file, so they are workspace-rooted.
      */
     "paths": {

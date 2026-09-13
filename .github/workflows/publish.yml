@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Lint, Build & Test
+    name: Validate
     runs-on: ubuntu-latest
 
     steps:
@@ -21,11 +21,9 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
 
       - uses: pnpm/action-setup@v6
-        with:
-          version: 12
 
       - name: Get pnpm store path
         id: pnpm-store
@@ -42,14 +40,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm nx run-many -t lint
-
-      - name: Build
-        run: pnpm nx run-many -t build
-
-      - name: Test
-        run: pnpm nx run-many -t test
+      - name: Validate
+        run: pnpm validate
 
   docker:
     name: Build & Push Image

@@ -13,21 +13,17 @@ concurrency:
 
 jobs:
   validate:
-    name: Lint, Build & Test
+    name: Validate
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0 # needed for nx affected
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
 
       - uses: pnpm/action-setup@v6
-        with:
-          version: 12
 
       - name: Get pnpm store path
         id: pnpm-store
@@ -44,16 +40,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Set Nx base/head for affected
-        run: |
-          echo "NX_BASE=origin/main" >> $GITHUB_ENV
-          echo "NX_HEAD=HEAD" >> $GITHUB_ENV
-
-      - name: Lint
-        run: pnpm nx affected -t lint --base=$NX_BASE --head=$NX_HEAD
-
-      - name: Build
-        run: pnpm nx affected -t build --base=$NX_BASE --head=$NX_HEAD
-
-      - name: Test
-        run: pnpm nx affected -t test --base=$NX_BASE --head=$NX_HEAD
+      - name: Validate
+        run: pnpm validate

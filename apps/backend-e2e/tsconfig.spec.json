@@ -2,6 +2,7 @@
   "extends": ["../../tsconfig.base.json", "../../tsconfig.node.json"],
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
+    "rootDir": "src",
     "types": ["vitest/globals", "node"]
   },
   "include": ["src/**/*.ts"]

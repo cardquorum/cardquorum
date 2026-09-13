@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    /* NestJS decorator support */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}

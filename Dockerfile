@@ -7,23 +7,35 @@
 
 # --- Stage 1: Install dependencies ---
 FROM node:26-alpine AS deps
-RUN npm install -g pnpm@12
+RUN corepack enable
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # --- Stage 2: Build frontend + backend ---
 FROM node:26-alpine AS builder
-RUN npm install -g pnpm@12
+RUN corepack enable
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm nx build frontend --configuration=production
 RUN pnpm nx run backend:prune
 
+# Remove non-runtime files from workspace_modules copies (src, tests, build intermediates)
+RUN find dist/apps/backend/workspace_modules -mindepth 1 -maxdepth 4 \
+      \( -name "src" \
+      -o -name "out-tsc" \
+      -o -name "migrations" \
+      -o -name "tsconfig*.json" \
+      -o -name "vitest.config.*" \
+      -o -name "drizzle.config.*" \
+      -o -name "eslint.config.*" \
+      -o -name "project.json" \
+      \) -exec rm -rf {} +
+
 # --- Stage 3: Production runtime ---
 FROM node:26-alpine AS runtime
-RUN npm install -g pnpm@12
+RUN corepack enable
 WORKDIR /app
 
 # Copy the built backend (includes generated package.json with prod deps,

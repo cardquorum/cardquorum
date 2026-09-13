@@ -11,6 +11,8 @@
 
     /* Transpiler compatibility */
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "importHelpers": true,
 
     /* Build orchestration */
     "composite": true,
