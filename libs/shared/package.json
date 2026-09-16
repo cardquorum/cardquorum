@@ -2,7 +2,7 @@
   "name": "@cardquorum/shared",
   "type": "module",
   "devDependencies": {
-    "@angular/core": "22.1.5"
+    "@angular/core": "22.1.6"
   },
   "exports": {
     "./package.json": "./package.json",
