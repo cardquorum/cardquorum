@@ -8,6 +8,9 @@
    3. who took in bg (?)
    4. Unknown ace doesn't work: failed to select the 6 of spades.
    5. OICD urls should not care about a trailing `/`
+2. Build Fixes
+   1. Dependabot can't handle pnpm 12 yet
+   2. Other failures and things to optimize in CI
 
 ## Major Features
 
@@ -27,10 +30,16 @@
 4. Wipe db migrations
 5. Versioning
 6. Actually robust documentation
-   1. Zensical hosted on GH Pages (separate repo) - `docs.cardquorum.com`
-   2. Three domains:
-      1. User - getting started, in-depth game rules
-      2. Admin - deployment options, env configuration, etc
-      3. Developer - building from source, dev procedures, design decisions, etc
 7. 404 Page
 8. Copyright/TOS/Privacy Policy
+
+## Dependabot Fix
+
+When Dependabot releases their fix to support pnpm 12, update `package.json`:
+
+```json
+  "name": "@cardquorum/source",
+  "version": "0.0.0",
+  "license": "AGPL-3.0",
+  "packageManager": "pnpm@12.4.1", // add this line
+```
