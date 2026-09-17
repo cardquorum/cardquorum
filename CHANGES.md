@@ -38,8 +38,5 @@
 When Dependabot releases their fix to support pnpm 12, update `package.json`:
 
 ```json
-  "name": "@cardquorum/source",
-  "version": "0.0.0",
-  "license": "AGPL-3.0",
-  "packageManager": "pnpm@12.4.1", // add this line
+  "packageManager": "pnpm@12.4.1",
 ```
