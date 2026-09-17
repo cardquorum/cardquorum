@@ -32,11 +32,3 @@
 6. Actually robust documentation
 7. 404 Page
 8. Copyright/TOS/Privacy Policy
-
-## Dependabot Fix
-
-When Dependabot releases their fix to support pnpm 12, update `package.json`:
-
-```json
-  "packageManager": "pnpm@12.4.1",
-```
