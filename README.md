@@ -1,6 +1,6 @@
 # CardQuorum
 
-![GitHub Release](https://img.shields.io/github/v/release/reednel/cardquorum) [![GitHub License](https://img.shields.io/github/license/reednel/cardquorum?color=purple)](https://github.com/reednel/cardquorum/blob/main/LICENSE) [![Repo Size](https://img.shields.io/github/repo-size/reednel/cardquorum)](https://github.com/reednel/cardquorum) ![GitHub issues](https://img.shields.io/github/issues/reednel/cardquorum)
+![GitHub Release](https://img.shields.io/github/v/release/cardquorum/cardquorum) [![GitHub License](https://img.shields.io/github/license/cardquorum/cardquorum?color=purple)](https://github.com/cardquorum/cardquorum/blob/main/LICENSE) [![Repo Size](https://img.shields.io/github/repo-size/cardquorum/cardquorum)](https://github.com/cardquorum/cardquorum) ![GitHub issues](https://img.shields.io/github/issues/cardquorum/cardquorum)
 
 A free and open source PWA for card games online. Or, it will be soon.
 
@@ -9,7 +9,7 @@ A free and open source PWA for card games online. Or, it will be soon.
 Requires [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
 
 ```sh
-git clone https://github.com/reednel/cardquorum.git
+git clone https://github.com/cardquorum/cardquorum.git
 cd cardquorum
 cp .env.template .env  # edit with real values
 docker compose up -d
@@ -87,7 +87,7 @@ Development of this software has been accelerated through the careful and restra
 
 ## Contributing
 
-Users interested in expanding functionalities in Sheepshead Online are welcome to do so. Issues reports are encouraged through Github's [issue tracker](https://github.com/reednel/cardquorum/issues). See details on how to contribute and report issues in [CONTRIBUTING.md](CONTRIBUTING.md). All contributors are expected to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
+Users interested in expanding functionalities in Sheepshead Online are welcome to do so. Issues reports are encouraged through Github's [issue tracker](https://github.com/cardquorum/cardquorum/issues). See details on how to contribute and report issues in [CONTRIBUTING.md](CONTRIBUTING.md). All contributors are expected to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
