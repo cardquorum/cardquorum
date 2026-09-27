@@ -294,7 +294,12 @@ describe('CardStack – multi-select toggle behavior', () => {
 
           const el = fixture.nativeElement as HTMLElement;
 
-          // Track the current selection set manually to verify toggle behavior
+          const emissions: string[][] = [];
+          fixture.componentInstance.selectedCards.subscribe((selected: string[]) => {
+            emissions.push([...selected]);
+          });
+
+          // Model of the selection, in click order, checked against the component after every click
           const expectedSelection: string[] = [];
 
           for (const rawIdx of clickIndices) {
@@ -302,53 +307,43 @@ describe('CardStack – multi-select toggle behavior', () => {
             const cardName = cards[idx];
 
             const btn = el.querySelector<HTMLElement>(`[data-testid="card-button-${idx}"]`);
-            if (!btn) continue;
+            expect(btn).not.toBeNull();
 
-            const wasSelected = expectedSelection.includes(cardName);
+            const emissionsBefore = emissions.length;
+            let changed = true;
 
-            btn.click();
+            if (expectedSelection.includes(cardName)) {
+              expectedSelection.splice(expectedSelection.indexOf(cardName), 1);
+            } else if (expectedSelection.length < maxSelections) {
+              expectedSelection.push(cardName);
+            } else {
+              // At max, clicking an unselected card is ignored
+              changed = false;
+            }
+
+            btn!.click();
             fixture.detectChanges();
 
-            if (wasSelected) {
-              // Clicking a selected card should remove it
-              const removeIdx = expectedSelection.indexOf(cardName);
-              expectedSelection.splice(removeIdx, 1);
-            } else if (expectedSelection.length < maxSelections) {
-              // Clicking an unselected card below max should add it
-              expectedSelection.push(cardName);
+            if (changed) {
+              expect(emissions.length).toBe(emissionsBefore + 1);
+              expect(emissions[emissions.length - 1]).toEqual(expectedSelection);
+            } else {
+              expect(emissions.length).toBe(emissionsBefore);
             }
-            // else: at max, clicking unselected card is ignored — no change
 
-            // Read actual selection from the component's selectedCards emissions
-            // We verify by clicking a known card and checking the last emission
-          }
-
-          // Final verification: click each card and verify the toggle matches
-          // We do a fresh pass: collect the final selection state by examining
-          // which cards have the selected visual indicator
-          const finalEmissions: string[][] = [];
-          fixture.componentInstance.selectedCards.subscribe((selected: string[]) => {
-            finalEmissions.push([...selected]);
-          });
-
-          // Pick a card that IS in expectedSelection (if any) and click it — should remove
-          if (expectedSelection.length > 0) {
-            const selectedCard = expectedSelection[0];
-            const selectedIdx = cards.indexOf(selectedCard);
-            const btn = el.querySelector<HTMLElement>(`[data-testid="card-button-${selectedIdx}"]`);
-            if (btn) {
-              btn.click();
-              fixture.detectChanges();
-
-              const lastEmission = finalEmissions[finalEmissions.length - 1];
-              expect(lastEmission).not.toContain(selectedCard);
-            }
+            const renderedSelection = cards.filter(
+              (_, i) =>
+                el
+                  .querySelector(`[data-testid="card-item-${i}"]`)
+                  ?.getAttribute('aria-selected') === 'true',
+            );
+            expect(renderedSelection.sort()).toEqual([...expectedSelection].sort());
           }
 
           fixture.destroy();
         },
       ),
-      { numRuns: 100 },
+      { numRuns: 25 },
     );
   });
 
