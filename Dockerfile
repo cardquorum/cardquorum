@@ -5,17 +5,20 @@
 # Run:     docker run -p 3000:3000 --env-file .env cardquorum
 # ============================================================
 
-# --- Stage 1: Install dependencies ---
-FROM node:26-alpine AS deps
-RUN corepack enable
+# --- Stage 0: Node + pnpm (build stages only; the runtime image never has pnpm) ---
+# Node 25+ no longer bundles corepack, so install the version pinned in "packageManager"
+FROM node:26-alpine AS base
 WORKDIR /app
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json ./
+RUN npm install -g "$(node -p "require('./package.json').packageManager.split('+')[0]")"
+
+# --- Stage 1: Install dependencies ---
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # --- Stage 2: Build frontend + backend ---
-FROM node:26-alpine AS builder
-RUN corepack enable
-WORKDIR /app
+FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm nx build frontend --configuration=production
@@ -33,21 +36,24 @@ RUN find dist/apps/backend/workspace_modules -mindepth 1 -maxdepth 4 \
       -o -name "project.json" \
       \) -exec rm -rf {} +
 
-# --- Stage 3: Production runtime ---
+# --- Stage 3: Production dependencies ---
+# Outside /app so pnpm doesn't see the workspace root and run its lifecycle scripts
+FROM base AS prod-deps
+WORKDIR /prod
+# Built backend: generated package.json, pruned pnpm-lock.yaml, workspace_modules/
+COPY --from=builder /app/dist/apps/backend ./
+RUN pnpm install --prod
+
+# --- Stage 4: Production runtime ---
 FROM node:26-alpine AS runtime
-RUN corepack enable
 WORKDIR /app
 
-# Copy the built backend (includes generated package.json with prod deps,
-# pruned pnpm-lock.yaml, and workspace_modules/)
-COPY --from=builder /app/dist/apps/backend ./
+# Copy the built backend with its production node_modules
+COPY --from=prod-deps /prod ./
 # Copy the built frontend SPA
 COPY --from=builder /app/dist/apps/frontend/browser ./public
 # Copy the entrypoint script
-COPY apps/backend/docker-entrypoint.sh ./
-
-# Install only production dependencies
-RUN pnpm install --prod && chmod +x docker-entrypoint.sh
+COPY --chmod=755 apps/backend/docker-entrypoint.sh ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
